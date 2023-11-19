@@ -5,6 +5,9 @@
   "private": "true",
   "scripts": {
   },
+  "workspaces": [
+    "packages/*"
+  ],
   "keywords": [],
   "author": "",
   "license": "MIT"
