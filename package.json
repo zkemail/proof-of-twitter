@@ -1,0 +1,11 @@
+{
+  "name": "@zk-email/proof-of-twitter",
+  "version": "1.0.0",
+  "description": "Proof of twitter username using ZK Email",
+  "private": "true",
+  "scripts": {
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT"
+}
