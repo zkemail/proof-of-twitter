@@ -2,13 +2,12 @@
   "name": "@zk-email/proof-of-twitter",
   "version": "1.0.0",
   "description": "Proof of twitter username using ZK Email",
-  "private": "true",
-  "scripts": {
-  },
+  "private": true,
   "workspaces": [
     "packages/*"
   ],
   "keywords": [],
   "author": "",
-  "license": "MIT"
+  "license": "MIT",
+  "packageManager": "yarn@3.2.3"
 }
