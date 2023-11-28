@@ -1,4 +1,4 @@
-import { verifyDKIMSignature } from "@zk-email/helpers/src/dkim";
+import { verifyDKIMSignature } from "@zk-email/helpers/dist/dkim";
 import { generateTwitterVerifierCircuitInputs } from "../helpers";
 
 const path = require("path");
@@ -20,7 +20,7 @@ describe("Twitter email test", function () {
 
   beforeAll(async () => {
     const rawEmail = fs.readFileSync(
-      path.join(__dirname, "../../../emls/zktestemail_twitter.eml"),
+      path.join(__dirname, "../../../emls/test_twitter.eml"),
       "utf8"
     );
     dkimResult = await verifyDKIMSignature(rawEmail);

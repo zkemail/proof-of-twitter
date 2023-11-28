@@ -15,8 +15,8 @@ parser = argparse.ArgumentParser(description='Upload the compressed zkey, cpp, a
 parser.add_argument('--bucket_name', type=str, default='zkemail-zkey-chunks', help='Name of the S3 bucket')
 
 default_build_dir = 'build'
-default_circuit_name = 'wallet'
-default_prefix = 'vkey.json,email.wasm,verifier.sol,wallet_nonchunked.zkey'
+default_circuit_name = 'twitter'
+default_prefix = 'vkey.json,email.wasm,verifier.sol'
 
 build_dir_env = os.getenv('BUILD_DIR')
 circuit_name_env = os.getenv('CIRCUIT_NAME')
@@ -42,7 +42,7 @@ prefixes = args.prefix.split(',')
 prefixes.append(circuit_name + '_js')
 prefixes.append(circuit_name + '_cpp')
 
-dirs = [os.path.join(build_dir, circuit_name, "")]
+dirs = [os.path.join(build_dir, "")]
 
 # Get the latest commit hash
 commit_hash = subprocess.check_output(['git', 'rev-parse', 'HEAD']).decode('utf-8').strip()
