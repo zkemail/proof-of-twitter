@@ -1,3 +1,9 @@
+### This repo is still work in progress. Please refer to [zk-email-verify](https://github.com/zkemail/zk-email-verify/)  for twitter demo for now.
+
+<br/>
+<br/>
+
+
 # Proof of Twitter
 
 Prove ownership of a X (Twitter) account using an email from Twitter, and mint a NFT with your Twitter username.
@@ -60,6 +66,13 @@ yarn build
 
 This will create `twitter.wasm` and other files in `packages/circuits/build` directory.
 
+You can test the circuit using
+
+```bash
+# CWD = packages/circuits
+yarn test
+```
+
 #### » Generating Zkey
 
 You can generate proving and verifications keys using
@@ -72,6 +85,13 @@ ZKEY_ENTROPY=<random-number> ZKEY_BEACON=<random-hex> ts-node dev-setup.ts
 This will generate `zkey` files, `vkey.json` in `build` directory, and Solidity verifier in `packages/contracts/src/Verifier.sol`.
 
 > Note: We are using a custom fork of `snarkjs` which generated **chunked zkeys**. Chunked zkeys make it easier to use in browser, especially since we have large circuit. You can switch to regular `snarkjs` in `package.json` if you don't want to use chunked zkeys.
+
+If you want to upload the zkey to AWS (to use in browser), you can use the `scripts/upload_to_s3.py` file (Assuming you have AWS cli configured):
+
+```bash
+python3 upload_to_s3.py --build-dir <project-path>/proof-of-twitter/packages/circuits/build --circuit-name twitter 
+```
+
 
 #### » Generate Input and Proof
 
@@ -122,3 +142,15 @@ Currently deployed contracts on Sepolia:
   Deployed DKIMRegistry at address: 0x993873c1b46c756b60089cBbE3baEEC9Fa292e9f
   Deployed ProofOfTwitter at address: 0x86D390fDed54447fD244eD0718dbFCFCcbbA7edc
 ```
+
+
+### UI
+
+If you want to update the UI based on your own zkeys and contracts, please make the below changes:
+
+- Set the CONTRACT_ADDRESS in `packages/app/.env`
+
+
+TODO:
+- Move Proof gen and Vkey helpers to this repo (ex: zkp.ts)
+- Remove unused code from MainPage.tsx
