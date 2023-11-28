@@ -1,10 +1,16 @@
 {
-  "extends": "../../tsconfig.json",
-  "include": ["."],
-  "exclude": ["tests", "dist"],
+  "include": [".", "types.d.ts"],
+  "exclude": ["tests", "dist", "**/node_modules", "**.test.*"],
   "compilerOptions": {
+    "outDir": "dist",
     "skipLibCheck": true,
-    "module": "esnext",
+    "jsx": "react-jsx",
+    "module": "CommonJS",
+    "typeRoots": ["./../../node_modules/@types"],
+    "esModuleInterop": true,
+    "target": "es2022",
+    "isolatedModules": true,
+    "strict": true,
     "noEmit": true
   }
 }

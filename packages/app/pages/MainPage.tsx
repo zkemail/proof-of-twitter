@@ -137,6 +137,7 @@ export const MainPage: React.FC<{}> = (props) => {
   };
 
   const { config } = usePrepareContractWrite({
+    // @ts-ignore
     address: import.meta.env.VITE_CONTRACT_ADDRESS,
     abi: abi,
     functionName: "mint",
@@ -347,9 +348,18 @@ export const MainPage: React.FC<{}> = (props) => {
                 "Downloading compressed proving files... (this may take a few minutes)"
               );
               setStatus("downloading-proof-files");
-              await downloadProofFiles(filename, () => {
-                setDownloadProgress((p) => p + 1);
-              });
+              try {
+                await downloadProofFiles(filename, () => {
+                  setDownloadProgress((p) => p + 1);
+                });
+              }
+              catch (e) {
+                console.log(e);
+                setDisplayMessage("Error downloading proof files");
+                setStatus("error-failed-to-download");
+                return;
+              }
+
               console.timeEnd("zk-dl");
               recordTimeForActivity("finishedDownloading");
 

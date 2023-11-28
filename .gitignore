@@ -6,8 +6,6 @@ dist
 
 # dependencies
 /node_modules
-/e2e-lambdatest/node_modules/
-/e2e-lambdatest/.yarn/
 /.pnp
 .pnp.js
 
@@ -29,15 +27,10 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-circuits/*_js/*
 *.r1cs
 *.sym
-circuits/*.wasm
-circuits/*.wtns
-packages/circuits/*.wasm
 *.ptau
 *.zkey
-circuits/inputs/*.json
 
 .pnp.*
 .yarn/*
@@ -67,20 +60,13 @@ circuits/regexes/subject_regex*
 *_email.txt
 *email_cache.json
 *input.json
-circuits/example
-circuits/*.json
-generate_input_log.txt
 *email_proof.json
 *.debug
 *.env
 .vscode
 
-packages/circuits/tests/compiled-test-circuit/*
-
-
 .vite
 **/.vite
-**/.yarn/*
 
 tsbuildinfo
 

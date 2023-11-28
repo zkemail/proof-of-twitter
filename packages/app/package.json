@@ -2,10 +2,10 @@
   "name": "@zk-email/twitter-verifier",
   "version": "2.0.0",
   "dependencies": {
+    "@proof-of-twitter/circuits": "workspace:^",
     "@rainbow-me/rainbowkit": "^1.0.9",
     "@testing-library/jest-dom": "^5.16.3",
     "@testing-library/react": "^12.1.4",
-    "@proof-of-twitter/circuits": "workspace:^",
     "@zk-email/helpers": "^3.0.0",
     "atob": "^2.1.2",
     "circomlibjs": "^0.1.2",
