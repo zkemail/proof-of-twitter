@@ -46,7 +46,7 @@ Then deploy the contract to forked goerli:
 # Set terminal to the folder with this README
 cd src/contracts
 source .env
-export MAIN_CONTRACT_NAME=VerifiedTwitterEmail
+export MAIN_CONTRACT_NAME=ProofOfTwitter
 export RPC_URL="http://127.0.0.1:8548"
 
 # Export to abi for relayers

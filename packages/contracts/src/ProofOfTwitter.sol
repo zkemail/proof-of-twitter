@@ -7,23 +7,21 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "@zk-email/contracts/DKIMRegistry.sol";
 import "@zk-email/contracts/utils/StringUtils.sol";
 import "./utils/NFTSVG.sol";
-import { Verifier } from "./Groth16VerifierTwitter.sol";
+import { Verifier } from "./Verifier.sol";
 
 
-contract VerifiedTwitterEmail is ERC721Enumerable {
+contract ProofOfTwitter is ERC721Enumerable {
     using Counters for Counters.Counter;
     using StringUtils for *;
     using NFTSVG for *;
 
-    // TODO: The deployed contract still says 7, update that to use this 31 value, after recompiling updated circuits
-    uint16 public constant bytesInPackedBytes = 31; // 7 bytes in a packed item returned from circom
+    uint16 public constant bytesInPackedBytes = 31;
     string constant domain = "x.com";
     
-    uint16 public constant signalLength = 5; // length of signals array
     uint32 public constant pubKeyHashIndexInSignals = 0; // index of DKIM public key hash in signals array
     uint32 public constant usernameIndexInSignals = 1; // index of first packed twitter username in signals array
-    uint32 public constant usernameLengthInSignals = 3; // length of packed twitter username in signals array
-    uint32 public constant addressIndexInSignals = 4; // index of ethereum address in signals array
+    uint32 public constant usernameLengthInSignals = 1; // length of packed twitter username in signals array
+    uint32 public constant addressIndexInSignals = 2; // index of ethereum address in signals array
 
     Counters.Counter private tokenCounter;
     DKIMRegistry dkimRegistry;
@@ -62,7 +60,7 @@ contract VerifiedTwitterEmail is ERC721Enumerable {
     /// Mint a token proving twitter ownership by verifying proof of email
     /// @param proof ZK proof of the circuit - a[2], b[4] and c[2] encoded in series
     /// @param signals Public signals of the circuit. First item is pubkey_hash, next 3 are twitter username, the last one is etherum address
-    function mint(uint256[8] memory proof, uint256[5] memory signals) public {
+    function mint(uint256[8] memory proof, uint256[3] memory signals) public {
         // TODO no invalid signal check yet, which is fine since the zk proof does it
         // Checks: Verify proof and check signals
         // require(signals[0] == 1337, "invalid signals");
@@ -92,9 +90,12 @@ contract VerifiedTwitterEmail is ERC721Enumerable {
             "Invalid Proof"
         );
 
-        uint256[] memory bodySignals = new uint256[](usernameLengthInSignals);
+        // Extract the username chunks from the signals. 
+        // Note that this is not relevant now as username can fit in one signal
+        // TODO: Simplify signal uint to string conversion
+        uint256[] memory usernamePack = new uint256[](usernameLengthInSignals);
         for (uint256 i = usernameIndexInSignals; i < (usernameIndexInSignals + usernameLengthInSignals); i++) {
-            bodySignals[i - usernameIndexInSignals] = signals[i];
+            usernamePack[i - usernameIndexInSignals] = signals[i];
         }
 
         // Effects: Mint token
@@ -102,7 +103,7 @@ contract VerifiedTwitterEmail is ERC721Enumerable {
 
         // TODO: Change bytesInPackedBytes * usernameLengthInSignals -> usernameLengthInSignals
         string memory messageBytes = StringUtils.convertPackedBytesToString(
-            bodySignals,
+            usernamePack,
             bytesInPackedBytes * usernameLengthInSignals,
             bytesInPackedBytes
         );

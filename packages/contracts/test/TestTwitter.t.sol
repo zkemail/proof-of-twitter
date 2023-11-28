@@ -3,8 +3,8 @@ pragma solidity ^0.8.0;
 import "forge-std/Test.sol";
 import "forge-std/console.sol";
 import "@zk-email/contracts/DKIMRegistry.sol";
-import "../TwitterEmailHandler.sol";
-import "../Groth16VerifierTwitter.sol";
+import "../src/ProofOfTwitter.sol";
+import "../src/Verifier.sol";
 
 contract TwitterUtilsTest is Test {
     using StringUtils for *;
@@ -13,7 +13,7 @@ contract TwitterUtilsTest is Test {
 
     Verifier proofVerifier;
     DKIMRegistry dkimRegistry;
-    VerifiedTwitterEmail testVerifier;
+    ProofOfTwitter testVerifier;
 
     uint16 public constant packSize = 7;
 
@@ -21,11 +21,18 @@ contract TwitterUtilsTest is Test {
         proofVerifier = new Verifier();
         dkimRegistry = new DKIMRegistry();
 
+        // These are the Poseidon hash of DKIM public keys for x.com
+        // This was calcualted using https://github.com/zkemail/zk-email-verify/tree/main/packages/scripts
         dkimRegistry.setDKIMPublicKeyHash(
             "x.com",
-            bytes32(uint256(5857406240302475676709141738935898448223932090884766940073913110146444539372))
+            bytes32(uint256(14900978865743571023141723682019198695580050511337677317524514528673897510335))
         );
-        testVerifier = new VerifiedTwitterEmail(proofVerifier, dkimRegistry);
+        dkimRegistry.setDKIMPublicKeyHash(
+            "x.com",
+            bytes32(uint256(1983664618407009423875829639306275185491946247764487749439145140682408188330))
+        );
+
+        testVerifier = new ProofOfTwitter(proofVerifier, dkimRegistry);
     }
 
     // function testMint() public {
@@ -75,35 +82,34 @@ contract TwitterUtilsTest is Test {
         console.logString(byteList);
     }
 
-    // Should pass (note that there are extra 0 bytes, which are filtered out but should be noted in audits)
+    // These proof and public input values are generated using scripts in packages/circuits/scripts/generate-proof.ts
+    // The sample email in `/emls` is used as the input, but you will have different values if you generated your own zkeys
     function testVerifyTestEmail() public {
-        uint256[5] memory publicSignals;
+        uint256[3] memory publicSignals;
         publicSignals[
             0
-        ] = 5857406240302475676709141738935898448223932090884766940073913110146444539372;
-        publicSignals[1] = 28557011619965818;
-        publicSignals[2] = 1818845549;
-        publicSignals[3] = 0;
-        publicSignals[4] = 0;
+        ] = 1983664618407009423875829639306275185491946247764487749439145140682408188330;
+        publicSignals[1] = 131061634216091175196322682;
+        publicSignals[2] = 1163446621798851219159656704542204983322218017645;
 
         uint256[2] memory proof_a = [
-            6404912094438959771270170015708692679163975170331123763947869280533330020948,
-            16431746252867738581190734044362323467317260581534469863954001717354720033449
+            8560515785464264484566975251793601340764569587346456836887462574095272861109,
+            9187213949652534260402406992756428277971510758385929929393362206660112986577
         ];
         // Note: you need to swap the order of the two elements in each subarray
         uint256[2][2] memory proof_b = [
             [
-                8795231851098125041774532684066622968473503351895932688930282151189868525269,
-                8400965518420081537874913758124060525192033588615011110881123763850464376004
+                4622418497485476916317506827917430058883769016004496189211095203943796358240,
+                1486080943321564848486974282840661162948885585134536897142796223606316279220
             ],
             [
-                1261603040832110057103451457904097254368501842246415202852613834792443845304,
-                13121771595022702619727734608109555365032821396670202768909783661374406380222
+                16036348385538987582074595152306129305342020105012444996767041124014470746773,
+                11682939184801245044140099548815007763750418101414768278298851687451602118562
             ]
         ];
         uint256[2] memory proof_c = [
-            16050409289279435737057519079981506516910719341869168962865371387104118882619,
-            18176072645632006430426495213203541931818956668410385812518837732883642216531
+            5945751468291848331115504470783768396549824438334575486526039341389473938784,
+            20682598462898495943003708847117032729823288172023493416264967628353000523940
         ];
 
         uint256[8] memory proof = [
@@ -133,67 +139,7 @@ contract TwitterUtilsTest is Test {
         vm.stopPrank();
     }
 
-    // Should pass (note that there are extra 0 bytes, which are filtered out but should be noted in audits)
-    function testVerifyYushEmail() public {
-        uint256[5] memory publicSignals;
-        publicSignals[
-            0
-        ] = 5857406240302475676709141738935898448223932090884766940073913110146444539372; // DKIM hash
-        publicSignals[1] = 28557011619965818;
-        publicSignals[2] = 1818845549;
-        publicSignals[3] = 0;
-        publicSignals[4] = 706787187238086675321187262313978339498517045894; // Wallet address
-
-        // TODO switch order
-        uint256[2] memory proof_a = [
-            16235597139600534219471648014557261007889045173822970670513181240240086214174,
-            6621518204030293388915371133361934397921786415041615077394701602185030032541
-        ];
-        // Note: you need to swap the order of the two elements in each subarray
-        uint256[2][2] memory proof_b = [
-            [
-                6161412334642964861189612033303217945413875036507487954316771559158415662599,
-                6394243861551970426687159580195338783768207351061112276435055148070946593649
-            ],
-            [
-                10941698291835179415420256896712218454699332411237939219040895798597821967702,
-                7728456040917771404709714590797935142996631885733167964164791489962500861862
-            ]
-        ];
-        uint256[2] memory proof_c = [
-            14259974788240734152903966067523528600222540226580955926764767170021226788296,
-            21676216180115608963745703352692727568438367369380511035841665454472016757320
-        ];
-
-        uint256[8] memory proof = [
-            proof_a[0],
-            proof_a[1],
-            proof_b[0][0],
-            proof_b[0][1],
-            proof_b[1][0],
-            proof_b[1][1],
-            proof_c[0],
-            proof_c[1]
-        ];
-
-        // Test proof verification
-        bool verified = proofVerifier.verifyProof(
-            proof_a,
-            proof_b,
-            proof_c,
-            publicSignals
-        );
-        assertEq(verified, true);
-
-        // Test mint after spoofing msg.sender
-        Vm vm = Vm(VM_ADDR);
-        vm.startPrank(0x7Bcd6F009471e9974a77086a69289D16EaDbA286);
-        testVerifier.mint(proof, publicSignals);
-        vm.stopPrank();
-    }
-
     function testSVG() public {
-        testVerifyYushEmail();
         testVerifyTestEmail();
         string memory svgValue = testVerifier.tokenURI(1);
         console.log(svgValue);
