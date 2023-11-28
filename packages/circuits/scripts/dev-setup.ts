@@ -36,6 +36,10 @@ const SOLIDITY_TEMPLATE = path.join(
   require.resolve("snarkjs"),
   "../../templates/verifier_groth16.sol.ejs"
 );
+const SOLIDITY_VERIFIER_PATH = path.join(
+  __dirname,
+  "../../contracts/src/Verifier.sol"
+);
 
 function log(...message: any) {
   if (!SILENT) {
@@ -74,32 +78,32 @@ async function generateKeys(
   vKeyPath: string,
   solidityVerifierPath: string
 ) {
-  await zKey.newZKey(r1cPath, phase1Path, zKeyPath + ".step1", console);
-  log("✓ Partial ZKey generated");
+  // await zKey.newZKey(r1cPath, phase1Path, zKeyPath + ".step1", console);
+  // log("✓ Partial ZKey generated");
 
-  await zKey.contribute(
-    zKeyPath + ".step1",
-    zKeyPath + ".step2",
-    "Contributer 1",
-    ZKEY_ENTROPY,
-    console
-  );
-  log("✓ First contribution completed");
+  // await zKey.contribute(
+  //   zKeyPath + ".step1",
+  //   zKeyPath + ".step2",
+  //   "Contributer 1",
+  //   ZKEY_ENTROPY,
+  //   console
+  // );
+  // log("✓ First contribution completed");
 
-  await zKey.beacon(
-    zKeyPath + ".step2",
-    zKeyPath,
-    "Final Beacon",
-    ZKEY_BEACON,
-    10,
-    console
-  );
-  log("✓ Beacon applied");
+  // await zKey.beacon(
+  //   zKeyPath + ".step2",
+  //   zKeyPath,
+  //   "Final Beacon",
+  //   ZKEY_BEACON,
+  //   10,
+  //   console
+  // );
+  // log("✓ Beacon applied");
 
-  // Verification key
-  const vKey = await zKey.exportVerificationKey(zKeyPath, console);
-  fs.writeFileSync(vKeyPath, JSON.stringify(vKey, null, 2));
-  log(`✓ Verification key exported - ${vKeyPath}`);
+  // // Verification key
+  // const vKey = await zKey.exportVerificationKey(zKeyPath, console);
+  // fs.writeFileSync(vKeyPath, JSON.stringify(vKey, null, 2));
+  // log(`✓ Verification key exported - ${vKeyPath}`);
 
   // Solidity verifier
   const templates = {
@@ -132,7 +136,7 @@ async function exec() {
     circuitPath,
     path.join(BUILD_DIR, `${CIRCUIT_NAME}.zkey`),
     path.join(BUILD_DIR, "vkey.json"),
-    path.join(__dirname, "../contracts/TwitterVerifier.sol")
+    SOLIDITY_VERIFIER_PATH
   );
   log("✓ Keys for account creation circuit generated");
 }
