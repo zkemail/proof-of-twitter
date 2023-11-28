@@ -1,14 +1,14 @@
 {
-  "name": "@twitter-verifier/circuits",
+  "name": "@proof-of-twitter/circuits",
   "version": "2.1.0",
   "scripts": {
+    "build": "./scripts/1_compile.sh",
     "test": "NODE_OPTIONS=--max_old_space_size=16384 jest"
   },
   "dependencies": {
-    "@zk-email/circuits": "workspace:^",
-    "@zk-email/helpers": "workspace:^",
-    "@zk-email/zk-regex-circom": "^1.1.1",
-    "big-integer": "^1.6.51",
+    "@zk-email/contracts": "^5.0.0",
+    "@zk-email/helpers": "^3.0.0",
+    "@zk-email/zk-regex-circom": "^5.0.0",
     "snarkjs": "git+https://github.com/vb7401/snarkjs.git#24981febe8826b6ab76ae4d76cf7f9142919d2b8"
   },
   "devDependencies": {

@@ -10,7 +10,7 @@ import {
 } from "../scripts/generate_input";
 import { rawEmailToBuffer } from "@zk-email/helpers/src/input-helpers";
 import { DKIMVerificationResult, verifyDKIMSignature } from "@zk-email/helpers/src/dkim";
-import { generateTwitterVerifierCircuitInputs } from "@twitter-verifier/circuits/helpers";
+import { generateTwitterVerifierCircuitInputs } from "@proof-of-twitter/circuits/helpers";
 import atob from "atob";
 import {
   downloadProofFiles,
