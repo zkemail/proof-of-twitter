@@ -2,14 +2,17 @@
   "name": "@proof-of-twitter/circuits",
   "version": "2.1.0",
   "scripts": {
-    "build": "./scripts/1_compile.sh",
+    "build": "mkdir -p build && circom twitter.circom -l ../../node_modules --wasm --sym --c --wat -o ./build",
+    "generate-regex": "zk-regex decomposed -d ./components/twitter_reset.json -c ./components/twitter_reset_regex.circom -t TwitterResetRegex -g true",
     "test": "NODE_OPTIONS=--max_old_space_size=16384 jest"
   },
   "dependencies": {
     "@zk-email/circuits": "^3.2.0",
     "@zk-email/contracts": "^5.0.0",
     "@zk-email/helpers": "^3.0.0",
+    "@zk-email/zk-regex-apis": "^1.1.6",
     "@zk-email/zk-regex-circom": "^1.1.1",
+    "@zk-email/zk-regex-compiler": "^1.0.7",
     "snarkjs": "git+https://github.com/vb7401/snarkjs.git#24981febe8826b6ab76ae4d76cf7f9142919d2b8"
   },
   "devDependencies": {
