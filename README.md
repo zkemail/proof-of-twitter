@@ -47,4 +47,29 @@ yarn build
 
 This will create `twitter.wasm` and other files in `packages/circuits/build` directory.
 
+#### Generating Zkey
+
+You can generate proving and verifications keys using 
+```bash
+# CWD = packages/circuits/scripts
+ZKEY_ENTROPY=<random-number> ZKEY_BEACON=<random-hex> ts-node dev-setup.ts 
+```
+
+This will generate `zkey` files, `vkey.json` in `packages/circuits/build` directory, and Solidity verifier in `packages/circuits/TwitterVerifier.sol`.
+
+We are using a custom fork of `snarkjs` which generated **chunked zkeys**. Chunked zkeys make it easier to use in browser, especially for large circuits. You can use regular `snarkjs` in package.json if you don't want to use chunked zkeys.
+
+
+#### Generate Input and Proof
+
+```bash
+# CWD = packages/circuits/scripts
+ts-node generate-proof.ts --email-file ../../../emls/test_twitter.eml --ethereum-address <your-eth-address>
+```
+
+This will generate input + witness using a sample eml file [/emls/test_twitter.eml](/emls/test_twitter.eml), and prove using the generated zkey.
+
+The script will save `inputs.json`, `input.wtns`, `proof.json`, and `public.json` in `packages/circuits/proof` directory.
+
+The script also verify the generated proof are correct. You can use the proof and public inputs to verify in the Solidity verifier as well.
 
