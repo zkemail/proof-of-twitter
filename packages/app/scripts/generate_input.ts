@@ -26,7 +26,7 @@ async function getArgs() {
   const emailFileArg = args.find((arg) => arg.startsWith("--email_file="));
   const nonceArg = args.find((arg) => arg.startsWith("--nonce="));
 
-  const email_file = emailFileArg ? emailFileArg.split("--email_file=")[1] : "emls/zktestemail_twitter.eml";
+  const email_file = emailFileArg ? emailFileArg.split("--email_file=")[1] : "emls/test_twitter.eml";
   const nonce = nonceArg ? nonceArg.split("--nonce=")[1] : null;
 
   return { email_file, nonce };
