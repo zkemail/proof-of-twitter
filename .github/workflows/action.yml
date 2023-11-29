@@ -1,0 +1,45 @@
+on: [push]
+jobs:
+  run_twitter_circuit_tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set Node.js 16.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+      - name: Install Yarn dependencies
+        working-directory: ./packages/circuits
+        run: yarn install --immutable
+      - name: Run Tests
+        run: forge test --root ./packages/contracts --fork-url https://eth-goerli.g.alchemy.com/v2/${{vars.ALCHEMY_API_KEY}}
+
+  run_unit_and_e2e_tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set Node.js 16.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: 'yarn'
+        env:
+          PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: 'true'
+      - name: Install Yarn dependencies
+        working-directory: ./packages/app
+        run: yarn install
+      - name: Run test
+        working-directory: ./packages/app
+        run: yarn test
+      - name: Run build
+        working-directory: ./packages/app
+        run: yarn build
+      - name: E2E Test Code
+        uses: mujo-code/puppeteer-headful@16.6.0
+        env:
+          CI: "true"
+        with:
+          args: yarn workspace @zk-email/twitter-verifier test:full-e2e
+      

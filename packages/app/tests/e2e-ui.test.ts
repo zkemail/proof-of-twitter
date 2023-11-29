@@ -59,6 +59,8 @@ describe("App.js", () => {
   beforeAll(async () => {
     browser = await puppeteer.launch({
       // headless: true,
+      args: ['--no-sandbox'],
+      executablePath: process.env.PUPPETEER_EXEC_PATH,
       headless: false,
       slowMo: 100
     });
