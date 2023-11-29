@@ -34,6 +34,7 @@
     "test": "jest --runInBand --testPathIgnorePatterns='e2e' --reporters=default --reporters=jest-junit",
     "start-e2e-test-server": "serve -s dist -p 3000",
     "test:e2e-ui": "CI=true jest ./tests/e2e-ui*.test.*",
+    "test:full-e2e": "bash scripts/full-e2e.sh",
     "test:e2e-zkp": "CI=true jest ./tests/e2e-dl-zkp.test.ts"
   },
   "eslintConfig": {

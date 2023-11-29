@@ -60,6 +60,8 @@ describe("App.js", () => {
     browser = await puppeteer.launch({
       // headless: true,
       headless: false,
+      args: ['--no-sandbox'],
+      executablePath: process.env.PUPPETEER_EXEC_PATH,
       slowMo: 100
     });
     page = await browser.newPage();
