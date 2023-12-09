@@ -2,6 +2,7 @@ on: [push]
 jobs:
   run_twitter_circuit_tests:
     runs-on: ubuntu-latest
+    environment: development
     steps:
       - uses: actions/checkout@v3
       - name: Set Node.js 16.x
