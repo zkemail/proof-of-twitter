@@ -4621,25 +4621,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@zk-email/helpers@npm:^3.0.0":
-  version: 3.0.1
-  resolution: "@zk-email/helpers@npm:3.0.1"
-  dependencies:
-    addressparser: ^1.0.1
-    atob: ^2.1.2
-    circomlibjs: ^0.1.7
-    ethers: ^6.8.0
-    libmime: ^5.2.1
-    localforage: ^1.10.0
-    lodash: ^4.17.21
-    node-forge: ^1.3.1
-    pako: ^2.1.0
-    psl: ^1.9.0
-    snarkjs: "git+https://github.com/sampritipanda/snarkjs.git#fef81fc51d17a734637555c6edbd585ecda02d9e"
-  checksum: 3abe9aec8ee1862dc7673d22c1d848cd26f33001a2f18fe1a012d8b46b56377add9b25903e25672284a324463781d08c079aaddc870eeabb3ecded6c5ac6ed3c
-  languageName: node
-  linkType: hard
-
 "@zk-email/helpers@npm:^3.0.2":
   version: 3.0.2
   resolution: "@zk-email/helpers@npm:3.0.2"
@@ -4693,7 +4674,7 @@ __metadata:
     "@types/node-forge": ^1.3.2
     "@types/styled-components": ^5.1.24
     "@vitejs/plugin-react": ^4.0.0
-    "@zk-email/helpers": ^3.0.0
+    "@zk-email/helpers": ^3.0.2
     atob: ^2.1.2
     browserify-fs: ^1.0.0
     browserstack-local: ^1.5.1
@@ -14801,27 +14782,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"snarkjs@git+https://github.com/sampritipanda/snarkjs.git#fef81fc51d17a734637555c6edbd585ecda02d9e, snarkjs@https://github.com/sampritipanda/snarkjs.git#fef81fc51d17a734637555c6edbd585ecda02d9e":
-  version: 0.5.0
-  resolution: "snarkjs@https://github.com/sampritipanda/snarkjs.git#commit=fef81fc51d17a734637555c6edbd585ecda02d9e"
-  dependencies:
-    "@iden3/binfileutils": 0.0.11
-    bfj: ^7.0.2
-    blake2b-wasm: ^2.4.0
-    circom_runtime: 0.1.21
-    ejs: ^3.1.6
-    fastfile: 0.0.20
-    ffjavascript: 0.2.56
-    js-sha3: ^0.8.0
-    localforage: ^1.10.0
-    logplease: ^1.2.15
-    r1csfile: 0.0.41
-  bin:
-    snarkjs: build/cli.cjs
-  checksum: f2050f0135d50d459ea0edddf3e394e833a2d28c6648e5889b2f896814865e5c60606e978a8a106bd5bfe7e27501c315f249db5b71895d5e7e6e9a87bfcd55ab
-  languageName: node
-  linkType: hard
-
 "snarkjs@git+https://github.com/vb7401/snarkjs.git#24981febe8826b6ab76ae4d76cf7f9142919d2b8":
   version: 0.4.12
   resolution: "snarkjs@https://github.com/vb7401/snarkjs.git#commit=24981febe8826b6ab76ae4d76cf7f9142919d2b8"
@@ -14839,6 +14799,27 @@ __metadata:
   bin:
     snarkjs: build/cli.cjs
   checksum: 9011df4b58475a0b4ae988f8b459a9a4d2bb5d2b60221d0ec370a10f2492c88909768215f3b22e514b2cf24dca79818790447005a33ed6aee177b9fda6948a75
+  languageName: node
+  linkType: hard
+
+"snarkjs@https://github.com/sampritipanda/snarkjs.git#fef81fc51d17a734637555c6edbd585ecda02d9e":
+  version: 0.5.0
+  resolution: "snarkjs@https://github.com/sampritipanda/snarkjs.git#commit=fef81fc51d17a734637555c6edbd585ecda02d9e"
+  dependencies:
+    "@iden3/binfileutils": 0.0.11
+    bfj: ^7.0.2
+    blake2b-wasm: ^2.4.0
+    circom_runtime: 0.1.21
+    ejs: ^3.1.6
+    fastfile: 0.0.20
+    ffjavascript: 0.2.56
+    js-sha3: ^0.8.0
+    localforage: ^1.10.0
+    logplease: ^1.2.15
+    r1csfile: 0.0.41
+  bin:
+    snarkjs: build/cli.cjs
+  checksum: f2050f0135d50d459ea0edddf3e394e833a2d28c6648e5889b2f896814865e5c60606e978a8a106bd5bfe7e27501c315f249db5b71895d5e7e6e9a87bfcd55ab
   languageName: node
   linkType: hard
 

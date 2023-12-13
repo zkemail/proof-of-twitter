@@ -9,8 +9,6 @@ import {
   RainbowKitProvider,
   darkTheme,
 } from "@rainbow-me/rainbowkit";
-
-import "./index.css";
 import "@rainbow-me/rainbowkit/styles.css";
 
 

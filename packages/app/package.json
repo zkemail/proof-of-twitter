@@ -6,7 +6,7 @@
     "@rainbow-me/rainbowkit": "^1.0.9",
     "@testing-library/jest-dom": "^5.16.3",
     "@testing-library/react": "^12.1.4",
-    "@zk-email/helpers": "^3.0.0",
+    "@zk-email/helpers": "^3.0.2",
     "atob": "^2.1.2",
     "circomlibjs": "^0.1.2",
     "ethers": "^6.7.1",

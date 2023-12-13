@@ -1,23 +1,25 @@
 import React, { useEffect, useState } from "react";
 // @ts-ignore
-import { useAsync, useMount, useUpdateEffect } from "react-use";
+import { useMount, useUpdateEffect } from "react-use";
 import styled from "styled-components";
-import _, { add } from "lodash";
+import _ from "lodash";
+import { useAccount, useContractWrite, usePrepareContractWrite } from "wagmi";
+import { rawEmailToBuffer } from "@zk-email/helpers/dist/input-helpers";
 import {
-  ICircuitInputs,
-  generate_inputs,
-  CircuitType,
-} from "../scripts/generate_input";
-import { rawEmailToBuffer } from "@zk-email/helpers/src/input-helpers";
-import { DKIMVerificationResult, verifyDKIMSignature } from "@zk-email/helpers/src/dkim";
-import { generateTwitterVerifierCircuitInputs } from "@proof-of-twitter/circuits/helpers";
-import atob from "atob";
+  generateTwitterVerifierCircuitInputs,
+  ITwitterCircuitInputs,
+} from "@proof-of-twitter/circuits/helpers";
+import { abi } from "@zk-email/helpers/dist/twitterEmailHandler.abi";
+import {
+  DKIMVerificationResult,
+  verifyDKIMSignature,
+} from "@zk-email/helpers/dist/dkim";
 import {
   downloadProofFiles,
   generateProof,
   verifyProof,
-} from "@zk-email/helpers/src/zkp";
-import { packedNBytesToString } from "@zk-email/helpers/src/binaryFormat";
+} from "@zk-email/helpers/dist/zkp";
+import { packedNBytesToString } from "@zk-email/helpers/dist/binaryFormat";
 import { LabeledTextArea } from "../components/LabeledTextArea";
 import DragAndDropTextBox from "../components/DragAndDropTextBox";
 import { SingleLineInput } from "../components/SingleLineInput";
@@ -25,10 +27,7 @@ import { Button } from "../components/Button";
 import { Col, Row } from "../components/Layout";
 import { NumberedStep } from "../components/NumberedStep";
 import { TopBanner } from "../components/TopBanner";
-import { useAccount, useContractWrite, usePrepareContractWrite } from "wagmi";
 import { ProgressBar } from "../components/ProgressBar";
-import { abi } from "@zk-email/helpers/src/twitterEmailHandler.abi";
-import { isSetIterator } from "util/types";
 
 export const MainPage: React.FC<{}> = (props) => {
   // raw user inputs
@@ -46,22 +45,6 @@ export const MainPage: React.FC<{}> = (props) => {
   const [emailHeader, setEmailHeader] = useState<string>("");
   const { address } = useAccount();
   const [ethereumAddress, setEthereumAddress] = useState<string>(address ?? "");
-  // computed state
-  const { value, error } = useAsync(async () => {
-    try {
-      const circuitInputs = await generate_inputs(
-        Buffer.from(atob(emailFull)),
-        ethereumAddress,
-        CircuitType.EMAIL_TWITTER
-      );
-      return circuitInputs;
-    } catch (e) {
-      return {};
-    }
-  }, [emailFull, ethereumAddress]);
-
-  const circuitInputs = value || {};
-  console.log("Circuit inputs:", circuitInputs);
 
   const [verificationMessage, setVerificationMessage] = useState("");
   const [verificationPassed, setVerificationPassed] = useState(false);
@@ -126,12 +109,15 @@ export const MainPage: React.FC<{}> = (props) => {
 
   const reformatProofForChain = (proofStr: string) => {
     if (!proofStr) return [];
-    
+
     const proof = JSON.parse(proofStr);
 
     return [
       proof.pi_a.slice(0, 2),
-      proof.pi_b.slice(0, 2).map((s: string[]) => s.reverse()).flat(),
+      proof.pi_b
+        .slice(0, 2)
+        .map((s: string[]) => s.reverse())
+        .flat(),
       proof.pi_c.slice(0, 2),
     ].flat();
   };
@@ -164,7 +150,7 @@ export const MainPage: React.FC<{}> = (props) => {
 
   // local storage stuff
   useUpdateEffect(() => {
-    if (value) {
+    if (emailFull) {
       if (localStorage.emailFull !== emailFull) {
         console.info("Wrote email to localStorage");
         localStorage.emailFull = emailFull;
@@ -182,9 +168,7 @@ export const MainPage: React.FC<{}> = (props) => {
         localStorage.publicSignals = publicSignals;
       }
     }
-  }, [value]);
-
-  if (error) console.error(error);
+  }, [emailFull, proof, publicSignals]);
 
   // On file drop function to extract the text from the file
   const onFileDrop = async (file: File) => {
@@ -316,7 +300,7 @@ export const MainPage: React.FC<{}> = (props) => {
                 return;
               }
 
-              let input: ICircuitInputs;
+              let input: ITwitterCircuitInputs;
               try {
                 setDisplayMessage("Generating proof...");
                 setStatus("generating-input");
@@ -328,7 +312,7 @@ export const MainPage: React.FC<{}> = (props) => {
                   bodyHash: dkimResult.bodyHash,
                   message: dkimResult.message,
                   ethereumAddress,
-                })
+                });
 
                 console.log("Generated input:", JSON.stringify(input));
               } catch (e) {
@@ -352,8 +336,7 @@ export const MainPage: React.FC<{}> = (props) => {
                 await downloadProofFiles(filename, () => {
                   setDownloadProgress((p) => p + 1);
                 });
-              }
-              catch (e) {
+              } catch (e) {
                 console.log(e);
                 setDisplayMessage("Error downloading proof files");
                 setStatus("error-failed-to-download");
@@ -392,7 +375,7 @@ export const MainPage: React.FC<{}> = (props) => {
               // setPublicSignals(`From: ${soln}\nTo: ${soln2}\nUsername: ${soln3}`);
               setPublicSignals(JSON.stringify(publicSignals));
 
-              if (!circuitInputs) {
+              if (!input) {
                 setStatus("error-failed-to-prove");
                 return;
               }
@@ -400,7 +383,7 @@ export const MainPage: React.FC<{}> = (props) => {
               setDisplayMessage("Finished computing ZK proof");
               setStatus("done");
               try {
-                (window as any).cJson = JSON.stringify(circuitInputs);
+                (window as any).cJson = JSON.stringify(input);
                 console.log(
                   "wrote circuit input to window.cJson. Run copy(cJson)"
                 );
