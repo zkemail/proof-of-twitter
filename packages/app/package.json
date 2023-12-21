@@ -28,11 +28,12 @@
   },
   "scripts": {
     "start": "vite",
-    "build": "yarn g:tsc && vite build",
+    "build": "yarn tsc && vite build",
     "serve": "vite preview",
     "test": "jest --runInBand --testPathIgnorePatterns='e2e' --reporters=default --reporters=jest-junit",
     "start-e2e-test-server": "serve -s dist -p 3000",
     "test:e2e-ui": "CI=true jest ./tests/e2e-ui*.test.*",
+    "test:full-e2e": "bash scripts/test-e2e.sh",
     "test:e2e-zkp": "CI=true jest ./tests/e2e-dl-zkp.test.ts"
   },
   "eslintConfig": {
@@ -56,6 +57,7 @@
     ]
   },
   "devDependencies": {
+    "@babel/preset-react": "^7.23.3",
     "@types/atob": "^2.1.2",
     "@types/jest": "^29.5.1",
     "@types/lodash": "^4.14.181",
@@ -76,6 +78,7 @@
     "puppeteer": "18.1",
     "rollup-plugin-node-polyfills": "^0.2.1",
     "selenium-webdriver": "^4.8.1",
+    "typescript": "^5.3.2",
     "vite-plugin-commonjs": "^0.7.1",
     "vite-plugin-ngmi-polyfill": "^0.0.2",
     "vite-plugin-node-polyfills": "^0.8.2",
@@ -83,7 +86,7 @@
   },
   "jest": {
     "transformIgnorePatterns": [
-      "node_modules/(?!@rainbow-me/rainbowkit)"
+      "node_modules/(?!@rainbow-me/rainbowkit|@zk-email|ffjavascript)"
     ],
     "testEnvironment": "jsdom",
     "setupFilesAfterEnv": [
