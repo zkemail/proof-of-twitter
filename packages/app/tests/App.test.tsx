@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen } from "@testing-library/react";
-import App from "./App";
+import App from "../src/App";
 
 jest.mock("@rainbow-me/rainbowkit", () => {
   return {
@@ -8,7 +8,7 @@ jest.mock("@rainbow-me/rainbowkit", () => {
   };
 });
 
-jest.mock("./styles.css", () => {});
+jest.mock("../src/styles.css", () => {});
 
 jest.mock("wagmi", () => {
   return {

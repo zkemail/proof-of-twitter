@@ -1,4 +1,3 @@
-import React from "react";
 import { MainPage } from "./pages/MainPage";
 import "./styles.css";
 import {
@@ -6,38 +5,12 @@ import {
   Route,
   Routes,
   Link,
-  Navigate,
 } from "react-router-dom";
-// @ts-ignore
 import { useLocation } from "react-use";
 import styled from "styled-components";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 
-const App = () => {
-  return (
-    <Router>
-      <div>
-        <NavSection />
-
-        <Routes>
-          <Route path="/" element={<Main />} />
-          <Route path="/" element={<Navigate to={"/"} replace={true} />} />
-          <Route element={<>Not found</>} />
-        </Routes>
-      </div>
-    </Router>
-  );
-};
-
-export default App;
-
-const Main: React.FC = () => {
-  const { search } = useLocation();
-
-  return <MainPage key={search} />;
-};
-
-const NavSection: React.FC = () => {
+const NavSection = () => {
   const { pathname } = useLocation();
 
   return (
@@ -58,6 +31,23 @@ const NavSection: React.FC = () => {
     </Nav>
   );
 };
+
+const App = () => {
+  return (
+    <Router>
+      <div>
+        <NavSection />
+
+        <Routes>
+          <Route path="/" element={<MainPage />} />
+          <Route element={<>Not found</>} />
+        </Routes>
+      </div>
+    </Router>
+  );
+};
+
+export default App;
 
 const Logo = styled(Link)`
   text-transform: uppercase;
