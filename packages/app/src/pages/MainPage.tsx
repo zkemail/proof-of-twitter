@@ -14,7 +14,7 @@ import {
   generateProof,
   verifyProof,
 } from "@zk-email/helpers/dist/zkp";
-import { abi } from "@proof-of-twitter/contracts/out/ProofOfTwitter.sol/ProofOfTwitter.json";
+import { abi } from "../abi.json";
 import {
   generateTwitterVerifierCircuitInputs,
   ITwitterCircuitInputs,
