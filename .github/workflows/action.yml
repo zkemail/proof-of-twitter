@@ -1,6 +1,6 @@
 on: [push]
 jobs:
-  run_twitter_circuit_tests:
+  run_contract_tests:
     runs-on: ubuntu-latest
     environment: development
     steps:
@@ -12,12 +12,12 @@ jobs:
       - name: Install Foundry
         uses: foundry-rs/foundry-toolchain@v1
       - name: Install Yarn dependencies
-        working-directory: ./packages/circuits
+        working-directory: ./packages/contracts
         run: yarn install --immutable
       - name: Run Tests
         run: forge test --root ./packages/contracts --fork-url https://eth-goerli.g.alchemy.com/v2/${{vars.ALCHEMY_API_KEY}}
 
-  run_unit_and_e2e_tests:
+  run_app_unit_and_e2e_tests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -42,5 +42,5 @@ jobs:
         env:
           CI: "true"
         with:
-          args: yarn workspace @zk-email/twitter-verifier test:full-e2e
+          args: yarn workspace @zk-email/twitter-verifier-app test:full-e2e
       
