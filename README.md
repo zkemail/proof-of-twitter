@@ -1,22 +1,16 @@
-### This repo is still work in progress. Please refer to [zk-email-verify](https://github.com/zkemail/zk-email-verify/)  for twitter demo for now.
-
-<br/>
-<br/>
-
-
 # Proof of Twitter
 
-Prove ownership of a X (Twitter) account using an email from Twitter, and mint a NFT with your Twitter username.
+Prove ownership of a X (Twitter) account using an email from Twitter, and mint an NFT with your Twitter username.
 
-This project is a demonstration of ZK Email. You can fork it to build other stuffs using ZK Email.
+This project is a demonstration of ZK Email. You can fork it to build other projects using ZK Email.
 
 Try it here: https://twitter.prove.email/
 
 ## How it works
 
-You can use an email from Twitter that contain `email was meant for @username` to generate a ZK proof that you own the Twitter account `@username`.
+You can use an email from Twitter that contains `email was meant for @username` to generate a ZK proof that you own the Twitter account `@username`.
 
-This ZK proof can be used to mint a NFT corresponding to your username in the `ProofOfTwitter` contract.
+This ZK proof can be used to mint an NFT corresponding to your username in the `ProofOfTwitter` contract.
 
 ## Running locally
 
@@ -75,7 +69,7 @@ yarn test
 
 #### » Generating Zkey
 
-You can generate proving and verifications keys using
+You can generate proving and verification keys using
 
 ```bash
 # CWD = packages/circuits/scripts
@@ -86,11 +80,14 @@ This will generate `zkey` files, `vkey.json` in `build` directory, and Solidity 
 
 > Note: We are using a custom fork of `snarkjs` which generated **chunked zkeys**. Chunked zkeys make it easier to use in browser, especially since we have large circuit. You can switch to regular `snarkjs` in `package.json` if you don't want to use chunked zkeys.
 
-If you want to upload the zkey to AWS (to use in browser), you can use the `scripts/upload_to_s3.py` file (Assuming you have AWS cli configured):
+
+For browser use, we also compress the chunked zkeyz. The `scripts/upload_to_s3.py` file can be used to do this, and to upload files to AWS s3 (Assuming you have AWS cli configured)
 
 ```bash
 python3 upload_to_s3.py --build-dir <project-path>/proof-of-twitter/packages/circuits/build --circuit-name twitter 
 ```
+
+This is mainly for use in the browser. There are helper functions in `@zk-email/helpers` package to download and decompress the zkeys in the browser.
 
 
 #### » Generate Input and Proof
@@ -126,7 +123,7 @@ yarn test
 
 Note that the tests will not pass if you have generated your own zkeys and `Verifier.sol` as you would have used a different Entropy.
 
-To fix, update the `publicSignals` and `proof` in `test/TestTwitter.t.sol` with the values from `input.json` and `public.json` generated from the above steps. (Remember that you need to flip items in nested array of `pi_b`).
+To fix, update the `publicSignals` and `proof` in `test/TestTwitter.t.sol` with the values from `input.json` and `public.json` generated from the above steps. (Remember that you need to flip items in the nested array of `pi_b`).
 
 #### Deploy contracts
 
@@ -143,14 +140,13 @@ Currently deployed contracts on Sepolia:
   Deployed ProofOfTwitter at address: 0x86D390fDed54447fD244eD0718dbFCFCcbbA7edc
 ```
 
-
 ### UI
 
 If you want to update the UI based on your own zkeys and contracts, please make the below changes:
 
-- Set the CONTRACT_ADDRESS in `packages/app/.env`
+- Set the `VITE_CONTRACT_ADDRESS` in `packages/app/.env`. This is the address of the `ProofOfTwitter` contract.
+- Set `VITE_CIRCUIT_ARTIFACTS_URL` in `packages/app/.env` to the URL of the directory containing circuit artifacts (compressed partial zkeys, wasm, verifier, etc). 
 
+`VITE_CIRCUIT_ARTIFACTS_URL` will be  AWS S3 bucket URL where the artifacts are uploaded. 
 
-TODO:
-- Move Proof gen and Vkey helpers to this repo (ex: zkp.ts)
-- Remove unused code from MainPage.tsx
+You can also run a local server in `circuits/build` directory and use that URL (you would need to move the `.wasm` file to the root of the build folder).
