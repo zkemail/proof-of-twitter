@@ -14,7 +14,7 @@ import {
   generateProof,
   verifyProof,
 } from "@zk-email/helpers/dist/zkp";
-import { abi } from "../../../contracts/out/ProofOfTwitter.sol/ProofOfTwitter.json";
+import { abi } from "@proof-of-twitter/contracts/out/ProofOfTwitter.sol/ProofOfTwitter.json";
 import {
   generateTwitterVerifierCircuitInputs,
   ITwitterCircuitInputs,
@@ -317,8 +317,8 @@ export const MainPage: React.FC<{}> = (props) => {
               );
               setStatus("downloading-proof-files");
               try {
-                // @ts-ignore
                 await downloadProofFiles(
+                  // @ts-ignore
                   import.meta.env.VITE_CIRCUIT_ARTIFACTS_URL,
                   CIRCUIT_NAME,
                   () => {
