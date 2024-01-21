@@ -9,6 +9,7 @@ export default {
   preview: {
     port: 3000,
   },
+  publicDir: "public",
   plugins: [react(), tsconfig()],
   resolve: {
     alias: {
