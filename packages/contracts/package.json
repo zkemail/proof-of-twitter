@@ -1,5 +1,5 @@
 {
-  "name": "@zk-email/twitter-verifier-contracts",
+  "name": "@proof-of-twitter/contracts",
   "version": "2.0.1",
   "scripts": {
     "build": "forge compile",

@@ -10,6 +10,7 @@
     "esModuleInterop": true,
     "target": "es2022",
     "isolatedModules": true,
+    "resolveJsonModule": true,
     "strict": true
   }
 }
