@@ -1,6 +1,6 @@
 {
   "include": [".", "types.d.ts"],
-  "exclude": ["tests", "dist", "**/node_modules", "**.test.*"],
+  "exclude": ["tests", "dist", "**.test.*"],
   "compilerOptions": {
     "outDir": "dist",
     "skipLibCheck": true,
