@@ -13,6 +13,7 @@ import { zKey } from "snarkjs";
 import https from "https";
 import fs from "fs";
 import path from "path";
+import pako from "pako";
 
 // ENV Variables
 let { ZKEY_ENTROPY, ZKEY_BEACON, SILENT } = process.env;
@@ -32,6 +33,7 @@ const BUILD_DIR = path.join(__dirname, "../build");
 const PHASE1_URL =
   "https://hermez.s3-eu-west-1.amazonaws.com/powersOfTau28_hez_final_22.ptau";
 const PHASE1_PATH = path.join(BUILD_DIR, "powersOfTau28_hez_final_22.ptau");
+const ARTIFACTS_DIR = path.join(BUILD_DIR, 'artifacts');
 const SOLIDITY_TEMPLATE = path.join(
   require.resolve("snarkjs"),
   "../../templates/verifier_groth16.sol.ejs"
@@ -100,10 +102,10 @@ async function generateKeys(
   // );
   // log("✓ Beacon applied");
 
-  // // Verification key
-  // const vKey = await zKey.exportVerificationKey(zKeyPath, console);
-  // fs.writeFileSync(vKeyPath, JSON.stringify(vKey, null, 2));
-  // log(`✓ Verification key exported - ${vKeyPath}`);
+  // Verification key
+  const vKey = await zKey.exportVerificationKey(zKeyPath, console);
+  fs.writeFileSync(vKeyPath, JSON.stringify(vKey, null, 2));
+  log(`✓ Verification key exported - ${vKeyPath}`);
 
   // Solidity verifier
   const templates = {
@@ -131,14 +133,38 @@ async function exec() {
     throw new Error(`${circuitPath} does not exist.`);
   }
 
+  // Create artifacts directory and copy build files
+  fs.mkdirSync(path.join(BUILD_DIR, 'artifacts'), { recursive: true });
+
+  fs.copyFileSync(
+    path.join(BUILD_DIR, `${CIRCUIT_NAME}.r1cs`),
+    path.join(ARTIFACTS_DIR, `${CIRCUIT_NAME}.r1cs`)
+  );
+  fs.copyFileSync(
+    path.join(BUILD_DIR, `${CIRCUIT_NAME}_js/${CIRCUIT_NAME}.wasm`),
+    path.join(ARTIFACTS_DIR, `${CIRCUIT_NAME}.wasm`)
+  );
+  
+  const zKeyPath = path.join(BUILD_DIR, `${CIRCUIT_NAME}.zkey`);
+
   await generateKeys(
     PHASE1_PATH,
     circuitPath,
-    path.join(BUILD_DIR, `${CIRCUIT_NAME}.zkey`),
-    path.join(BUILD_DIR, "vkey.json"),
+    zKeyPath,
+    path.join(ARTIFACTS_DIR, `${CIRCUIT_NAME}.vkey.json`),
     SOLIDITY_VERIFIER_PATH
   );
-  log("✓ Keys for account creation circuit generated");
+  log("✓ zkey, vkey and Solidity verifier generated");
+
+  // Compress zkeys and copy to artifacts directory
+  ["", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k"].forEach((suffix) => {
+    fs.writeFileSync(
+      path.join(ARTIFACTS_DIR, `${CIRCUIT_NAME}.zkey`) + suffix + '.gz',
+      pako.gzip(fs.readFileSync(zKeyPath + suffix))
+    );
+  });
+
+  log(`✓ All artifacts saved to ${ARTIFACTS_DIR} directory`);
 }
 
 exec()
