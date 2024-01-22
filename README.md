@@ -81,13 +81,16 @@ This will generate `zkey` files, `vkey.json` in `build` directory, and Solidity 
 > Note: We are using a custom fork of `snarkjs` which generated **chunked zkeys**. Chunked zkeys make it easier to use in browser, especially since we have large circuit. You can switch to regular `snarkjs` in `package.json` if you don't want to use chunked zkeys.
 
 
-For browser use, we also compress the chunked zkeyz. The `scripts/upload_to_s3.py` file can be used to do this, and to upload files to AWS s3 (Assuming you have AWS cli configured)
+For browser use, the script also compresses the chunked zkeys. 
 
+**The compressed zkeys, vkey, wasm are copied to /build/artifacts` directory. This directory can be served using a local server or uploaded to S3 for use in the browser.
+
+To upload to S3, the below script can be used.
 ```bash
 python3 upload_to_s3.py --build-dir <project-path>/proof-of-twitter/packages/circuits/build --circuit-name twitter 
 ```
 
-This is mainly for use in the browser. There are helper functions in `@zk-email/helpers` package to download and decompress the zkeys in the browser.
+There are helper functions in `@zk-email/helpers` package to download and decompress the zkeys in the browser.
 
 
 #### » Generate Input and Proof
@@ -145,8 +148,4 @@ Currently deployed contracts on Sepolia:
 If you want to update the UI based on your own zkeys and contracts, please make the below changes:
 
 - Set the `VITE_CONTRACT_ADDRESS` in `packages/app/.env`. This is the address of the `ProofOfTwitter` contract.
-- Set `VITE_CIRCUIT_ARTIFACTS_URL` in `packages/app/.env` to the URL of the directory containing circuit artifacts (compressed partial zkeys, wasm, verifier, etc). 
-
-`VITE_CIRCUIT_ARTIFACTS_URL` will be  AWS S3 bucket URL where the artifacts are uploaded. 
-
-You can also run a local server in `circuits/build` directory and use that URL (you would need to move the `.wasm` file to the root of the build folder).
+- Set `VITE_CIRCUIT_ARTIFACTS_URL` in `packages/app/.env` to the URL of the directory containing circuit artifacts (compressed partial zkeys, wasm, verifier, etc). You can run a local server in `circuits/build/artifacts` directory and use that URL or upload to S3 (or similar) and use that public URL/
