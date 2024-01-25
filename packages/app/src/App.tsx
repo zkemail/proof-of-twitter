@@ -15,7 +15,7 @@ const NavSection = () => {
 
   return (
     <Nav>
-      <Logo className={pathname === "/" ? "current_page" : "off"} to={"/"}>
+      <Logo to={"https://prove.email/"}>
         ZK-Email
       </Logo>
       <div
