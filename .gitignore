@@ -55,8 +55,6 @@ node_modules.nosync
 *wallet*
 circuits/regexes/subject_regex*
 
-# Files that never should be committed, but can be obtained by asking Aayush or generating them yourself
-*.eml
 *_email.txt
 *email_cache.json
 *input.json
