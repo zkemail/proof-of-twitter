@@ -20,7 +20,7 @@ describe("Twitter email test", function () {
 
   beforeAll(async () => {
     const rawEmail = fs.readFileSync(
-      path.join(__dirname, "../../../emls/test_twitter.eml"),
+      path.join(__dirname, "./emls/test_twitter.eml"),
       "utf8"
     );
     dkimResult = await verifyDKIMSignature(rawEmail);

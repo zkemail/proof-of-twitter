@@ -97,7 +97,7 @@ There are helper functions in `@zk-email/helpers` package to download and decomp
 
 ```bash
 # CWD = packages/circuits/scripts
-ts-node generate-proof.ts --email-file ../../../emls/test_twitter.eml --ethereum-address <your-eth-address>
+ts-node generate-proof.ts --email-file ../tests/emls/test_twitter.eml --ethereum-address <your-eth-address>
 ```
 
 This will generate input + witness using the given email file and Ethereum address, and prove using the generated zkey.
