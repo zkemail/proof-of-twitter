@@ -58,7 +58,7 @@ jobs:
         working-directory: ./packages/contracts
         run: yarn install --immutable
       - name: Run Tests
-        run: forge test --root ./packages/contracts --fork-url https://eth-goerli.g.alchemy.com/v2/${{vars.ALCHEMY_API_KEY}}
+        run: forge test --root ./packages/contracts --fork-url https://eth-goerli.g.alchemy.com/v2/${{secrets.ALCHEMY_API_KEY}}
 
   run_app_unit_and_e2e_tests:
     runs-on: ubuntu-latest
