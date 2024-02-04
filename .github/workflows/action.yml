@@ -58,10 +58,11 @@ jobs:
         working-directory: ./packages/contracts
         run: yarn install --immutable
       - name: Run Tests
-        run: forge test --root ./packages/contracts --fork-url https://eth-goerli.g.alchemy.com/v2/${{vars.ALCHEMY_API_KEY}}
+        run: forge test --root ./packages/contracts --fork-url https://eth-goerli.g.alchemy.com/v2/${{secrets.ALCHEMY_API_KEY}}
 
   run_app_unit_and_e2e_tests:
     runs-on: ubuntu-latest
+    environment: development
     steps:
       - uses: actions/checkout@v3
       - name: Set Node.js 16.x
@@ -71,6 +72,8 @@ jobs:
           cache: 'yarn'
         env:
           PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: 'true'
+          VITE_CONTRACT_ADDRESS: ${{ vars.CONTRACT_ADDRESS }}
+          VITE_CIRCUIT_ARTIFACTS_URL: ${{ vars.CIRCUIT_ARTIFACTS_URL }}
       - name: Install Yarn dependencies
         working-directory: ./packages/app
         run: yarn install
