@@ -149,3 +149,8 @@ If you want to update the UI based on your own zkeys and contracts, please make 
 
 - Set the `VITE_CONTRACT_ADDRESS` in `packages/app/.env`. This is the address of the `ProofOfTwitter` contract.
 - Set `VITE_CIRCUIT_ARTIFACTS_URL` in `packages/app/.env` to the URL of the directory containing circuit artifacts (compressed partial zkeys, wasm, verifier, etc). You can run a local server in `circuits/build/artifacts` directory and use that URL or upload to S3 (or similar) and use that public URL/
+
+
+## History
+
+This repo was originally part of the [zk-email-verify](https://github.com/zkemail/zk-email-verify). Please refer there for the commit history and original contributors.
