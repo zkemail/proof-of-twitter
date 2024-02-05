@@ -1,5 +1,8 @@
 name: Proof of Twitter tests
 on: [push]
+env:
+  VITE_CONTRACT_ADDRESS: ${{ vars.VITE_CONTRACT_ADDRESS }}
+  VITE_CIRCUIT_ARTIFACTS_URL: ${{ vars.VITE_CIRCUIT_ARTIFACTS_URL }}
 jobs:
   run_circuit_tests:
     runs-on: ubuntu-latest
@@ -58,10 +61,11 @@ jobs:
         working-directory: ./packages/contracts
         run: yarn install --immutable
       - name: Run Tests
-        run: forge test --root ./packages/contracts --fork-url https://eth-goerli.g.alchemy.com/v2/${{vars.ALCHEMY_API_KEY}}
+        run: forge test --root ./packages/contracts --fork-url https://eth-goerli.g.alchemy.com/v2/${{secrets.ALCHEMY_API_KEY}}
 
   run_app_unit_and_e2e_tests:
     runs-on: ubuntu-latest
+    environment: development
     steps:
       - uses: actions/checkout@v3
       - name: Set Node.js 16.x
