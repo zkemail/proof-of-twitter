@@ -1,6 +1,7 @@
 import react from "@vitejs/plugin-react";
 import tsconfig from "vite-tsconfig-paths";
 import "rollup-plugin-node-polyfills";
+import commonjs from 'vite-plugin-commonjs'
 
 export default {
   server: {
@@ -10,7 +11,7 @@ export default {
     port: 3000,
   },
   publicDir: "public",
-  plugins: [react(), tsconfig()],
+  plugins: [commonjs(), react(), tsconfig()],
   resolve: {
     alias: {
       buffer: "buffer",

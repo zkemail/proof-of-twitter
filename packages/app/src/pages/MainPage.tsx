@@ -6,9 +6,8 @@ import _ from "lodash";
 import { useAccount, useContractWrite, usePrepareContractWrite } from "wagmi";
 import {
   rawEmailToBuffer,
-  DKIMVerificationResult,
-  verifyDKIMSignature,
-} from "@zk-email/helpers";
+} from "@zk-email/helpers/dist/input-helpers";
+import { verifyDKIMSignature, DKIMVerificationResult } from "@zk-email/helpers/dist/dkim";
 import {
   downloadProofFiles,
   generateProof,
