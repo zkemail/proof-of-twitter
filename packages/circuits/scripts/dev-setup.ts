@@ -80,27 +80,27 @@ async function generateKeys(
   vKeyPath: string,
   solidityVerifierPath: string
 ) {
-  // await zKey.newZKey(r1cPath, phase1Path, zKeyPath + ".step1", console);
-  // log("✓ Partial ZKey generated");
+  await zKey.newZKey(r1cPath, phase1Path, zKeyPath + ".step1", console);
+  log("✓ Partial ZKey generated");
 
-  // await zKey.contribute(
-  //   zKeyPath + ".step1",
-  //   zKeyPath + ".step2",
-  //   "Contributer 1",
-  //   ZKEY_ENTROPY,
-  //   console
-  // );
-  // log("✓ First contribution completed");
+  await zKey.contribute(
+    zKeyPath + ".step1",
+    zKeyPath + ".step2",
+    "Contributer 1",
+    ZKEY_ENTROPY,
+    console
+  );
+  log("✓ First contribution completed");
 
-  // await zKey.beacon(
-  //   zKeyPath + ".step2",
-  //   zKeyPath,
-  //   "Final Beacon",
-  //   ZKEY_BEACON,
-  //   10,
-  //   console
-  // );
-  // log("✓ Beacon applied");
+  await zKey.beacon(
+    zKeyPath + ".step2",
+    zKeyPath,
+    "Final Beacon",
+    ZKEY_BEACON,
+    10,
+    console
+  );
+  log("✓ Beacon applied");
 
   // Verification key
   const vKey = await zKey.exportVerificationKey(zKeyPath, console);
