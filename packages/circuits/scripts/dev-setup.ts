@@ -31,7 +31,7 @@ if (ZKEY_BEACON == null) {
 const CIRCUIT_NAME = "twitter";
 const BUILD_DIR = path.join(__dirname, "../build");
 const PHASE1_URL =
-  "https://hermez.s3-eu-west-1.amazonaws.com/powersOfTau28_hez_final_22.ptau";
+  "https://storage.googleapis.com/zkevm/ptau/powersOfTau28_hez_final_22.ptau";
 const PHASE1_PATH = path.join(BUILD_DIR, "powersOfTau28_hez_final_22.ptau");
 const ARTIFACTS_DIR = path.join(BUILD_DIR, 'artifacts');
 const SOLIDITY_TEMPLATE = path.join(
