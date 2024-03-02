@@ -14,6 +14,8 @@ export default {
   plugins: [commonjs(), react(), tsconfig()],
   resolve: {
     alias: {
+      "node:buffer": "buffer",
+      "node:stream": "stream-browserify",
       buffer: "buffer",
       process: "rollup-plugin-node-polyfills/polyfills/process-es6",
       util: "rollup-plugin-node-polyfills/polyfills/util",
