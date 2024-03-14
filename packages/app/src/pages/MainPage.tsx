@@ -191,13 +191,14 @@ export const MainPage: React.FC<{}> = (props) => {
           </a>{" "}
           will allow you to generate zero knowledge proofs proving you received
           some email and mask out any private data, without trusting our server
-          to keep your privacy. This demo is just one use-case that lets you
+          to keep your privacy. This demo is just one use case that lets you
           prove you own a Twitter username on-chain, by verifying confirmation
           emails (and their normally-hidden headers) from Twitter.
-          Visit <a href="https://prove.email/blog/zkemail">our blog</a>{" "} to 
-          learn more about ZK Email and you can find the technical details 
-          on how this demo is built {" "}
-          <a href="https://prove.email/blog/twitter">here</a>.
+          Visit <a href="https://prove.email/blog/zkemail">our blog</a>{" "}or{" "}
+          <a href="https://prove.email">website</a>{" "}to learn more about ZK Email,
+          and find the technical details on how this demo is built{" "}
+          <a href="https://prove.email/blog/twitter">here</a>. 
+          <br />
           <br />
           If you wish to generate a ZK proof of Twitter badge (NFT), you must:
         </span>
@@ -228,8 +229,9 @@ export const MainPage: React.FC<{}> = (props) => {
           can "steal" your proof for another account (frontrunning protection!).
         </NumberedStep>
         <NumberedStep step={5}>
-          Click <b>"Generate Proof"</b>. Since it is completely client side and
-          open source, and you are not trusting us with any private information.
+          Click <b>"Generate Proof"</b>. Note it is completely client side and
+          <a href="https://github.com/zkemail/proof-of-twitter/" target="_blank" rel="noreferrer">open source</a>, 
+          and no server ever sees your private information.
         </NumberedStep>
         <NumberedStep step={6}>
           Click <b>"Verify"</b> and then <b>"Mint Twitter Badge On-Chain"</b>,
