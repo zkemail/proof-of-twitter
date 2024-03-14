@@ -25,7 +25,7 @@ const NavSection = () => {
           gap: "1rem",
         }}
       >
-        <DocsLink href="/docs">Docs</DocsLink>
+        <DocsLink href="https://prove.email/docs">Docs</DocsLink>
         <ConnectButton />
       </div>
     </Nav>
