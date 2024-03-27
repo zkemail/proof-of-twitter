@@ -229,7 +229,7 @@ export const MainPage: React.FC<{}> = (props) => {
           can "steal" your proof for another account (frontrunning protection!).
         </NumberedStep>
         <NumberedStep step={5}>
-          Click <b>"Prove"</b>. Note it is completely client side and
+          Click <b>"Prove"</b>. Note it is completely client side and{" "}
           <a href="https://github.com/zkemail/proof-of-twitter/" target="_blank" rel="noreferrer">open source</a>, 
           and no server ever sees your private information.
         </NumberedStep>
