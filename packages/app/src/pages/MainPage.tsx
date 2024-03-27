@@ -211,7 +211,7 @@ export const MainPage: React.FC<{}> = (props) => {
           >
             password reset email
           </a>{" "}
-          from Twitter.
+          from Twitter. (Reminder: Twitter name with emoji might fail to pass DKIM verification)
         </NumberedStep>
         <NumberedStep step={2}>
           In your inbox, find the email from Twitter and click the three dot
@@ -229,7 +229,7 @@ export const MainPage: React.FC<{}> = (props) => {
           can "steal" your proof for another account (frontrunning protection!).
         </NumberedStep>
         <NumberedStep step={5}>
-          Click <b>"Generate Proof"</b>. Note it is completely client side and
+          Click <b>"Prove"</b>. Note it is completely client side and
           <a href="https://github.com/zkemail/proof-of-twitter/" target="_blank" rel="noreferrer">open source</a>, 
           and no server ever sees your private information.
         </NumberedStep>
@@ -454,7 +454,7 @@ export const MainPage: React.FC<{}> = (props) => {
             Verify
           </Button>
           <Button
-            disabled={!verificationPassed || isLoading || isSuccess}
+            disabled={!verificationPassed || isLoading || isSuccess || !write}
             onClick={async () => {
               setStatus("sending-on-chain");
               write?.();
@@ -464,6 +464,8 @@ export const MainPage: React.FC<{}> = (props) => {
               ? "Successfully sent to chain!"
               : isLoading
               ? "Confirm in wallet"
+              : !write
+              ? "Connect Wallet first, scroll to top!"
               : verificationPassed
               ? "Mint Twitter badge on-chain"
               : "Verify first, before minting on-chain!"}
