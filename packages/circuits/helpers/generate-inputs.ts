@@ -1,39 +1,16 @@
 import { bytesToBigInt, fromHex } from "@zk-email/helpers/dist/binaryFormat";
-import { generateCircuitInputs } from "@zk-email/helpers/dist/input-helpers";
+import { generateEmailVerifierInputs } from "@zk-email/helpers/dist/input-generators";
 
 export const STRING_PRESELECTOR = "email was meant for @";
-export const MAX_HEADER_PADDED_BYTES = 1024; // NOTE: this must be the same as the first arg in the email in main args circom
-export const MAX_BODY_PADDED_BYTES = 1536; // NOTE: this must be the same as the arg to sha the remainder number of bytes in the email in main args circom
 
 export type ITwitterCircuitInputs = ReturnType<typeof generateTwitterVerifierCircuitInputs>;
 
-export function generateTwitterVerifierCircuitInputs({
-  rsaSignature,
-  rsaPublicKey,
-  body,
-  bodyHash,
-  message, // the message that was signed (header + bodyHash)
-  ethereumAddress,
-}: {
-  body: Buffer;
-  message: Buffer;
-  bodyHash: string;
-  rsaSignature: BigInt;
-  rsaPublicKey: BigInt;
-  ethereumAddress: string;
-}) {
-  const emailVerifierInputs = generateCircuitInputs({
-    rsaSignature,
-    rsaPublicKey,
-    body,
-    bodyHash,
-    message,
+export async function generateTwitterVerifierCircuitInputs(email: string | Buffer, ethereumAddress: string) {
+  const emailVerifierInputs = await generateEmailVerifierInputs(email, { 
     shaPrecomputeSelector: STRING_PRESELECTOR,
-    maxMessageLength: MAX_HEADER_PADDED_BYTES,
-    maxBodyLength: MAX_BODY_PADDED_BYTES,
   });
 
-  const bodyRemaining = emailVerifierInputs.in_body_padded!.map(c => Number(c)); // Char array to Uint8Array
+  const bodyRemaining = emailVerifierInputs.emailBody!.map(c => Number(c)); // Char array to Uint8Array
   const selectorBuffer = Buffer.from(STRING_PRESELECTOR);
   const usernameIndex = Buffer.from(bodyRemaining).indexOf(selectorBuffer) + selectorBuffer.length;
 
@@ -41,7 +18,7 @@ export function generateTwitterVerifierCircuitInputs({
 
   return {
     ...emailVerifierInputs,
-    twitter_username_idx: usernameIndex.toString(),
+    twitterUsernameIndex: usernameIndex.toString(),
     address,
   };
 }
