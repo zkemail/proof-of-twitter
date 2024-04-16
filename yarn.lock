@@ -3003,6 +3003,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@openzeppelin/contracts@npm:^5.0.0":
+  version: 5.0.2
+  resolution: "@openzeppelin/contracts@npm:5.0.2"
+  checksum: 0cce6fc284bd1d89e2a447027832a62f1356b44ee31088899453e10349a63a62df2f07da63d76e4c41aad9c86b96b650b2b6fc85439ef276850dda1170a047fd
+  languageName: node
+  linkType: hard
+
 "@parcel/watcher-android-arm64@npm:2.3.0":
   version: 2.3.0
   resolution: "@parcel/watcher-android-arm64@npm:2.3.0"
@@ -3162,15 +3169,14 @@ __metadata:
     "@babel/preset-env": ^7.23.3
     "@babel/preset-typescript": ^7.23.3
     "@types/pako": ^2.0.3
-    "@zk-email/circuits": ^3.2.0
-    "@zk-email/contracts": ^5.0.0
-    "@zk-email/helpers": ^3.1.3
+    "@zk-email/circuits": 4.0.0-alpha
+    "@zk-email/helpers": 4.0.0-alpha
     "@zk-email/zk-regex-circom": ^1.1.1
     babel-preset-jest: ^29.6.3
     chai: ^4.3.7
     circom_tester: ^0.0.19
     circomlib: ^2.0.5
-    circomlibjs: ^0.1.2
+    circomlibjs: ^0.1.7
     commander: ^11.1.0
     ffjavascript: ^0.2.59
     jest: ^29.5.0
@@ -3186,9 +3192,8 @@ __metadata:
   dependencies:
     "@openzeppelin/contracts": ^4.9.3
     "@openzeppelin/contracts-upgradeable": ^4.9.3
-    "@zk-email/contracts": ^5.0.0
-    ds-test: "https://github.com/dapphub/ds-test"
-    forge-std: "https://github.com/foundry-rs/forge-std"
+    "@zk-email/contracts": latest
+    forge-std: "git+https://github.com/foundry-rs/forge-std.git"
   languageName: unknown
   linkType: soft
 
@@ -3917,13 +3922,6 @@ __metadata:
   dependencies:
     undici-types: ~5.26.4
   checksum: face395140d6f2f1755b91fdd3b697cf56aeb9e2514529ce88d56e56f261ad65be7269d863520a9406d73c338699ea68b418e8677584de0c1efeed09539b6f97
-  languageName: node
-  linkType: hard
-
-"@types/node@npm:18.15.13":
-  version: 18.15.13
-  resolution: "@types/node@npm:18.15.13"
-  checksum: 79cc5a2b5f98e8973061a4260a781425efd39161a0e117a69cd089603964816c1a14025e1387b4590c8e82d05133b7b4154fa53a7dffb3877890a66145e76515
   languageName: node
   linkType: hard
 
@@ -4662,22 +4660,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@zk-email/circuits@npm:^3.2.0":
-  version: 3.2.0
-  resolution: "@zk-email/circuits@npm:3.2.0"
+"@zk-email/circuits@npm:4.0.0-alpha":
+  version: 4.0.0-alpha
+  resolution: "@zk-email/circuits@npm:4.0.0-alpha"
   dependencies:
     "@zk-email/zk-regex-circom": ^1.1.1
-  checksum: 7c7f189023292ae1bc97a3294ab78ed7f7f737d4046de9461dbe4c556b1f04452783b8e41d912679ff0c400fb0041ac64a481489ec7ab490e413a91bd61dc8d5
+    circomlib: ^2.0.5
+  checksum: 38dbb0d446f3eadafdd2accbdccacd61faf6dc4deff097c7444d6f78deb6d90c6479fd12956c88e8d49bcb6f1e4efc009475e096d84a304d25066051e503fa42
   languageName: node
   linkType: hard
 
-"@zk-email/contracts@npm:^5.0.0":
-  version: 5.0.2
-  resolution: "@zk-email/contracts@npm:5.0.2"
+"@zk-email/contracts@npm:latest":
+  version: 6.0.0
+  resolution: "@zk-email/contracts@npm:6.0.0"
   dependencies:
-    "@openzeppelin/contracts": ^4.9.3
+    "@openzeppelin/contracts": ^5.0.0
     dotenv: ^16.3.1
-  checksum: cd4940598f7a0f7edb4412e7e953f4524f71c96554dd9524a6ff4899965a8cf025379926ab1d283943974c74548b7f5537c567114a486d099044477f5b4993d1
+  checksum: cf6fefabc1d8c28e7dce4a82395c737ea9f40a556c361d7397410bbd352e7dd329d14c9e8d24f6ec350b68a660c7729dbf56c4ff13317dcd3a01f500564482a6
   languageName: node
   linkType: hard
 
@@ -4694,31 +4693,23 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@zk-email/helpers@npm:^3.1.3":
-  version: 3.1.3
-  resolution: "@zk-email/helpers@npm:3.1.3"
+"@zk-email/helpers@npm:4.0.0-alpha":
+  version: 4.0.0-alpha
+  resolution: "@zk-email/helpers@npm:4.0.0-alpha"
   dependencies:
     addressparser: ^1.0.1
     atob: ^2.1.2
     circomlibjs: ^0.1.7
-    ethers: ^6.8.0
     libmime: ^5.2.1
     localforage: ^1.10.0
-    lodash: ^4.17.21
     node-forge: ^1.3.1
     pako: ^2.1.0
     pki: ^1.1.0
     psl: ^1.9.0
     snarkjs: "https://github.com/sampritipanda/snarkjs.git#fef81fc51d17a734637555c6edbd585ecda02d9e"
-  checksum: 36eab61ae9b6fdd2f19a38f278fd96d6fd289cda30fd0b7501ea79a6c6adc0678782cb01a7ec514e8acb126f2d4f807764665105e6e6ea67bf2953dcec1c9663
+  checksum: c6e2b8184e2dbfeed90da4f7052fe731077fad79c51513668080b248f518bc0d86824d809f9112a747c3a3edcb34406b4d2c985fb50d2b141007173bde987195
   languageName: node
   linkType: hard
-
-"@zk-email/proof-of-twitter@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "@zk-email/proof-of-twitter@workspace:."
-  languageName: unknown
-  linkType: soft
 
 "@zk-email/twitter-verifier-app@workspace:packages/app":
   version: 0.0.0-use.local
@@ -4739,7 +4730,7 @@ __metadata:
     "@types/node-forge": ^1.3.11
     "@types/styled-components": ^5.1.34
     "@vitejs/plugin-react": ^4.2.1
-    "@zk-email/helpers": ^3.1.3
+    "@zk-email/helpers": 4.0.0-alpha
     crypto-browserify: ^3.12.0
     jest: ^29.7.0
     jest-environment-jsdom: ^29.7.0
@@ -4881,13 +4872,6 @@ __metadata:
   version: 3.0.0
   resolution: "aes-js@npm:3.0.0"
   checksum: 251e26d533cd1a915b44896b17d5ed68c24a02484cfdd2e74ec700a309267db96651ea4eb657bf20aac32a3baa61f6e34edf8e2fec2de440a655da9942d334b8
-  languageName: node
-  linkType: hard
-
-"aes-js@npm:4.0.0-beta.5":
-  version: 4.0.0-beta.5
-  resolution: "aes-js@npm:4.0.0-beta.5"
-  checksum: cc2ea969d77df939c32057f7e361b6530aa6cb93cb10617a17a45cd164e6d761002f031ff6330af3e67e58b1f0a3a8fd0b63a720afd591a653b02f649470e15b
   languageName: node
   linkType: hard
 
@@ -5900,7 +5884,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"circomlibjs@npm:^0.1.2, circomlibjs@npm:^0.1.7":
+"circomlibjs@npm:^0.1.7":
   version: 0.1.7
   resolution: "circomlibjs@npm:0.1.7"
   dependencies:
@@ -6951,13 +6935,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ds-test@https://github.com/dapphub/ds-test":
-  version: 1.0.0
-  resolution: "ds-test@https://github.com/dapphub/ds-test.git#commit=e282159d5170298eb2455a6c05280ab5a73a4ef0"
-  checksum: 18600dd50b625b12afab486006c09149d84d78220f2b6afe4a0997d13454ff231174a9143726203b4197d4b75f6e28846839265607249fa704b2eecc7eb5f879
-  languageName: node
-  linkType: hard
-
 "duplexify@npm:^4.1.2":
   version: 4.1.2
   resolution: "duplexify@npm:4.1.2"
@@ -7445,21 +7422,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ethers@npm:^6.8.0":
-  version: 6.8.1
-  resolution: "ethers@npm:6.8.1"
-  dependencies:
-    "@adraffy/ens-normalize": 1.10.0
-    "@noble/curves": 1.2.0
-    "@noble/hashes": 1.3.2
-    "@types/node": 18.15.13
-    aes-js: 4.0.0-beta.5
-    tslib: 2.4.0
-    ws: 8.5.0
-  checksum: 78b48d2fd13cf77c7041379595a3155eaf6e4da423999b782e6ff14cc58e452ef8c52f3e2f6995fcd2b34dfdd55eaf5ece6067cd754fe0c72388b12e1768f1b3
-  languageName: node
-  linkType: hard
-
 "eventemitter3@npm:^4.0.7":
   version: 4.0.7
   resolution: "eventemitter3@npm:4.0.7"
@@ -7906,10 +7868,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"forge-std@https://github.com/foundry-rs/forge-std":
-  version: 1.7.3
-  resolution: "forge-std@https://github.com/foundry-rs/forge-std.git#commit=2f112697506eab12d433a65fdc31a639548fe365"
-  checksum: 829647755f95e4f9829149e8115a2595cb11d1d77b891b6ef4d971bac9fff3b8a879334e827c409c741c6b3aff0f1e6a6528a463599b19873ce0504a91eb0967
+"forge-std@git+https://github.com/foundry-rs/forge-std.git":
+  version: 1.7.6
+  resolution: "forge-std@https://github.com/foundry-rs/forge-std.git#commit=e4aef94c1768803a16fe19f7ce8b65defd027cfd"
+  checksum: 6fab51b92a24c97384f55dcb1b9eba29ce5043b67930b4179a9f9f4f8da85e8315163db60bec2ffbe7334135755630ba549b246db9e503e59ec93ba2f11931cc
   languageName: node
   linkType: hard
 
@@ -12499,6 +12461,12 @@ __metadata:
   languageName: node
   linkType: hard
 
+"root-workspace-0b6124@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "root-workspace-0b6124@workspace:."
+  languageName: unknown
+  linkType: soft
+
 "rtl-css-js@npm:^1.16.1":
   version: 1.16.1
   resolution: "rtl-css-js@npm:1.16.1"
@@ -13548,13 +13516,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tslib@npm:2.4.0":
-  version: 2.4.0
-  resolution: "tslib@npm:2.4.0"
-  checksum: 8c4aa6a3c5a754bf76aefc38026134180c053b7bd2f81338cb5e5ebf96fefa0f417bff221592bf801077f5bf990562f6264fecbc42cd3309b33872cb6fc3b113
-  languageName: node
-  linkType: hard
-
 "tslib@npm:2.5.0":
   version: 2.5.0
   resolution: "tslib@npm:2.5.0"
@@ -14527,21 +14488,6 @@ __metadata:
     utf-8-validate:
       optional: true
   checksum: feb3eecd2bae82fa8a8beef800290ce437d8b8063bdc69712725f21aef77c49cb2ff45c6e5e7fce622248f9c7abaee506bae0a9064067ffd6935460c7357321b
-  languageName: node
-  linkType: hard
-
-"ws@npm:8.5.0":
-  version: 8.5.0
-  resolution: "ws@npm:8.5.0"
-  peerDependencies:
-    bufferutil: ^4.0.1
-    utf-8-validate: ^5.0.2
-  peerDependenciesMeta:
-    bufferutil:
-      optional: true
-    utf-8-validate:
-      optional: true
-  checksum: 76f2f90e40344bf18fd544194e7067812fb1372b2a37865678d8f12afe4b478ff2ebc0c7c0aff82cd5e6b66fc43d889eec0f1865c2365d8f7a66d92da7744a77
   languageName: node
   linkType: hard
 

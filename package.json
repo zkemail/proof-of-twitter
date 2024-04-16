@@ -1,6 +1,5 @@
 {
-  "name": "@zk-email/proof-of-twitter",
-  "version": "1.0.0",
+  "version": "4.0.0",
   "description": "Proof of twitter username using ZK Email",
   "private": true,
   "workspaces": [
