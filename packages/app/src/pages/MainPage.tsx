@@ -276,34 +276,13 @@ export const MainPage: React.FC<{}> = (props) => {
             }
             onClick={async () => {
               const emailBuffer = rawEmailToBuffer(emailFull); // Cleaned email as buffer
-
-              // Verify DKIM
-              let dkimResult: DKIMVerificationResult;
-              try {
-                setDisplayMessage("Verifying DKIM signature...");
-                dkimResult = await verifyDKIMSignature(emailBuffer);
-                console.log(
-                  `DKIM verified for domain ${dkimResult.signingDomain}`
-                );
-              } catch (e) {
-                console.log("Error verifying DKIM", e);
-                setDisplayMessage("Error verifying DKIM");
-                return;
-              }
-
+              
               let input: ITwitterCircuitInputs;
               try {
                 setDisplayMessage("Generating proof...");
                 setStatus("generating-input");
 
-                input = await generateTwitterVerifierCircuitInputs({
-                  rsaSignature: dkimResult.signature,
-                  rsaPublicKey: dkimResult.publicKey,
-                  body: dkimResult.body,
-                  bodyHash: dkimResult.bodyHash,
-                  message: dkimResult.message,
-                  ethereumAddress,
-                });
+                input = await generateTwitterVerifierCircuitInputs(emailBuffer, ethereumAddress);
 
                 console.log("Generated input:", JSON.stringify(input));
               } catch (e) {

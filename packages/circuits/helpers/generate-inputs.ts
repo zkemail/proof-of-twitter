@@ -3,16 +3,31 @@ import { generateEmailVerifierInputs } from "@zk-email/helpers/dist/input-genera
 
 export const STRING_PRESELECTOR = "email was meant for @";
 
-export type ITwitterCircuitInputs = ReturnType<typeof generateTwitterVerifierCircuitInputs>;
+export type ITwitterCircuitInputs = {
+  twitterUsernameIndex: string;
+  address: string;
+  emailHeader: string[];
+  emailHeaderLength: string;
+  pubkey: string[];
+  signature: string[];
+  emailBody?: string[] | undefined;
+  emailBodyLength?: string | undefined;
+  precomputedSHA?: string[] | undefined;
+  bodyHashIndex?: string | undefined;
+};
 
-export async function generateTwitterVerifierCircuitInputs(email: string | Buffer, ethereumAddress: string) {
-  const emailVerifierInputs = await generateEmailVerifierInputs(email, { 
+export async function generateTwitterVerifierCircuitInputs(
+  email: string | Buffer,
+  ethereumAddress: string
+): Promise<ITwitterCircuitInputs> {
+  const emailVerifierInputs = await generateEmailVerifierInputs(email, {
     shaPrecomputeSelector: STRING_PRESELECTOR,
   });
 
-  const bodyRemaining = emailVerifierInputs.emailBody!.map(c => Number(c)); // Char array to Uint8Array
+  const bodyRemaining = emailVerifierInputs.emailBody!.map((c) => Number(c)); // Char array to Uint8Array
   const selectorBuffer = Buffer.from(STRING_PRESELECTOR);
-  const usernameIndex = Buffer.from(bodyRemaining).indexOf(selectorBuffer) + selectorBuffer.length;
+  const usernameIndex =
+    Buffer.from(bodyRemaining).indexOf(selectorBuffer) + selectorBuffer.length;
 
   const address = bytesToBigInt(fromHex(ethereumAddress)).toString();
 
