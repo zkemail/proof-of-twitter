@@ -8,8 +8,8 @@
     "test": "NODE_OPTIONS=--max_old_space_size=16384 jest"
   },
   "dependencies": {
-    "@zk-email/circuits": "4.0.0-alpha",
-    "@zk-email/helpers": "4.0.0-alpha",
+    "@zk-email/circuits": "4.0.0",
+    "@zk-email/helpers": "4.0.0",
     "@zk-email/zk-regex-circom": "^1.1.1",
     "commander": "^11.1.0",
     "snarkjs": "git+https://github.com/vb7401/snarkjs.git#24981febe8826b6ab76ae4d76cf7f9142919d2b8"
