@@ -44,6 +44,7 @@ packages/circuits/proofs/
 out/
 circuits/circuit*zkey*
 circuits/email/
+circuits/proofs/
 cache/
 test.log
 packages/contracts/out/

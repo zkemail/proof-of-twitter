@@ -76,7 +76,7 @@ You can generate proving and verification keys using
 ZKEY_ENTROPY=<random-number> ZKEY_BEACON=<random-hex> ts-node dev-setup.ts
 ```
 
-This will generate `zkey` files, `vkey.json` in `build` directory, and Solidity verifier in `packages/contracts/src/Verifier.sol`.
+This will generate `zkey` files, `vkey.json` in `build` directory, and Solidity verifier in `packages/contracts/src/Verifier.sol` (You might need to manually update the solidity pragma version).
 
 > Note: We are using a custom fork of `snarkjs` which generated **chunked zkeys**. Chunked zkeys make it easier to use in browser, especially since we have large circuit. You can switch to regular `snarkjs` in `package.json` if you don't want to use chunked zkeys.
 
@@ -97,7 +97,7 @@ There are helper functions in `@zk-email/helpers` package to download and decomp
 
 ```bash
 # CWD = packages/circuits/scripts
-ts-node generate-proof.ts --email-file ../tests/emls/test_twitter.eml --ethereum-address <your-eth-address>
+ts-node generate-proof.ts --email-file ../tests/emls/twitter-test.eml --ethereum-address <your-eth-address>
 ```
 
 This will generate input + witness using the given email file and Ethereum address, and prove using the generated zkey.

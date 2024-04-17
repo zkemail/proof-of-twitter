@@ -2,7 +2,6 @@ import { program } from "commander";
 import fs from "fs";
 import path from "path";
 import { generateTwitterVerifierCircuitInputs } from "../helpers";
-import { verifyDKIMSignature } from "@zk-email/helpers/dist/dkim";
 const snarkjs = require("snarkjs");
 
 program
@@ -28,6 +27,10 @@ function log(...message: any) {
 const logger = { log, error: log, warn: log, debug: log };
 
 async function generate() {
+  if (!fs.existsSync(OUTPUT_DIR)) {
+    fs.mkdirSync(OUTPUT_DIR);
+  }
+
   if (!fs.existsSync(args.emailFile)) {
     throw new Error("--input file path arg must end with .json");
   }
@@ -35,16 +38,7 @@ async function generate() {
   log("Generating input and proof for:", args.emailFile);
 
   const rawEmail = Buffer.from(fs.readFileSync(args.emailFile, "utf8"));
-  const dkimResult = await verifyDKIMSignature(rawEmail);
-
-  const circuitInputs = await generateTwitterVerifierCircuitInputs({
-    rsaSignature: dkimResult.signature,
-    rsaPublicKey: dkimResult.publicKey,
-    body: dkimResult.body,
-    bodyHash: dkimResult.bodyHash,
-    message: dkimResult.message,
-    ethereumAddress: args.ethereumAddress,
-  });
+  const circuitInputs = await generateTwitterVerifierCircuitInputs(rawEmail, args.ethereumAddress);
 
   log("\n\nGenerated Inputs:", circuitInputs, "\n\n");
 
@@ -69,7 +63,7 @@ async function generate() {
   // Generate proof
   const { proof, publicSignals } = await snarkjs.groth16.prove(
     path.join(BUILD_DIR, `${CIRCUIT_NAME}.zkey`),
-    path.join(OUTPUT_DIR, `${CIRCUIT_NAME}.wtns`),
+    path.join(OUTPUT_DIR, `input.wtns`),
     logger
   );
 
@@ -85,7 +79,7 @@ async function generate() {
   );
   log("Public Inputs written to", path.join(OUTPUT_DIR, "public.json"));
 
-  const vkey = JSON.parse(fs.readFileSync(path.join(BUILD_DIR, `vkey.json`)).toString());
+  const vkey = JSON.parse(fs.readFileSync(path.join(BUILD_DIR, `/artifacts/twitter.vkey.json`)).toString());
   const proofVerified = await snarkjs.groth16.verify(
     vkey,
     publicSignals,
@@ -101,6 +95,6 @@ async function generate() {
 }
 
 generate().catch((err) => {
-  console.error("Error generating inputs", err);
+  console.error("Error generating proof", err);
   process.exit(1);
 });

@@ -3,7 +3,7 @@
   "version": "4.0.0",
   "license": "MIT",
   "scripts": {
-    "build": "mkdir -p build && circom src/twitter.circom -l ../../node_modules ./node_modules --wasm --r1cs --sym -o ./build",
+    "build": "mkdir -p build && circom src/twitter.circom -l ../../node_modules -l ./node_modules --wasm --r1cs --sym -o ./build",
     "generate-regex": "zk-regex decomposed -d ./components/twitter_reset.json -c ./components/twitter_reset_regex.circom -t TwitterResetRegex -g true",
     "test": "NODE_OPTIONS=--max_old_space_size=16384 jest"
   },
