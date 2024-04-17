@@ -3,7 +3,6 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
-import "@openzeppelin/contracts/utils/Counters.sol";
 import "@zk-email/contracts/DKIMRegistry.sol";
 import "@zk-email/contracts/utils/StringUtils.sol";
 import "./utils/NFTSVG.sol";
@@ -11,7 +10,6 @@ import { Verifier } from "./Verifier.sol";
 
 
 contract ProofOfTwitter is ERC721Enumerable {
-    using Counters for Counters.Counter;
     using StringUtils for *;
     using NFTSVG for *;
 
@@ -23,7 +21,7 @@ contract ProofOfTwitter is ERC721Enumerable {
     uint32 public constant usernameLengthInSignals = 1; // length of packed twitter username in signals array
     uint32 public constant addressIndexInSignals = 2; // index of ethereum address in signals array
 
-    Counters.Counter private tokenCounter;
+    uint256 private tokenCounter;
     DKIMRegistry dkimRegistry;
     Verifier public immutable verifier;
 
@@ -99,7 +97,7 @@ contract ProofOfTwitter is ERC721Enumerable {
         }
 
         // Effects: Mint token
-        uint256 tokenId = tokenCounter.current() + 1;
+        uint256 tokenId = tokenCounter + 1;
 
         // TODO: Change bytesInPackedBytes * usernameLengthInSignals -> usernameLengthInSignals
         string memory messageBytes = StringUtils.convertPackedBytesToString(
@@ -109,7 +107,7 @@ contract ProofOfTwitter is ERC721Enumerable {
         );
         tokenIDToName[tokenId] = messageBytes;
         _mint(msg.sender, tokenId);
-        tokenCounter.increment();
+        tokenCounter = tokenCounter + 1;
     }
 
     function _beforeTokenTransfer(

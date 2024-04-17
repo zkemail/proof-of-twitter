@@ -6,9 +6,10 @@
     "test": "forge test"
   },
   "dependencies": {
-    "@openzeppelin/contracts": "^4.9.3",
-    "@openzeppelin/contracts-upgradeable": "^4.9.3",
-    "@zk-email/contracts": "latest",
+    "@openzeppelin/contracts": "^5.0.0",
+    "@zk-email/contracts": "latest"
+  },
+  "devDependencies": {
     "forge-std": "git+https://github.com/foundry-rs/forge-std.git"
   }
 }

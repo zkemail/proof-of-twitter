@@ -24,7 +24,7 @@ contract Deploy is Script, Test {
         Verifier proofVerifier = new Verifier();
         console.log("Deployed Verifier at address: %s", address(proofVerifier));
 
-        DKIMRegistry dkimRegistry = new DKIMRegistry();
+        DKIMRegistry dkimRegistry = new DKIMRegistry(msg.sender);
         console.log("Deployed DKIMRegistry at address: %s", address(dkimRegistry));
 
         // x.com hash for selector dkim-202308
