@@ -2987,7 +2987,7 @@ __metadata:
   resolution: "@proof-of-twitter/contracts@workspace:packages/contracts"
   dependencies:
     "@openzeppelin/contracts": ^5.0.0
-    "@zk-email/contracts": latest
+    "@zk-email/contracts": ^6.0.0
     forge-std: "git+https://github.com/foundry-rs/forge-std.git"
   languageName: unknown
   linkType: soft
@@ -4485,7 +4485,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@zk-email/contracts@npm:latest":
+"@zk-email/contracts@npm:^6.0.0":
   version: 6.0.0
   resolution: "@zk-email/contracts@npm:6.0.0"
   dependencies:
