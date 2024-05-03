@@ -65,7 +65,7 @@ template TwitterVerifier(maxHeadersLength, maxBodyLength, n, k, exposeFrom) {
 
         var maxEmailLength = 255;
 
-        signal output fromEmailAddrPacks[8] <== PackRegexReveal(maxHeadersLength, maxEmailLength)(fromEmailReveal, fromEmailIndex);
+        signal output fromEmailAddrPacks[9] <== PackRegexReveal(maxHeadersLength, maxEmailLength)(fromEmailReveal, fromEmailIndex);
     }
 
 
