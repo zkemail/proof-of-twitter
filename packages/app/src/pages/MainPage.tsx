@@ -4,10 +4,11 @@ import { useMount, useUpdateEffect } from "react-use";
 import styled from "styled-components";
 import _ from "lodash";
 import { useAccount, useContractWrite, usePrepareContractWrite } from "wagmi";
+import { rawEmailToBuffer } from "@zk-email/helpers/dist/input-helpers";
 import {
-  rawEmailToBuffer,
-} from "@zk-email/helpers/dist/input-helpers";
-import { verifyDKIMSignature, DKIMVerificationResult } from "@zk-email/helpers/dist/dkim";
+  verifyDKIMSignature,
+  DKIMVerificationResult,
+} from "@zk-email/helpers/dist/dkim";
 import {
   downloadProofFiles,
   generateProof,
@@ -59,8 +60,11 @@ export const MainPage: React.FC<{}> = (props) => {
     | "error-failed-to-prove"
     | "done"
     | "sending-on-chain"
+    | "proof-files-downloaded-successfully"
     | "sent"
   >("not-started");
+
+  console.log(status);
 
   const [stopwatch, setStopwatch] = useState<Record<string, number>>({
     startedDownloading: 0,
@@ -165,6 +169,36 @@ export const MainPage: React.FC<{}> = (props) => {
     }
   };
 
+  useEffect(() => {
+    const downloadZKey = async () => {
+      console.time("zk-dl");
+
+      recordTimeForActivity("startedDownloading");
+      setStatus("downloading-proof-files");
+      try {
+        await downloadProofFiles(
+          // @ts-ignore
+          import.meta.env.VITE_CIRCUIT_ARTIFACTS_URL,
+          CIRCUIT_NAME,
+          () => {
+            setDownloadProgress((p) => p + 1);
+          }
+        );
+        setStatus("proof-files-downloaded-successfully");
+      } catch (e) {
+        console.log(e);
+        setDisplayMessage("Error downloading proof files");
+        setStatus("error-failed-to-download");
+        return;
+      }
+
+      console.timeEnd("zk-dl");
+      recordTimeForActivity("finishedDownloading");
+    };
+
+    downloadZKey();
+  }, []);
+
   return (
     <Container>
       {showBrowserWarning && (
@@ -193,11 +227,11 @@ export const MainPage: React.FC<{}> = (props) => {
           some email and mask out any private data, without trusting our server
           to keep your privacy. This demo is just one use case that lets you
           prove you own a Twitter username on-chain, by verifying confirmation
-          emails (and their normally-hidden headers) from Twitter.
-          Visit <a href="https://prove.email/blog/zkemail">our blog</a>{" "}or{" "}
-          <a href="https://prove.email">website</a>{" "}to learn more about ZK Email,
-          and find the technical details on how this demo is built{" "}
-          <a href="https://prove.email/blog/twitter">here</a>. 
+          emails (and their normally-hidden headers) from Twitter. Visit{" "}
+          <a href="https://prove.email/blog/zkemail">our blog</a> or{" "}
+          <a href="https://prove.email">website</a> to learn more about ZK
+          Email, and find the technical details on how this demo is built{" "}
+          <a href="https://prove.email/blog/twitter">here</a>.
           <br />
           <br />
           If you wish to generate a ZK proof of Twitter badge (NFT), you must:
@@ -211,7 +245,8 @@ export const MainPage: React.FC<{}> = (props) => {
           >
             password reset email
           </a>{" "}
-          from Twitter. (Reminder: Twitter name with emoji might fail to pass DKIM verification)
+          from Twitter. (Reminder: Twitter name with emoji might fail to pass
+          DKIM verification)
         </NumberedStep>
         <NumberedStep step={2}>
           In your inbox, find the email from Twitter and click the three dot
@@ -230,8 +265,14 @@ export const MainPage: React.FC<{}> = (props) => {
         </NumberedStep>
         <NumberedStep step={5}>
           Click <b>"Prove"</b>. Note it is completely client side and{" "}
-          <a href="https://github.com/zkemail/proof-of-twitter/" target="_blank" rel="noreferrer">open source</a>, 
-          and no server ever sees your private information.
+          <a
+            href="https://github.com/zkemail/proof-of-twitter/"
+            target="_blank"
+            rel="noreferrer"
+          >
+            open source
+          </a>
+          , and no server ever sees your private information.
         </NumberedStep>
         <NumberedStep step={6}>
           Click <b>"Verify"</b> and then <b>"Mint Twitter Badge On-Chain"</b>,
@@ -272,17 +313,21 @@ export const MainPage: React.FC<{}> = (props) => {
             disabled={
               displayMessage !== "Prove" ||
               emailFull.length === 0 ||
-              ethereumAddress.length === 0
+              ethereumAddress.length === 0 ||
+              status !== "proof-files-downloaded-successfully"
             }
             onClick={async () => {
               const emailBuffer = rawEmailToBuffer(emailFull); // Cleaned email as buffer
-              
+
               let input: ITwitterCircuitInputs;
               try {
                 setDisplayMessage("Generating proof...");
                 setStatus("generating-input");
 
-                input = await generateTwitterVerifierCircuitInputs(emailBuffer, ethereumAddress);
+                input = await generateTwitterVerifierCircuitInputs(
+                  emailBuffer,
+                  ethereumAddress
+                );
 
                 console.log("Generated input:", JSON.stringify(input));
               } catch (e) {
@@ -291,31 +336,6 @@ export const MainPage: React.FC<{}> = (props) => {
                 setStatus("error-bad-input");
                 return;
               }
-
-              console.time("zk-dl");
-              recordTimeForActivity("startedDownloading");
-              setDisplayMessage(
-                "Downloading compressed proving files... (this may take a few minutes)"
-              );
-              setStatus("downloading-proof-files");
-              try {
-                await downloadProofFiles(
-                  // @ts-ignore
-                  import.meta.env.VITE_CIRCUIT_ARTIFACTS_URL,
-                  CIRCUIT_NAME,
-                  () => {
-                    setDownloadProgress((p) => p + 1);
-                  }
-                );
-              } catch (e) {
-                console.log(e);
-                setDisplayMessage("Error downloading proof files");
-                setStatus("error-failed-to-download");
-                return;
-              }
-
-              console.timeEnd("zk-dl");
-              recordTimeForActivity("finishedDownloading");
 
               console.time("zk-gen");
               recordTimeForActivity("startedProving");
