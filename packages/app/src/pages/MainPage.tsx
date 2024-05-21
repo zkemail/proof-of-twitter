@@ -22,16 +22,33 @@ import {
 import { LabeledTextArea } from "../components/LabeledTextArea";
 import DragAndDropTextBox from "../components/DragAndDropTextBox";
 import { SingleLineInput } from "../components/SingleLineInput";
-import { Button } from "../components/Button";
+import { Button, TextButton } from "../components/Button";
 import { Col, Row } from "../components/Layout";
 import { NumberedStep } from "../components/NumberedStep";
 import { TopBanner } from "../components/TopBanner";
 import { ProgressBar } from "../components/ProgressBar";
+import useGoogleAuth from "../hooks/useGoogleAuth";
+import {
+  RawEmailResponse,
+  fetchEmailList,
+  fetchEmailsRaw,
+} from "../hooks/useGmailClient";
+import { formatDateTime } from "../helpers/dateTimeFormat";
+import EmailInputMethod from "../components/EmailInputMethod";
 
 const CIRCUIT_NAME = "twitter";
 
 export const MainPage: React.FC<{}> = (props) => {
   const { address } = useAccount();
+
+  const {
+    googleAuthToken,
+    isGoogleAuthed,
+    loggedInGmail,
+    scopesApproved,
+    googleLogIn,
+    googleLogOut,
+  } = useGoogleAuth();
 
   const [ethereumAddress, setEthereumAddress] = useState<string>(address ?? "");
   const [emailFull, setEmailFull] = useState<string>(
@@ -48,8 +65,13 @@ export const MainPage: React.FC<{}> = (props) => {
   const [lastAction, setLastAction] = useState<"" | "sign" | "verify" | "send">(
     ""
   );
+  const [isFetchEmailLoading, setIsFetchEmailLoading] = useState(false);
+  const [fetchedEmails, setFetchedEmails] = useState<RawEmailResponse[]>([]);
   const [showBrowserWarning, setShowBrowserWarning] = useState<boolean>(false);
   const [downloadProgress, setDownloadProgress] = useState<number>(0);
+  const [inputMethod, setInputMethod] = useState<
+    "GOOGLE" | "EML_FILE" | null
+  >();
   const [status, setStatus] = useState<
     | "not-started"
     | "generating-input"
@@ -72,6 +94,14 @@ export const MainPage: React.FC<{}> = (props) => {
     startedProving: 0,
     finishedProving: 0,
   });
+
+  useEffect(() => {
+    if (isGoogleAuthed) {
+      handleFetchEmails();
+    }
+  }, [isGoogleAuthed]);
+
+  console.log(fetchedEmails);
 
   useEffect(() => {
     const userAgent = navigator.userAgent;
@@ -128,6 +158,33 @@ export const MainPage: React.FC<{}> = (props) => {
   });
 
   const { data, isLoading, isSuccess, write } = useContractWrite(config);
+
+  const handleFetchEmails = async () => {
+    try {
+      setIsFetchEmailLoading(true);
+      const emailListResponse = await fetchEmailList(
+        googleAuthToken.access_token,
+        {}
+      );
+
+      const emailResponseMessages = emailListResponse.messages;
+      if (emailResponseMessages?.length > 0) {
+        const emailIds = emailResponseMessages.map((message) => message.id);
+        const emails = await fetchEmailsRaw(
+          googleAuthToken.access_token,
+          emailIds
+        );
+
+        setFetchedEmails(emails);
+      } else {
+        setFetchedEmails([]);
+      }
+    } catch (error) {
+      console.error("Error in fetching data:", error);
+    } finally {
+      setIsFetchEmailLoading(false);
+    }
+  };
 
   useMount(() => {
     function handleKeyDown() {
@@ -284,23 +341,88 @@ export const MainPage: React.FC<{}> = (props) => {
       <Main>
         <Column>
           <SubHeader>Input</SubHeader>
-          <DragAndDropTextBox onFileDrop={onFileDrop} />
-          <h3
-            style={{
-              textAlign: "center",
-              marginTop: "0rem",
-              marginBottom: "0rem",
-            }}
-          >
-            OR
-          </h3>
-          <LabeledTextArea
-            label="Full Email with Headers"
-            value={emailFull}
-            onChange={(e) => {
-              setEmailFull(e.currentTarget.value);
-            }}
-          />
+          {inputMethod ? null : (
+            <EmailInputMethod
+              onClickGoogle={() => {
+                try {
+                  setIsFetchEmailLoading(true);
+                  setInputMethod("GOOGLE");
+                  googleLogIn();
+                } catch (e) {
+                  console.log(e);
+                  setIsFetchEmailLoading(false);
+                }
+              }}
+              onClickEMLFile={() => {
+                setInputMethod("EML_FILE");
+              }}
+            />
+          )}
+          {inputMethod ? (
+            <TextButton onClick={() => setInputMethod(null)}>
+              ←{"  "}Go Back
+            </TextButton>
+          ) : null}
+          {inputMethod === "GOOGLE" ? (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                flexDirection: "column",
+                padding: "1.25rem",
+              }}
+            >
+              {isFetchEmailLoading ? (
+                <div className="loader" />
+              ) : (
+                fetchedEmails.map((email, index) => (
+                  <div
+                    style={{
+                      borderBottom: "1px solid white",
+                      width: "100%",
+                      padding: "0 1rem",
+                      display: "flex",
+                      justifyContent: "space-between",
+                      color:
+                        email.decodedContents === emailFull
+                          ? "#8272e4"
+                          : "white",
+                      borderTop: index === 0 ? "1px solid white" : "none", // Conditional border top
+                    }}
+                    onClick={() => {
+                      setEmailFull(email.decodedContents);
+                    }}
+                  >
+                    <p>{email.subject}</p>
+                    <p>{formatDateTime(email.internalDate)}</p>
+                  </div>
+                ))
+              )}
+            </div>
+          ) : null}
+          {inputMethod === "EML_FILE" ? (
+            <>
+              {" "}
+              <DragAndDropTextBox onFileDrop={onFileDrop} />
+              <h3
+                style={{
+                  textAlign: "center",
+                  marginTop: "0rem",
+                  marginBottom: "0rem",
+                }}
+              >
+                OR
+              </h3>
+              <LabeledTextArea
+                label="Full Email with Headers"
+                value={emailFull}
+                onChange={(e) => {
+                  setEmailFull(e.currentTarget.value);
+                }}
+              />
+            </>
+          ) : null}
           <SingleLineInput
             label="Ethereum Address"
             value={ethereumAddress}
