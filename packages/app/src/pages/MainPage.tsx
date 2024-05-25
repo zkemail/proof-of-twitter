@@ -6,10 +6,6 @@ import _ from "lodash";
 import { useAccount, useContractWrite, usePrepareContractWrite } from "wagmi";
 import { rawEmailToBuffer } from "@zk-email/helpers/dist/input-helpers";
 import {
-  verifyDKIMSignature,
-  DKIMVerificationResult,
-} from "@zk-email/helpers/dist/dkim";
-import {
   downloadProofFiles,
   generateProof,
   verifyProof,
@@ -86,8 +82,6 @@ export const MainPage: React.FC<{}> = (props) => {
     | "sent"
   >("not-started");
 
-  console.log(status);
-
   const [stopwatch, setStopwatch] = useState<Record<string, number>>({
     startedDownloading: 0,
     finishedDownloading: 0,
@@ -100,8 +94,6 @@ export const MainPage: React.FC<{}> = (props) => {
       handleFetchEmails();
     }
   }, [isGoogleAuthed]);
-
-  console.log(fetchedEmails);
 
   useEffect(() => {
     const userAgent = navigator.userAgent;
@@ -341,7 +333,7 @@ export const MainPage: React.FC<{}> = (props) => {
       <Main>
         <Column>
           <SubHeader>Input</SubHeader>
-          {inputMethod ? null : (
+          {inputMethod || !import.meta.env.VITE_GOOGLE_CLIENT_ID ? null : (
             <EmailInputMethod
               onClickGoogle={() => {
                 try {
@@ -401,7 +393,7 @@ export const MainPage: React.FC<{}> = (props) => {
               )}
             </div>
           ) : null}
-          {inputMethod === "EML_FILE" ? (
+          {inputMethod === "EML_FILE" || !import.meta.env.VITE_GOOGLE_CLIENT_ID ? (
             <>
               {" "}
               <DragAndDropTextBox onFileDrop={onFileDrop} />

@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import { render, screen } from "@testing-library/react";
 import App from "../src/App";
 
@@ -39,8 +39,9 @@ jest.mock("wagmi", () => {
 });
 
 describe("App", () => {
-  test("renders app", () => {
+  test("renders app", async () => {
     render(<App />);
+    await new Promise((r) => setTimeout(r, 1000));
     const linkElement = screen.getByText(/Proof of Twitter: ZK Email Demo/i);
     expect(linkElement).toBeInTheDocument();
   });

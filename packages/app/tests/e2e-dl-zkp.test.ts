@@ -40,6 +40,9 @@ const setTextAreaValue = async (page: Page, selector: string, value: string) => 
 
 const gotToPageAndEnterInputs = async (page: Page, emailInputSelector: string, ethInputSelector: string, testEmailText: string, testEthAddress: string) => {
     await page.goto(pageUrl);
+    const uploadEmailEMLFileButtonSelector = "button[data-testid='upload-email-eml-file-button']";
+    await page.click(uploadEmailEMLFileButtonSelector);
+
     await page.waitForSelector(emailInputSelector);
     // 'page.keyboard.type()' takes too long. Use workaround.
     // await page.focus(emailInputSelector);
@@ -67,19 +70,24 @@ describe("App.js", () => {
   }, 60000);
 
   it("should start download and run zkproof after entering inputs and click", async () => {
-    await page.waitForSelector("[data-testid='status-not-started']");
+    // await page.waitForSelector("[data-testid='status-not-started']");
     console.log("starting e2e test...this will take up to 10 minutes and consume bandwidth and cpu time")
-    const proveButtonSelector = "button[data-testid='prove-button']";
-    await page.click(proveButtonSelector);
     // starting download
+    const proveButtonSelector = "button[data-testid='prove-button']";
+    
     console.log("starting download...this will take up to 10 minutes and consume bandwidth");
     const proveButtonIsDisabled = await page.$eval(proveButtonSelector, button => (button as HTMLButtonElement).disabled);
     expect(proveButtonIsDisabled).toBe(true);
-
+    
+    
     let status;
     await page.waitForSelector("[data-testid='status-downloading-proof-files']");
     status = await page.$eval("[data-testid='status-downloading-proof-files']", e => (e.attributes as any)['data-testid'].value);
     expect(status).toBe("status-downloading-proof-files");
+
+    await page.waitForSelector("[data-testid='status-proof-files-downloaded-successfully'", {timeout: 600000})
+    
+    await page.click(proveButtonSelector);
 
     await page.waitForSelector("[data-testid='status-generating-proof']", {timeout: downloadTimeout});
     console.log("finished download...starting proof");

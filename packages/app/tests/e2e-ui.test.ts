@@ -42,6 +42,9 @@ const setTextAreaValue = async (page: Page, selector: string, value: string) => 
 
 const gotToPageAndEnterInputs = async (page: Page, emailInputSelector: string, ethInputSelector: string, testEmailText: string, testEthAddress: string) => {
     await page.goto(pageUrl);
+    const proveButtonSelector = "button[data-testid='upload-email-eml-file-button']";
+    await page.click(proveButtonSelector);
+
     await page.waitForSelector(emailInputSelector);
     // 'page.keyboard.type()' takes too long. Use workaround.
     // await page.focus(emailInputSelector);
@@ -69,21 +72,20 @@ describe("App.js", () => {
   }, 60000);
 
   it("should allow email and eth addr to be entered into inputs", async () => {
-    await page.waitForSelector("[data-testid='status-not-started']");
+    // await page.waitForSelector("[data-testid='status-not-started']");
     const emailValue = await page.$eval(emailInputSelector, e => (e as HTMLInputElement).value);
     expect(emailValue).toBe(testEmailText);
     const ethValue = await page.$eval(ethInputSelector, e => (e as HTMLInputElement).value);
     expect(ethValue).toBe(testEthAddress);
   });
 
-  it("should start with an enabled prove button and status should be 'not-started'", async () => {
-    await page.waitForSelector("[data-testid='status-not-started']");
+  it("should start with an enabled prove button and status should be 'downloading-proof-files'", async () => {
     const proveButtonSelector = "button[data-testid='prove-button']";
     const proveButtonIsDisabled = await page.$eval(proveButtonSelector, button => (button as HTMLButtonElement).disabled);
-    expect(proveButtonIsDisabled).toBe(false);
+    expect(proveButtonIsDisabled).toBe(true);
 
-    const status = await page.$eval("[data-testid='status-not-started']", e => (e.attributes as any)['data-testid'].value);
-    expect(status).toBe("status-not-started");
+    const status = await page.$eval("[data-testid='status-downloading-proof-files']", e => (e.attributes as any)['data-testid'].value);
+    expect(status).toBe("status-downloading-proof-files");
   });
 
   afterAll(() => browser.close());

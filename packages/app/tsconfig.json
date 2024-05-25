@@ -5,10 +5,11 @@
     "outDir": "dist",
     "skipLibCheck": true,
     "jsx": "react-jsx",
-    "module": "CommonJS",
     "typeRoots": ["./../../node_modules/@types"],
     "esModuleInterop": true,
-    "target": "es2022",
+    "target": "esnext",
+    "moduleResolution": "Node",
+    "module": "esnext",
     "isolatedModules": true,
     "resolveJsonModule": true,
     "strict": true

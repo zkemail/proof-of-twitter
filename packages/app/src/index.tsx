@@ -30,17 +30,30 @@ const config = createConfig({
   connectors: connectors,
 });
 
-ReactDOM.render(
-  <React.StrictMode>
-    <WagmiConfig config={config}>
-      <RainbowKitProvider chains={[sepolia]} theme={darkTheme()}>
+if (import.meta.env.VITE_GOOGLE_CLIENT_ID) {
+  ReactDOM.render(
+    <React.StrictMode>
+      <WagmiConfig config={config}>
+        <RainbowKitProvider chains={[sepolia]} theme={darkTheme()}>
           <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
             <GoogleAuthProvider>
               <App />
             </GoogleAuthProvider>
           </GoogleOAuthProvider>
-      </RainbowKitProvider>
-    </WagmiConfig>
-  </React.StrictMode>,
-  document.getElementById("root")
-);
+        </RainbowKitProvider>
+      </WagmiConfig>
+    </React.StrictMode>,
+    document.getElementById("root")
+  );
+} else {
+  ReactDOM.render(
+    <React.StrictMode>
+      <WagmiConfig config={config}>
+        <RainbowKitProvider chains={[sepolia]} theme={darkTheme()}>
+          <App />
+        </RainbowKitProvider>
+      </WagmiConfig>
+    </React.StrictMode>,
+    document.getElementById("root")
+  );
+}

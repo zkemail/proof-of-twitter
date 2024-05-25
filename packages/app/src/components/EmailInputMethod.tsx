@@ -1,7 +1,13 @@
 import { useState } from "react";
 import { Button, OutlinedButton } from "./Button";
 
-const EmailInputMethod = ({ onClickGoogle, onClickEMLFile }) => {
+const EmailInputMethod = ({
+  onClickGoogle,
+  onClickEMLFile,
+}: {
+  onClickGoogle: () => void;
+  onClickEMLFile: () => void;
+}) => {
   return (
     <div
       style={{
@@ -15,6 +21,7 @@ const EmailInputMethod = ({ onClickGoogle, onClickEMLFile }) => {
       <Button onClick={onClickGoogle}>Sign in with Google</Button>
       or
       <OutlinedButton
+        data-testid="upload-email-eml-file-button"
         onClick={() => {
           onClickEMLFile();
         }}
