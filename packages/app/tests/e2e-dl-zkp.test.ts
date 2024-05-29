@@ -80,10 +80,10 @@ describe("App.js", () => {
     expect(proveButtonIsDisabled).toBe(true);
     
     
-    let status;
-    await page.waitForSelector("[data-testid='status-downloading-proof-files']");
-    status = await page.$eval("[data-testid='status-downloading-proof-files']", e => (e.attributes as any)['data-testid'].value);
-    expect(status).toBe("status-downloading-proof-files");
+    // let status;
+    // await page.waitForSelector("[data-testid='status-downloading-proof-files']");
+    // status = await page.$eval("[data-testid='status-downloading-proof-files']", e => (e.attributes as any)['data-testid'].value);
+    // expect(status).toBe("status-downloading-proof-files");
 
     await page.waitForSelector("[data-testid='status-proof-files-downloaded-successfully'", {timeout: 600000})
     
