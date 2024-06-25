@@ -42,8 +42,8 @@ const setTextAreaValue = async (page: Page, selector: string, value: string) => 
 
 const gotToPageAndEnterInputs = async (page: Page, emailInputSelector: string, ethInputSelector: string, testEmailText: string, testEthAddress: string) => {
     await page.goto(pageUrl);
-    // const proveButtonSelector = "button[data-testid='upload-email-eml-file-button']";
-    // await page.click(proveButtonSelector);
+    const proveButtonSelector = "button[data-testid='upload-email-eml-file-button']";
+    await page.click(proveButtonSelector);
 
     await page.waitForSelector(emailInputSelector);
     // 'page.keyboard.type()' takes too long. Use workaround.
