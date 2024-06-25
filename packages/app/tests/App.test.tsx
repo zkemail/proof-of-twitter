@@ -41,7 +41,6 @@ jest.mock("wagmi", () => {
 describe("App", () => {
   test("renders app", async () => {
     render(<App />);
-    await new Promise((r) => setTimeout(r, 1000));
     const linkElement = screen.getByText(/Proof of Twitter: ZK Email Demo/i);
     expect(linkElement).toBeInTheDocument();
   });
