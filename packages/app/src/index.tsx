@@ -2,7 +2,9 @@ import React from "react";
 import ReactDOM from "react-dom";
 import App from "./App";
 import { WagmiConfig, createConfig } from "wagmi";
-import { createPublicClient, http } from 'viem'
+import { createPublicClient, http } from "viem";
+import { configureChains } from "wagmi";
+import { publicProvider } from "wagmi/providers/public";
 import { sepolia } from "wagmi/chains";
 import {
   getDefaultWallets,
@@ -10,7 +12,8 @@ import {
   darkTheme,
 } from "@rainbow-me/rainbowkit";
 import "@rainbow-me/rainbowkit/styles.css";
-
+import { GoogleOAuthProvider } from "@react-oauth/google";
+import { GoogleAuthProvider } from "./contexts/GoogleAuth";
 
 const { connectors } = getDefaultWallets({
   appName: "ZK Email - Twitter Verifier",
@@ -22,19 +25,35 @@ const config = createConfig({
   autoConnect: true,
   publicClient: createPublicClient({
     chain: sepolia,
-    transport: http()
+    transport: http(),
   }),
   connectors: connectors,
-})
- 
+});
 
-ReactDOM.render(
-  <React.StrictMode>
-    <WagmiConfig config={config}>
-      <RainbowKitProvider chains={[sepolia]} theme={darkTheme()}>
-        <App />
-      </RainbowKitProvider>
-    </WagmiConfig>
-  </React.StrictMode>,
-  document.getElementById("root")
-);
+if (import.meta.env.VITE_GOOGLE_CLIENT_ID) {
+  ReactDOM.render(
+    <React.StrictMode>
+      <WagmiConfig config={config}>
+        <RainbowKitProvider chains={[sepolia]} theme={darkTheme()}>
+          <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+            <GoogleAuthProvider>
+              <App />
+            </GoogleAuthProvider>
+          </GoogleOAuthProvider>
+        </RainbowKitProvider>
+      </WagmiConfig>
+    </React.StrictMode>,
+    document.getElementById("root")
+  );
+} else {
+  ReactDOM.render(
+    <React.StrictMode>
+      <WagmiConfig config={config}>
+        <RainbowKitProvider chains={[sepolia]} theme={darkTheme()}>
+          <App />
+        </RainbowKitProvider>
+      </WagmiConfig>
+    </React.StrictMode>,
+    document.getElementById("root")
+  );
+}
