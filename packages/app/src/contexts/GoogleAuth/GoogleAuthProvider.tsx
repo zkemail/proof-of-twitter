@@ -7,12 +7,13 @@ import {
 
 // import GoogleAuthContext from './GoogleAuthContext'
 import { fetchProfile } from "../../hooks/useGmailClient";
-import { esl } from "../../constants";
 import GoogleAuthContext from "./GoogleAuthContext";
 
 interface ProvidersProps {
   children: ReactNode;
 }
+
+export const esl = false;
 
 const GoogleAuthProvider = ({ children }: ProvidersProps) => {
   /*
