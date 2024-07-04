@@ -4,10 +4,7 @@ import { useMount, useUpdateEffect } from "react-use";
 import styled from "styled-components";
 import _ from "lodash";
 import { useAccount, useContractWrite, usePrepareContractWrite } from "wagmi";
-import {
-  rawEmailToBuffer,
-} from "@zk-email/helpers/dist/input-helpers";
-import { verifyDKIMSignature, DKIMVerificationResult } from "@zk-email/helpers/dist/dkim";
+import { rawEmailToBuffer } from "@zk-email/helpers/dist/input-helpers";
 import {
   downloadProofFiles,
   generateProof,
@@ -21,16 +18,33 @@ import {
 import { LabeledTextArea } from "../components/LabeledTextArea";
 import DragAndDropTextBox from "../components/DragAndDropTextBox";
 import { SingleLineInput } from "../components/SingleLineInput";
-import { Button } from "../components/Button";
+import { Button, TextButton } from "../components/Button";
 import { Col, Row } from "../components/Layout";
 import { NumberedStep } from "../components/NumberedStep";
 import { TopBanner } from "../components/TopBanner";
 import { ProgressBar } from "../components/ProgressBar";
+import useGoogleAuth from "../hooks/useGoogleAuth";
+import {
+  RawEmailResponse,
+  fetchEmailList,
+  fetchEmailsRaw,
+} from "../hooks/useGmailClient";
+import { formatDateTime } from "../helpers/dateTimeFormat";
+import EmailInputMethod from "../components/EmailInputMethod";
 
 const CIRCUIT_NAME = "twitter";
 
 export const MainPage: React.FC<{}> = (props) => {
   const { address } = useAccount();
+
+  const {
+    googleAuthToken,
+    isGoogleAuthed,
+    loggedInGmail,
+    scopesApproved,
+    googleLogIn,
+    googleLogOut,
+  } = useGoogleAuth();
 
   const [ethereumAddress, setEthereumAddress] = useState<string>(address ?? "");
   const [emailFull, setEmailFull] = useState<string>(
@@ -47,8 +61,13 @@ export const MainPage: React.FC<{}> = (props) => {
   const [lastAction, setLastAction] = useState<"" | "sign" | "verify" | "send">(
     ""
   );
+  const [isFetchEmailLoading, setIsFetchEmailLoading] = useState(false);
+  const [fetchedEmails, setFetchedEmails] = useState<RawEmailResponse[]>([]);
   const [showBrowserWarning, setShowBrowserWarning] = useState<boolean>(false);
   const [downloadProgress, setDownloadProgress] = useState<number>(0);
+  const [inputMethod, setInputMethod] = useState<
+    "GOOGLE" | "EML_FILE" | null
+  >();
   const [status, setStatus] = useState<
     | "not-started"
     | "generating-input"
@@ -59,6 +78,7 @@ export const MainPage: React.FC<{}> = (props) => {
     | "error-failed-to-prove"
     | "done"
     | "sending-on-chain"
+    | "proof-files-downloaded-successfully"
     | "sent"
   >("not-started");
 
@@ -68,6 +88,12 @@ export const MainPage: React.FC<{}> = (props) => {
     startedProving: 0,
     finishedProving: 0,
   });
+
+  useEffect(() => {
+    if (isGoogleAuthed) {
+      handleFetchEmails();
+    }
+  }, [isGoogleAuthed]);
 
   useEffect(() => {
     const userAgent = navigator.userAgent;
@@ -125,6 +151,33 @@ export const MainPage: React.FC<{}> = (props) => {
 
   const { data, isLoading, isSuccess, write } = useContractWrite(config);
 
+  const handleFetchEmails = async () => {
+    try {
+      setIsFetchEmailLoading(true);
+      const emailListResponse = await fetchEmailList(
+        googleAuthToken.access_token,
+        {}
+      );
+
+      const emailResponseMessages = emailListResponse.messages;
+      if (emailResponseMessages?.length > 0) {
+        const emailIds = emailResponseMessages.map((message) => message.id);
+        const emails = await fetchEmailsRaw(
+          googleAuthToken.access_token,
+          emailIds
+        );
+
+        setFetchedEmails(emails);
+      } else {
+        setFetchedEmails([]);
+      }
+    } catch (error) {
+      console.error("Error in fetching data:", error);
+    } finally {
+      setIsFetchEmailLoading(false);
+    }
+  };
+
   useMount(() => {
     function handleKeyDown() {
       setLastAction("");
@@ -165,6 +218,36 @@ export const MainPage: React.FC<{}> = (props) => {
     }
   };
 
+  useEffect(() => {
+    const downloadZKey = async () => {
+      console.time("zk-dl");
+
+      recordTimeForActivity("startedDownloading");
+      setStatus("downloading-proof-files");
+      try {
+        await downloadProofFiles(
+          // @ts-ignore
+          import.meta.env.VITE_CIRCUIT_ARTIFACTS_URL,
+          CIRCUIT_NAME,
+          () => {
+            setDownloadProgress((p) => p + 1);
+          }
+        );
+        setStatus("proof-files-downloaded-successfully");
+      } catch (e) {
+        console.log(e);
+        setDisplayMessage("Error downloading proof files");
+        setStatus("error-failed-to-download");
+        return;
+      }
+
+      console.timeEnd("zk-dl");
+      recordTimeForActivity("finishedDownloading");
+    };
+
+    downloadZKey();
+  }, []);
+
   return (
     <Container>
       {showBrowserWarning && (
@@ -193,11 +276,11 @@ export const MainPage: React.FC<{}> = (props) => {
           some email and mask out any private data, without trusting our server
           to keep your privacy. This demo is just one use case that lets you
           prove you own a Twitter username on-chain, by verifying confirmation
-          emails (and their normally-hidden headers) from Twitter.
-          Visit <a href="https://prove.email/blog/zkemail">our blog</a>{" "}or{" "}
-          <a href="https://prove.email">website</a>{" "}to learn more about ZK Email,
-          and find the technical details on how this demo is built{" "}
-          <a href="https://prove.email/blog/twitter">here</a>. 
+          emails (and their normally-hidden headers) from Twitter. Visit{" "}
+          <a href="https://prove.email/blog/zkemail">our blog</a> or{" "}
+          <a href="https://prove.email">website</a> to learn more about ZK
+          Email, and find the technical details on how this demo is built{" "}
+          <a href="https://prove.email/blog/twitter">here</a>.
           <br />
           <br />
           If you wish to generate a ZK proof of Twitter badge (NFT), you must:
@@ -211,7 +294,8 @@ export const MainPage: React.FC<{}> = (props) => {
           >
             password reset email
           </a>{" "}
-          from Twitter. (Reminder: Twitter name with emoji might fail to pass DKIM verification)
+          from Twitter. (Reminder: Twitter name with emoji might fail to pass
+          DKIM verification)
         </NumberedStep>
         <NumberedStep step={2}>
           In your inbox, find the email from Twitter and click the three dot
@@ -230,8 +314,14 @@ export const MainPage: React.FC<{}> = (props) => {
         </NumberedStep>
         <NumberedStep step={5}>
           Click <b>"Prove"</b>. Note it is completely client side and{" "}
-          <a href="https://github.com/zkemail/proof-of-twitter/" target="_blank" rel="noreferrer">open source</a>, 
-          and no server ever sees your private information.
+          <a
+            href="https://github.com/zkemail/proof-of-twitter/"
+            target="_blank"
+            rel="noreferrer"
+          >
+            open source
+          </a>
+          , and no server ever sees your private information.
         </NumberedStep>
         <NumberedStep step={6}>
           Click <b>"Verify"</b> and then <b>"Mint Twitter Badge On-Chain"</b>,
@@ -243,23 +333,88 @@ export const MainPage: React.FC<{}> = (props) => {
       <Main>
         <Column>
           <SubHeader>Input</SubHeader>
-          <DragAndDropTextBox onFileDrop={onFileDrop} />
-          <h3
-            style={{
-              textAlign: "center",
-              marginTop: "0rem",
-              marginBottom: "0rem",
-            }}
-          >
-            OR
-          </h3>
-          <LabeledTextArea
-            label="Full Email with Headers"
-            value={emailFull}
-            onChange={(e) => {
-              setEmailFull(e.currentTarget.value);
-            }}
-          />
+          {inputMethod || !import.meta.env.VITE_GOOGLE_CLIENT_ID ? null : (
+            <EmailInputMethod
+              onClickGoogle={() => {
+                try {
+                  setIsFetchEmailLoading(true);
+                  setInputMethod("GOOGLE");
+                  googleLogIn();
+                } catch (e) {
+                  console.log(e);
+                  setIsFetchEmailLoading(false);
+                }
+              }}
+              onClickEMLFile={() => {
+                setInputMethod("EML_FILE");
+              }}
+            />
+          )}
+          {inputMethod ? (
+            <TextButton onClick={() => setInputMethod(null)}>
+              ←{"  "}Go Back
+            </TextButton>
+          ) : null}
+          {inputMethod === "GOOGLE" ? (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                flexDirection: "column",
+                padding: "1.25rem",
+              }}
+            >
+              {isFetchEmailLoading ? (
+                <div className="loader" />
+              ) : (
+                fetchedEmails.map((email, index) => (
+                  <div
+                    style={{
+                      borderBottom: "1px solid white",
+                      width: "100%",
+                      padding: "0 1rem",
+                      display: "flex",
+                      justifyContent: "space-between",
+                      color:
+                        email.decodedContents === emailFull
+                          ? "#8272e4"
+                          : "white",
+                      borderTop: index === 0 ? "1px solid white" : "none", // Conditional border top
+                    }}
+                    onClick={() => {
+                      setEmailFull(email.decodedContents);
+                    }}
+                  >
+                    <p>{email.subject}</p>
+                    <p>{formatDateTime(email.internalDate)}</p>
+                  </div>
+                ))
+              )}
+            </div>
+          ) : null}
+          {inputMethod === "EML_FILE" || !import.meta.env.VITE_GOOGLE_CLIENT_ID ? (
+            <>
+              {" "}
+              <DragAndDropTextBox onFileDrop={onFileDrop} />
+              <h3
+                style={{
+                  textAlign: "center",
+                  marginTop: "0rem",
+                  marginBottom: "0rem",
+                }}
+              >
+                OR
+              </h3>
+              <LabeledTextArea
+                label="Full Email with Headers"
+                value={emailFull}
+                onChange={(e) => {
+                  setEmailFull(e.currentTarget.value);
+                }}
+              />
+            </>
+          ) : null}
           <SingleLineInput
             label="Ethereum Address"
             value={ethereumAddress}
@@ -272,17 +427,21 @@ export const MainPage: React.FC<{}> = (props) => {
             disabled={
               displayMessage !== "Prove" ||
               emailFull.length === 0 ||
-              ethereumAddress.length === 0
+              ethereumAddress.length === 0 ||
+              status !== "proof-files-downloaded-successfully"
             }
             onClick={async () => {
               const emailBuffer = rawEmailToBuffer(emailFull); // Cleaned email as buffer
-              
+
               let input: ITwitterCircuitInputs;
               try {
                 setDisplayMessage("Generating proof...");
                 setStatus("generating-input");
 
-                input = await generateTwitterVerifierCircuitInputs(emailBuffer, ethereumAddress);
+                input = await generateTwitterVerifierCircuitInputs(
+                  emailBuffer,
+                  ethereumAddress
+                );
 
                 console.log("Generated input:", JSON.stringify(input));
               } catch (e) {
@@ -291,31 +450,6 @@ export const MainPage: React.FC<{}> = (props) => {
                 setStatus("error-bad-input");
                 return;
               }
-
-              console.time("zk-dl");
-              recordTimeForActivity("startedDownloading");
-              setDisplayMessage(
-                "Downloading compressed proving files... (this may take a few minutes)"
-              );
-              setStatus("downloading-proof-files");
-              try {
-                await downloadProofFiles(
-                  // @ts-ignore
-                  import.meta.env.VITE_CIRCUIT_ARTIFACTS_URL,
-                  CIRCUIT_NAME,
-                  () => {
-                    setDownloadProgress((p) => p + 1);
-                  }
-                );
-              } catch (e) {
-                console.log(e);
-                setDisplayMessage("Error downloading proof files");
-                setStatus("error-failed-to-download");
-                return;
-              }
-
-              console.timeEnd("zk-dl");
-              recordTimeForActivity("finishedDownloading");
 
               console.time("zk-gen");
               recordTimeForActivity("startedProving");
