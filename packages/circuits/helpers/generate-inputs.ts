@@ -1,4 +1,4 @@
-import { bytesToBigInt, fromHex } from "@zk-email/helpers/dist/binaryFormat";
+import { bytesToBigInt, fromHex } from "@zk-email/helpers/dist/binary-format";
 import { generateEmailVerifierInputs } from "@zk-email/helpers/dist/input-generators";
 
 export const STRING_PRESELECTOR = "email was meant for @";
