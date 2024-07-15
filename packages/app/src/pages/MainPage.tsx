@@ -4,12 +4,11 @@ import { useMount, useUpdateEffect } from "react-use";
 import styled from "styled-components";
 import _ from "lodash";
 import { useAccount, useContractWrite, usePrepareContractWrite } from "wagmi";
-import { rawEmailToBuffer } from "@zk-email/helpers/dist/input-helpers";
 import {
   downloadProofFiles,
   generateProof,
   verifyProof,
-} from "@zk-email/helpers/dist/zkp";
+} from "@zk-email/helpers/dist/chunked-zkey";
 import { abi } from "../abi.json";
 import {
   generateTwitterVerifierCircuitInputs,
@@ -431,15 +430,13 @@ export const MainPage: React.FC<{}> = (props) => {
               status !== "proof-files-downloaded-successfully"
             }
             onClick={async () => {
-              const emailBuffer = rawEmailToBuffer(emailFull); // Cleaned email as buffer
-
               let input: ITwitterCircuitInputs;
               try {
                 setDisplayMessage("Generating proof...");
                 setStatus("generating-input");
 
                 input = await generateTwitterVerifierCircuitInputs(
-                  emailBuffer,
+                  Buffer.from(emailFull),
                   ethereumAddress
                 );
 

@@ -1,7 +1,7 @@
 import { buildPoseidon } from "circomlibjs";
 import { verifyDKIMSignature } from "@zk-email/helpers/dist/dkim";
 import { generateTwitterVerifierCircuitInputs } from "../helpers";
-import { bigIntToChunkedBytes, bytesToBigInt, packedNBytesToString } from "@zk-email/helpers/dist/binaryFormat";
+import { bigIntToChunkedBytes, bytesToBigInt, packedNBytesToString } from "@zk-email/helpers/dist/binary-format";
 
 const path = require("path");
 const fs = require("fs");
