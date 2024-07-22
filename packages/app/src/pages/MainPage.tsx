@@ -30,11 +30,14 @@ import {
 } from "../hooks/useGmailClient";
 import { formatDateTime } from "../helpers/dateTimeFormat";
 import EmailInputMethod from "../components/EmailInputMethod";
+import { useZkRegex } from "../../zk-regex-sdk";
+import { randomUUID } from "crypto";
 
 const CIRCUIT_NAME = "twitter";
 
 export const MainPage: React.FC<{}> = (props) => {
   const { address } = useAccount();
+  const workers = new Map<string, boolean>();
 
   const {
     googleAuthToken,
@@ -44,6 +47,14 @@ export const MainPage: React.FC<{}> = (props) => {
     googleLogIn,
     googleLogOut,
   } = useGoogleAuth();
+
+  const {
+    createInputWorker,
+    generateInputFromEmail,
+    generateProofRemotely,
+    proofStatus,
+    inputWorkers,
+  } = useZkRegex();
 
   const [ethereumAddress, setEthereumAddress] = useState<string>(address ?? "");
   const [emailFull, setEmailFull] = useState<string>(
@@ -60,6 +71,7 @@ export const MainPage: React.FC<{}> = (props) => {
   const [lastAction, setLastAction] = useState<"" | "sign" | "verify" | "send">(
     ""
   );
+  const [workerReady, setWorkerReady] = useState<boolean>(false);
   const [isFetchEmailLoading, setIsFetchEmailLoading] = useState(false);
   const [fetchedEmails, setFetchedEmails] = useState<RawEmailResponse[]>([]);
   const [showBrowserWarning, setShowBrowserWarning] = useState<boolean>(false);
@@ -185,6 +197,17 @@ export const MainPage: React.FC<{}> = (props) => {
     return () => window.removeEventListener("keydown", handleKeyDown);
   });
 
+  useEffect(() => {
+    if (workers.get("zk-email/proof-of-twitter-v2")) {
+      return;
+    }
+    console.log("something")
+    createInputWorker("zk-email/proof-of-twitter-v2");
+    console.log("something2")
+    workers.set("zk-email/proof-of-twitter-v2", true);
+    // setWorkerReady(true);
+  }, []);
+
   // local storage stuff
   useUpdateEffect(() => {
     if (emailFull) {
@@ -246,6 +269,23 @@ export const MainPage: React.FC<{}> = (props) => {
 
     downloadZKey();
   }, []);
+
+  const handleGenerateProofRemotely = async () => {
+    const input = await generateInputFromEmail(
+      "zk-email/proof-of-twitter-v2",
+      emailFull
+    );
+    const body = Buffer.from(input.emailBody).toString("utf-8");
+    console.log("input", input);
+    console.log(input);
+    const proofRes = await generateProofRemotely(
+      "zk-email/proof-of-twitter-v2",
+      input
+    );
+    console.log(proofRes);
+  };
+
+  console.log(inputWorkers);
 
   return (
     <Container>
@@ -392,7 +432,8 @@ export const MainPage: React.FC<{}> = (props) => {
               )}
             </div>
           ) : null}
-          {inputMethod === "EML_FILE" || !import.meta.env.VITE_GOOGLE_CLIENT_ID ? (
+          {inputMethod === "EML_FILE" ||
+          !import.meta.env.VITE_GOOGLE_CLIENT_ID ? (
             <>
               {" "}
               <DragAndDropTextBox onFileDrop={onFileDrop} />
@@ -497,6 +538,12 @@ export const MainPage: React.FC<{}> = (props) => {
             }}
           >
             {displayMessage}
+          </Button>
+          <Button
+            data-testid="remote-prove-button"
+            onClick={handleGenerateProofRemotely}
+          >
+            Generate Proof Remotely
           </Button>
           {displayMessage ===
             "Downloading compressed proving files... (this may take a few minutes)" && (

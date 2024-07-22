@@ -1,0 +1,22 @@
+{
+  "name": "zk-regex-sdk",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.3",
+    "react": "^18.3.1",
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@react-oauth/google": "^0.12.1",
+    "js-base64": "^3.7.7"
+  },
+  "peerDependencies": {
+    "react": "^18.3.1"
+  }
+}
