@@ -38,7 +38,6 @@ const CIRCUIT_NAME = "twitter";
 
 export const MainPage: React.FC<{}> = (props) => {
   const { address } = useAccount();
-  const workers = new Map<string, boolean>();
 
   const {
     googleAuthToken,
@@ -199,14 +198,9 @@ export const MainPage: React.FC<{}> = (props) => {
   });
 
   useEffect(() => {
-    if (workers.get("zk-email/proof-of-twitter-v2")) {
-      return;
+    if (!inputWorkers["zk-email/proof-of-twitter-v2"]) {
+      createInputWorker("zk-email/proof-of-twitter-v2");
     }
-    console.log("something")
-    createInputWorker("zk-email/proof-of-twitter-v2");
-    console.log("something2")
-    workers.set("zk-email/proof-of-twitter-v2", true);
-    // setWorkerReady(true);
   }, []);
 
   // local storage stuff
@@ -543,6 +537,7 @@ export const MainPage: React.FC<{}> = (props) => {
             {displayMessage}
           </Button>
           <Button
+            disabled={!inputWorkers["zk-email/proof-of-twitter-v2"]}
             data-testid="remote-prove-button"
             onClick={handleGenerateProofRemotely}
           >
