@@ -91,6 +91,10 @@ export const MainPage: React.FC<{}> = (props) => {
     | "proof-files-downloaded-successfully"
     | "sent"
   >("not-started");
+  const [isRemoteProofGenerationLoading, setIsRemoteProofGenerationLoading] =
+    useState<boolean>(false);
+  const [areInputWorkersCreating, setAreInputWorkerCreating] =
+    useState<boolean>(false);
 
   const [stopwatch, setStopwatch] = useState<Record<string, number>>({
     startedDownloading: 0,
@@ -198,6 +202,7 @@ export const MainPage: React.FC<{}> = (props) => {
 
   useEffect(() => {
     if (!inputWorkers["zk-email/proof-of-twitter-v2"]) {
+      setAreInputWorkerCreating(true);
       createInputWorker("zk-email/proof-of-twitter-v2");
     }
   }, []);
@@ -265,6 +270,7 @@ export const MainPage: React.FC<{}> = (props) => {
   }, []);
 
   const handleGenerateProofRemotely = async () => {
+    setIsRemoteProofGenerationLoading(true);
     const input = await generateInputFromEmail(
       "zk-email/proof-of-twitter-v2",
       emailFull
@@ -272,12 +278,32 @@ export const MainPage: React.FC<{}> = (props) => {
     const body = Buffer.from(input.emailBody).toString("utf-8");
     console.log("input", input);
     console.log(input);
-    const proofRes = await generateProofRemotely(
-      "zk-email/proof-of-twitter-v2",
-      input
-    );
-    console.log(proofRes);
+    try {
+      const proofRes = await generateProofRemotely(
+        "zk-email/proof-of-twitter-v2",
+        input
+      );
+    } catch (err) {
+      console.log("Something went wrong", err);
+      setIsRemoteProofGenerationLoading(false);
+    } finally {
+    }
   };
+  useEffect(() => {
+    if (proofStatus[Object.keys(proofStatus)[0]]?.status == "COMPLETED") {
+      setIsRemoteProofGenerationLoading(false);
+      setProof(JSON.stringify(proofStatus[Object.keys(proofStatus)[0]].proof));
+      setPublicSignals(
+        JSON.stringify(proofStatus[Object.keys(proofStatus)[0]].publicOutput)
+      );
+    }
+  }, [proofStatus]);
+
+  useEffect(() => {
+    if (inputWorkers["zk-email/proof-of-twitter-v2"]) {
+      setAreInputWorkerCreating(false);
+    }
+  }, [inputWorkers]);
 
   console.log(inputWorkers);
 
@@ -462,7 +488,8 @@ export const MainPage: React.FC<{}> = (props) => {
               displayMessage !== "Prove" ||
               emailFull.length === 0 ||
               ethereumAddress.length === 0 ||
-              status !== "proof-files-downloaded-successfully"
+              status !== "proof-files-downloaded-successfully" ||
+              isRemoteProofGenerationLoading
             }
             onClick={async () => {
               let input: ITwitterCircuitInputs;
@@ -537,8 +564,18 @@ export const MainPage: React.FC<{}> = (props) => {
             disabled={!inputWorkers["zk-email/proof-of-twitter-v2"]}
             data-testid="remote-prove-button"
             onClick={handleGenerateProofRemotely}
+            disabled={
+              areInputWorkersCreating ||
+              emailFull.length === 0 ||
+              isRemoteProofGenerationLoading
+            }
           >
-            Generate Proof Remotely
+            Generate Proof Remotely{" "}
+            {isRemoteProofGenerationLoading || areInputWorkersCreating ? (
+              <div className="loader" style={{ marginLeft: "1rem" }} />
+            ) : (
+              ""
+            )}
           </Button>
           {displayMessage ===
             "Downloading compressed proving files... (this may take a few minutes)" && (

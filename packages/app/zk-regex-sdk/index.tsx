@@ -54,6 +54,7 @@ function ZkRegexProvider({children, clientId, zkRegexRegistryUrl}: ProvidersProp
       }
     });
     const data = await res.json();
+    console.log(data)
     setProofStatus((prev) => ({...prev, [data.id]:data}));
     if (data.pollUrl) {
       poolForProofStatus(data.pollUrl)
@@ -62,7 +63,7 @@ function ZkRegexProvider({children, clientId, zkRegexRegistryUrl}: ProvidersProp
   }
 
   async function poolForProofStatus(url: string) {
-    const res = await fetch(url);
+    const res = await fetch(zkRegexRegistryUrl + url);
     const data = await res.json();
     setProofStatus((prev) => ({...prev, [data.id]:data}));
     if (data.status !== 'COMPLETED') {
