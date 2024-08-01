@@ -561,13 +561,13 @@ export const MainPage: React.FC<{}> = (props) => {
             {displayMessage}
           </Button>
           <Button
-            disabled={!inputWorkers["zk-email/proof-of-twitter-v2"]}
             data-testid="remote-prove-button"
             onClick={handleGenerateProofRemotely}
             disabled={
               areInputWorkersCreating ||
               emailFull.length === 0 ||
-              isRemoteProofGenerationLoading
+              isRemoteProofGenerationLoading ||
+              !inputWorkers["zk-email/proof-of-twitter-v2"]
             }
           >
             Generate Proof Remotely{" "}
