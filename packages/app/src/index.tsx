@@ -16,6 +16,9 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import { GoogleAuthProvider } from "./contexts/GoogleAuth";
 import { ZkRegexProvider } from "../zk-regex-sdk";
 
+import { ThemeProvider, CssBaseline } from '@mui/material';
+import theme from './theme'; 
+
 const { connectors } = getDefaultWallets({
   appName: "ZK Email - Twitter Verifier",
   chains: [sepolia],
@@ -34,22 +37,24 @@ const config = createConfig({
 if (import.meta.env.VITE_GOOGLE_CLIENT_ID) {
   ReactDOM.render(
     <React.StrictMode>
-      <ZkRegexProvider
-        clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}
-        zkRegexRegistryUrl="https://registry-dev.zkregex.com"
-      >
-        <WagmiConfig config={config}>
-          <RainbowKitProvider chains={[sepolia]} theme={darkTheme()}>
-            <GoogleOAuthProvider
-              clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}
-            >
-              <GoogleAuthProvider>
-                <App />
-              </GoogleAuthProvider>
-            </GoogleOAuthProvider>
-          </RainbowKitProvider>
-        </WagmiConfig>{" "}
-      </ZkRegexProvider>
+      <ThemeProvider theme={theme}>
+        <ZkRegexProvider
+          clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}
+          zkRegexRegistryUrl="https://registry-dev.zkregex.com"
+        >
+          <WagmiConfig config={config}>
+            <RainbowKitProvider chains={[sepolia]} theme={darkTheme()}>
+              <GoogleOAuthProvider
+                clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}
+              >
+                <GoogleAuthProvider>
+                  <App />
+                </GoogleAuthProvider>
+              </GoogleOAuthProvider>
+            </RainbowKitProvider>
+          </WagmiConfig>{" "}
+        </ZkRegexProvider>
+      </ThemeProvider>
     </React.StrictMode>,
     document.getElementById("root")
   );
