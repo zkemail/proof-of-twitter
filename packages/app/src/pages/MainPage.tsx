@@ -33,6 +33,14 @@ import EmailInputMethod from "../components/EmailInputMethod";
 import { randomUUID } from "crypto";
 import { useZkEmailSDK } from "@zk-email/zk-email-sdk";
 
+import { Box, Grid, Typography } from "@mui/material";
+import Stepper from '../components/Stepper'
+import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward';
+import Video from "../components/Video";
+import Nav from "../components/Nav";
+import {useTheme} from "@mui/material";
+import StatusTag from "../components/StatusTag";
+
 const CIRCUIT_NAME = "twitter";
 
 export const MainPage: React.FC<{}> = (props) => {
@@ -124,7 +132,7 @@ export const MainPage: React.FC<{}> = (props) => {
     if (address) {
       setEthereumAddress(address);
     } else {
-      setEthereumAddress("");
+      // setEthereumAddress("");
     }
   }, [address]);
 
@@ -324,239 +332,421 @@ export const MainPage: React.FC<{}> = (props) => {
 
   console.log(inputWorkers);
 
+
+
+
+  const theme = useTheme()
+
+  const [counter, setCounter] = useState(0);
+
+  const [steps, setSteps] = useState<[string, 'completed' | 'uncompleted'][]>([
+    ['SEND RESET EMAIL', 'completed'],
+    ['COPY/PASTE DKIM SIG', 'uncompleted'],
+    ['ADD ADDRESS', 'uncompleted'],
+    ['PROVE', 'uncompleted'],
+    ['VERIFY & MINT', 'uncompleted']
+  ]);
+
+  const [activeStep, setActiveStep] = useState<number>(0);
+
+  const markStepCompleted = (index: number) => {
+    setSteps(prevSteps => {
+      const newSteps = [...prevSteps];
+      newSteps[index][1] = 'completed';
+      return newSteps;
+    });
+  };
+
+  const markStepUncompleted = (index: number) => {
+    setSteps(prevSteps => {
+      const newSteps = [...prevSteps];
+      newSteps[index][1] = 'uncompleted';
+      return newSteps;
+    });
+  };
+
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (status === 'generating-proof') {
+      interval = setInterval(() => {
+        setCounter(prevCounter => prevCounter + 1);
+      }, 1000);
+    } else {
+      setCounter(0);
+    }
+    return () => clearInterval(interval);
+  }, [status]);
+
+
+  useEffect(() => {
+    // i'm not sure if this if statement check is correct,  after the &&
+    // i want to make sure the user actually put something in the 'Full Email with Headers' section OR if they logged in with Google they actually selected an email and it's not the default localStorage.emailFull=DOMException
+    // this code works but there's probably a better check?
+    if (emailFull != '' && emailFull != 'DOMException') {
+      markStepCompleted(1); // Mark 'COPY/PASTE DKIM SIG' step as completed
+    } else {
+      markStepUncompleted(1); // Mark 'COPY/PASTE DKIM SIG' step as uncompleted
+    }
+  }, [emailFull]);
+
+
+  useEffect(() => {
+    if (ethereumAddress != '') {
+      markStepCompleted(2); // Mark 'ADD ADDRESS' step as completed
+    } else {
+      markStepUncompleted(2); // Mark 'ADD ADDRESS' step as uncompleted
+    }
+  }, [ethereumAddress]);
+
+
+  useEffect(() => {
+    if (status === 'done' ) {
+      markStepCompleted(3); // Mark 'PROVE' step as completed
+    } else {
+      // markStepUncompleted(3); // Mark 'PROVE' step as uncompleted 
+    }
+  }, [status]);
+
+
+  const [isOverlayVisible, setIsOverlayVisible] = useState(false);
+
+  useEffect(() => {
+    if (status === 'generating-proof') {
+      setIsOverlayVisible(true);
+    } else {
+      setIsOverlayVisible(false);
+    }
+  }, [status]);
+
+
+
+  // 
+  const [message, setMessage] = useState<string>("just a test: testing web worker");
+
+  useEffect(() => {
+    const worker = new Worker(new URL('../testWorker.js', import.meta.url));
+
+    worker.onmessage = (e) => {
+      setMessage(e.data);
+      worker.terminate();
+    };
+
+    worker.postMessage({});
+  }, []);
+
+
+
+
+
+
   return (
-    <Container>
+    <Grid container >
+      {isOverlayVisible && <Overlay>Generating Proof... Reload page if Unresponsive after 6 Minutes </Overlay>}
       {showBrowserWarning && (
         <TopBanner
           message={"ZK Email only works on Chrome or Chromium-based browsers."}
         />
       )}
-      <div className="title">
-        <Header>Proof of Twitter: ZK Email Demo</Header>
-      </div>
 
-      <Col
-        style={{
-          gap: "8px",
-          maxWidth: "720px",
-          margin: "0 auto",
-          marginBottom: "2rem",
-        }}
+
+      <Grid item xs={12} md={6} sx={{   height: '100vh', overflowY: 'auto', backgroundColor:'#ffbfbf', background:'radial-gradient(70.71% 70.71% at 50% 50%, #FFF 19%, rgba(255, 255, 255, 0.00) 61%), linear-gradient(38deg, rgba(255, 255, 255, 0.00) 60%, rgba(255, 255, 255, 0.69) 100%), linear-gradient(45deg, #FFF 10%, rgba(255, 255, 255, 0.00) 23.5%), linear-gradient(36deg, #FFF 12.52%, rgba(255, 255, 255, 0.00) 76.72%), linear-gradient(214deg, rgba(255, 255, 255, 0.00) 0%, rgba(255, 220, 234, 0.40) 37.53%, rgba(255, 255, 255, 0.00) 71%), linear-gradient(212deg, rgba(255, 255, 255, 0.00) 15%, #E4F1FE 72.5%, rgba(255, 255, 255, 0.00) 91.5%)'}}>
+      <Nav splitscreen={true}/>
+      <Box sx={{backgroundColor:'#FFFFFF', padding:'20px', color:'#000000', minHeight:'650px', paddingX:'60px'}} >
+      <Stepper
+        steps={steps}
+        activeStep={activeStep}
+        setActiveStep={setActiveStep}
       >
-        <span style={{ color: "rgba(255, 255, 255, 0.7)" }}>
-          Welcome to a demo page for ZK-Email technology.{" "}
-          <a href="https://github.com/zk-email-verify/zk-email-verify/">
-            Our library
-          </a>{" "}
-          will allow you to generate zero knowledge proofs proving you received
-          some email and mask out any private data, without trusting our server
-          to keep your privacy. This demo is just one use case that lets you
-          prove you own a Twitter username on-chain, by verifying confirmation
-          emails (and their normally-hidden headers) from Twitter. Visit{" "}
-          <a href="https://prove.email/blog/zkemail">our blog</a> or{" "}
-          <a href="https://prove.email">website</a> to learn more about ZK
-          Email, and find the technical details on how this demo is built{" "}
-          <a href="https://prove.email/blog/twitter">here</a>.
-          <br />
-          <br />
-          If you wish to generate a ZK proof of Twitter badge (NFT), you must:
-        </span>
-        <NumberedStep step={1}>
-          Send yourself a{" "}
-          <a
-            href="https://twitter.com/account/begin_password_reset"
-            target="_blank"
-            rel="noreferrer"
-          >
-            password reset email
-          </a>{" "}
-          from Twitter. (Reminder: Twitter name with emoji might fail to pass
-          DKIM verification)
-        </NumberedStep>
-        <NumberedStep step={2}>
-          In your inbox, find the email from Twitter and click the three dot
-          menu, then "Show original" then "Copy to clipboard". If on Outlook,
-          download the original email as .eml and copy it instead.
-        </NumberedStep>
-        <NumberedStep step={3}>
-          Copy paste or drop that into the box below. Note that we cannot use
-          this to phish you: we do not know your password, and we never get this
-          email info because we have no server at all. We are actively searching
-          for a less sketchy email.
-        </NumberedStep>
-        <NumberedStep step={4}>
-          Paste in your sending Ethereum address. This ensures that no one else
-          can "steal" your proof for another account (frontrunning protection!).
-        </NumberedStep>
-        <NumberedStep step={5}>
-          Click <b>"Prove"</b>. Note it is completely client side and{" "}
-          <a
-            href="https://github.com/zkemail/proof-of-twitter/"
-            target="_blank"
-            rel="noreferrer"
-          >
-            open source
-          </a>
-          , and no server ever sees your private information.
-        </NumberedStep>
-        <NumberedStep step={6}>
-          Click <b>"Verify"</b> and then <b>"Mint Twitter Badge On-Chain"</b>,
-          and approve to mint the NFT badge that proves Twitter ownership! Note
-          that it is 700K gas right now so only feasible on Sepolia, though we
-          intend to reduce this soon.
-        </NumberedStep>
-      </Col>
-      <Main>
-        <Column>
-          <SubHeader>Input</SubHeader>
-          {inputMethod || !import.meta.env.VITE_GOOGLE_CLIENT_ID ? null : (
-            <EmailInputMethod
-              onClickGoogle={() => {
-                try {
-                  setIsFetchEmailLoading(true);
-                  setInputMethod("GOOGLE");
-                  googleLogIn();
-                } catch (e) {
-                  console.log(e);
-                  setIsFetchEmailLoading(false);
-                }
-              }}
-              onClickEMLFile={() => {
-                setInputMethod("EML_FILE");
-              }}
-            />
-          )}
-          {inputMethod ? (
-            <TextButton onClick={() => setInputMethod(null)}>
-              ←{"  "}Go Back
-            </TextButton>
-          ) : null}
-          {inputMethod === "GOOGLE" ? (
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                flexDirection: "column",
-                padding: "1.25rem",
-              }}
-            >
-              {isFetchEmailLoading ? (
-                <div className="loader" />
-              ) : (
-                fetchedEmails.map((email, index) => (
-                  <div
+
+        {/* --------- SEND TWITTER PASSWORD RESET EMAIL SECTION - STEP 0 --------- */}
+        {activeStep ==0 && (
+          <Box sx={{marginTop:'100px', marginBottom: '40px'}}>
+            <Typography variant='h1' sx={{marginBottom:'20px'}}>SEND TWITTER PASSWORD RESET EMAIL</Typography>
+            <Typography>Send yourself a password reset email from Twitter. <br></br>(Reminder: Twitter name with emoji might fail to pass DKIM verification)</Typography>
+            {/* test web worker */}
+            <Typography sx={{marginTop:'20px', fontWeight:'bold', color:'red'}}>{message}</Typography>
+          </Box>
+        )}
+        {/* --------- END OF: SEND TWITTER PASSWORD RESET EMAIL SECTION - STEP 0 --------- */}
+
+
+
+
+        {/* --------- COPY & PASTE THE EMAIL DKIM SIG - STEP 1 --------- */}
+        {activeStep ==1 && (
+          <Box>
+            <Box sx={{marginTop:'100px', marginBottom: '40px'}}>
+              <Typography variant='h1' sx={{marginBottom:'20px'}}>COPY & PASTE THE EMAIL DKIM SIG</Typography>
+              <Typography>In your inbox, find the email from Twitter and click the three dot menu, then "Show original" then "Copy to clipboard". If on Outlook, download the original email as .eml and copy it instead. Copy paste or drop that into the box below. Note that we cannot use this to phish you: we do not know your password, and we never get this email info because we have no server at all. We are actively searching for a less sketchy email.</Typography>
+            </Box>
+
+            <Column>
+            <SubHeader>Input</SubHeader>
+            {inputMethod || !import.meta.env.VITE_GOOGLE_CLIENT_ID ? null : (
+                <EmailInputMethod
+                  highlighted={true}
+                  onClickGoogle={() => {
+                    try {
+                      setIsFetchEmailLoading(true);
+                      setInputMethod("GOOGLE");
+                      googleLogIn();
+                    } catch (e) {
+                      console.log(e);
+                      setIsFetchEmailLoading(false);
+                    }
+                  }}
+                  onClickEMLFile={() => {
+                    setInputMethod("EML_FILE");
+                  }}
+                />
+              )}
+              {inputMethod ? (
+                <TextButton onClick={() => setInputMethod(null)}>
+                  ←{"  "}Go Back
+                </TextButton>
+              ) : null}
+              {inputMethod === "GOOGLE" ? (
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    flexDirection: "column",
+                    padding: "1.25rem",
+                  }}
+                >
+                  {isFetchEmailLoading ? (
+                    <div className="loader" />
+                  ) : (
+                    <>
+                    <Typography variant="h6" sx={{ marginBottom: '1rem' }}>
+                    Select the 'Password reset request' email from twitter, then proceed
+                    </Typography>
+                    {fetchedEmails.map((email, index) => (
+                      <div
+                        style={{
+                          borderBottom: "1px solid lightgrey",
+                          width: "100%",
+                          padding: "0 1rem",
+                          display: "flex",
+                          justifyContent: "space-between",
+                          cursor: 'pointer',
+                          color:
+                            email.decodedContents === emailFull
+                              ? theme.palette.accent.main
+                              : theme.palette.secondary.main,
+                          borderTop: index === 0 ? "1px solid white" : "none", // Conditional border top
+                        }}
+                        onClick={() => {
+                          setEmailFull(email.decodedContents);
+                        }}
+                      >
+                      <p style={{   overflow: 'hidden',}}>{email.subject}</p>
+                      <p style={{ flex:'end', marginRight:'0px', width:'100px', textAlign:'right'}}>{formatDateTime(email.internalDate)}</p>
+                      </div>
+                    ))}
+                    </>
+                  )}
+                  
+                </div>
+              ) : null}
+              {inputMethod === "EML_FILE" ||
+              !import.meta.env.VITE_GOOGLE_CLIENT_ID ? (
+                <>
+                  {" "}
+                  <DragAndDropTextBox onFileDrop={onFileDrop} highlighted={true}/>
+                  <h3
                     style={{
-                      borderBottom: "1px solid white",
-                      width: "100%",
-                      padding: "0 1rem",
-                      display: "flex",
-                      justifyContent: "space-between",
-                      color:
-                        email.decodedContents === emailFull
-                          ? "#8272e4"
-                          : "white",
-                      borderTop: index === 0 ? "1px solid white" : "none", // Conditional border top
-                    }}
-                    onClick={() => {
-                      setEmailFull(email.decodedContents);
+                      textAlign: "center",
+                      marginTop: "0rem",
+                      marginBottom: "0rem",
                     }}
                   >
-                    <p>{email.subject}</p>
-                    <p>{formatDateTime(email.internalDate)}</p>
-                  </div>
-                ))
+                    OR
+                  </h3>
+                  <LabeledTextArea
+                    highlighted={true}
+                    label="Full Email with Headers"
+                    value={emailFull}
+                    onChange={(e) => {
+                      setEmailFull(e.currentTarget.value);
+                    }}
+                  />
+                </>
+              ) : null}
+
+
+
+            {displayMessage ===
+              "Downloading compressed proving files... (this may take a few minutes)" && (
+              <ProgressBar
+                width={downloadProgress * 10}
+                label={`${downloadProgress} / 10 items`}
+              />
+            )}
+            <ProcessStatus status={status}>
+              {status !== "not-started" ? (
+                <div>
+                  Status:
+                  <span data-testid={"status-" + status}>{status}</span>
+                </div>
+              ) : (
+                <div data-testid={"status-" + status}></div>
               )}
-            </div>
-          ) : null}
-          {inputMethod === "EML_FILE" ||
-          !import.meta.env.VITE_GOOGLE_CLIENT_ID ? (
-            <>
-              {" "}
-              <DragAndDropTextBox onFileDrop={onFileDrop} />
-              <h3
-                style={{
-                  textAlign: "center",
-                  marginTop: "0rem",
-                  marginBottom: "0rem",
+              <TimerDisplay timers={stopwatch} />
+            </ProcessStatus>
+            </Column>
+            </Box>          
+            )}
+        {/* --------- END OF: COPY & PASTE THE EMAIL DKIM SIG - STEP 1 --------- */}
+
+
+
+
+
+        {/* --------- ADD ETHEREUM ADDRESS TO SECURE PROOF - STEP 2 --------- */}
+        {activeStep ==2 && (
+          <Box>
+            <Box sx={{marginTop:'100px', marginBottom: '40px'}}>
+              <Typography variant='h1' sx={{marginBottom:'20px'}}>ADD ETHEREUM ADDRESS TO SECURE PROOF</Typography>
+              <Typography>Paste in your sending Ethereum address. This ensures that no one else can "steal" your proof for another account (frontrunning protection!). Click "Prove". Note it is completely client side and open source, and no server ever sees your private information.</Typography>
+            </Box>
+
+            <Column>
+              <SubHeader>Input</SubHeader>
+                <>
+                  <LabeledTextArea
+                    disabled={true}
+                    label="Full Email with Headers"
+                    value={emailFull}
+                    onChange={(e) => {
+                      setEmailFull(e.currentTarget.value);
+                    }}
+                  />
+                </>
+         
+              <SingleLineInput
+                highlighted={true}
+                label="Ethereum Address"
+                value={ethereumAddress}
+                onChange={(e) => {
+                  setEthereumAddress(e.currentTarget.value);
                 }}
-              >
-                OR
-              </h3>
+              />
+
+              {displayMessage ===
+                "Downloading compressed proving files... (this may take a few minutes)" && (
+                <ProgressBar
+                  width={downloadProgress * 10}
+                  label={`${downloadProgress} / 10 items`}
+                />
+              )}
+              <ProcessStatus status={status}>
+                {status !== "not-started" ? (
+                  <div>
+                    Status:
+                    <span data-testid={"status-" + status}>{status}</span>
+                  </div>
+                ) : (
+                  <div data-testid={"status-" + status}></div>
+                )}
+                <TimerDisplay timers={stopwatch} />
+              </ProcessStatus>
+            </Column>
+          </Box>          
+        )}
+        {/* --------- END OF: ADD ETHEREUM ADDRESS TO SECURE PROOF - STEP 2 --------- */}
+
+
+
+
+
+        {/* --------- GENERATE PROOF USING INPUTS - STEP 3 --------- */}
+        {activeStep ==3 && (
+        <Box>
+          <Box sx={{marginTop:'100px', marginBottom: '40px'}}>
+            <Typography variant='h1' sx={{marginBottom:'20px'}}>GENERATE PROOF USING INPUTS</Typography>
+            <Typography>Click "Prove". Note it is completely client side and open source, and no server ever sees your private information.</Typography>
+          </Box>
+
+          <Column>
+          <SubHeader>Input</SubHeader>
               <LabeledTextArea
+                disabled={true}
                 label="Full Email with Headers"
                 value={emailFull}
                 onChange={(e) => {
                   setEmailFull(e.currentTarget.value);
                 }}
               />
-            </>
-          ) : null}
-          <SingleLineInput
-            label="Ethereum Address"
-            value={ethereumAddress}
-            onChange={(e) => {
-              setEthereumAddress(e.currentTarget.value);
-            }}
-          />
-          <Button
-            data-testid="prove-button"
-            disabled={
-              displayMessage !== "Prove" ||
-              emailFull.length === 0 ||
-              ethereumAddress.length === 0 ||
-              status !== "proof-files-downloaded-successfully" ||
-              isRemoteProofGenerationLoading
-            }
-            onClick={async () => {
-              let input: ITwitterCircuitInputs;
-              try {
-                setDisplayMessage("Generating proof...");
-                setStatus("generating-input");
+              <SingleLineInput
+                disabled={true}
+                label="Ethereum Address"
+                value={ethereumAddress}
+                onChange={(e) => {
+                  setEthereumAddress(e.currentTarget.value);
+                }}
+              />
+              <Button
+                highlighted={true}
+                data-testid="prove-button"
+                disabled={
+                  displayMessage !== "Prove" ||
+                  emailFull.length === 0 ||
+                  ethereumAddress.length === 0 ||
+                  status !== "proof-files-downloaded-successfully" ||
+                  isRemoteProofGenerationLoading
+                }
+                onClick={async () => {
+                  let input: ITwitterCircuitInputs;
+                  try {
+                    setDisplayMessage("Generating proof...");
+                    setStatus("generating-input");
 
-                input = await generateTwitterVerifierCircuitInputs(
-                  Buffer.from(emailFull),
-                  ethereumAddress
-                );
+                    input = await generateTwitterVerifierCircuitInputs(
+                      Buffer.from(emailFull),
+                      ethereumAddress
+                    );
 
-                console.log("Generated input:", JSON.stringify(input));
-              } catch (e) {
-                console.log("Error generating input", e);
-                setDisplayMessage("Prove");
-                setStatus("error-bad-input");
-                return;
-              }
+                    console.log("Generated input:", JSON.stringify(input));
+                  } catch (e) {
+                    console.log("Error generating input", e);
+                    setDisplayMessage("Prove");
+                    setStatus("error-bad-input");
+                    return;
+                  }
 
-              console.time("zk-gen");
-              recordTimeForActivity("startedProving");
-              setDisplayMessage(
-                "Starting proof generation... (this will take 6-10 minutes and ~5GB RAM)"
-              );
-              setStatus("generating-proof");
-              console.log("Starting proof generation");
-              // alert("Generating proof, will fail due to input");
-              const { proof, publicSignals } = await generateProof(
-                input,
-                // @ts-ignore
-                import.meta.env.VITE_CIRCUIT_ARTIFACTS_URL,
-                CIRCUIT_NAME
-              );
-              //const proof = JSON.parse('{"pi_a": ["19201501460375869359786976350200749752225831881815567077814357716475109214225", "11505143118120261821370828666956392917988845645366364291926723724764197308214", "1"], "pi_b": [["17114997753466635923095897108905313066875545082621248342234075865495571603410", "7192405994185710518536526038522451195158265656066550519902313122056350381280"], ["13696222194662648890012762427265603087145644894565446235939768763001479304886", "2757027655603295785352548686090997179551660115030413843642436323047552012712"], ["1", "0"]], "pi_c": ["6168386124525054064559735110298802977718009746891233616490776755671099515304", "11077116868070103472532367637450067545191977757024528865783681032080180232316", "1"], "protocol": "groth16", "curve": "bn128"}');
-              //const publicSignals = JSON.parse('["0", "0", "0", "0", "0", "0", "0", "0", "32767059066617856", "30803244233155956", "0", "0", "0", "0", "27917065853693287", "28015", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "113659471951225", "0", "0", "1634582323953821262989958727173988295", "1938094444722442142315201757874145583", "375300260153333632727697921604599470", "1369658125109277828425429339149824874", "1589384595547333389911397650751436647", "1428144289938431173655248321840778928", "1919508490085653366961918211405731923", "2358009612379481320362782200045159837", "518833500408858308962881361452944175", "1163210548821508924802510293967109414", "1361351910698751746280135795885107181", "1445969488612593115566934629427756345", "2457340995040159831545380614838948388", "2612807374136932899648418365680887439", "16021263889082005631675788949457422", "299744519975649772895460843780023483", "3933359104846508935112096715593287", "556307310756571904145052207427031380052712977221"]');
-              console.log("Finished proof generation");
-              console.timeEnd("zk-gen");
-              recordTimeForActivity("finishedProving");
+                  console.time("zk-gen");
+                  recordTimeForActivity("startedProving");
+                  setDisplayMessage(
+                    "Starting proof generation... (this will take 6-10 minutes and ~5GB RAM)"
+                  );
+                  setStatus("generating-proof");
+                  console.log("Starting proof generation");
+                  // alert("Generating proof, will fail due to input");
+                  const { proof, publicSignals } = await generateProof(
+                    input,
+                    // @ts-ignore
+                    import.meta.env.VITE_CIRCUIT_ARTIFACTS_URL,
+                    CIRCUIT_NAME
+                  );
+                  //const proof = JSON.parse('{"pi_a": ["19201501460375869359786976350200749752225831881815567077814357716475109214225", "11505143118120261821370828666956392917988845645366364291926723724764197308214", "1"], "pi_b": [["17114997753466635923095897108905313066875545082621248342234075865495571603410", "7192405994185710518536526038522451195158265656066550519902313122056350381280"], ["13696222194662648890012762427265603087145644894565446235939768763001479304886", "2757027655603295785352548686090997179551660115030413843642436323047552012712"], ["1", "0"]], "pi_c": ["6168386124525054064559735110298802977718009746891233616490776755671099515304", "11077116868070103472532367637450067545191977757024528865783681032080180232316", "1"], "protocol": "groth16", "curve": "bn128"}');
+                  //const publicSignals = JSON.parse('["0", "0", "0", "0", "0", "0", "0", "0", "32767059066617856", "30803244233155956", "0", "0", "0", "0", "27917065853693287", "28015", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "113659471951225", "0", "0", "1634582323953821262989958727173988295", "1938094444722442142315201757874145583", "375300260153333632727697921604599470", "1369658125109277828425429339149824874", "1589384595547333389911397650751436647", "1428144289938431173655248321840778928", "1919508490085653366961918211405731923", "2358009612379481320362782200045159837", "518833500408858308962881361452944175", "1163210548821508924802510293967109414", "1361351910698751746280135795885107181", "1445969488612593115566934629427756345", "2457340995040159831545380614838948388", "2612807374136932899648418365680887439", "16021263889082005631675788949457422", "299744519975649772895460843780023483", "3933359104846508935112096715593287", "556307310756571904145052207427031380052712977221"]');
+                  console.log("Finished proof generation");
+                  console.timeEnd("zk-gen");
+                  recordTimeForActivity("finishedProving");
 
-              console.log("publicSignals", publicSignals);
+                  console.log("publicSignals", publicSignals);
 
-              // alert("Done generating proof");
-              setProof(JSON.stringify(proof));
-              // let kek = publicSignals.map((x: string) => BigInt(x));
-              // let soln = packedNBytesToString(kek.slice(0, 12));
-              // let soln2 = packedNBytesToString(kek.slice(12, 147));
-              // let soln3 = packedNBytesToString(kek.slice(147, 150));
-              // setPublicSignals(`From: ${soln}\nTo: ${soln2}\nUsername: ${soln3}`);
-              setPublicSignals(JSON.stringify(publicSignals));
+                  // alert("Done generating proof");
+                  setProof(JSON.stringify(proof));
+                  // let kek = publicSignals.map((x: string) => BigInt(x));
+                  // let soln = packedNBytesToString(kek.slice(0, 12));
+                  // let soln2 = packedNBytesToString(kek.slice(12, 147));
+                  // let soln3 = packedNBytesToString(kek.slice(147, 150));
+                  // setPublicSignals(`From: ${soln}\nTo: ${soln2}\nUsername: ${soln3}`);
+                  setPublicSignals(JSON.stringify(publicSignals));
 
               if (!input) {
                 setStatus("error-failed-to-prove");
@@ -611,82 +801,130 @@ export const MainPage: React.FC<{}> = (props) => {
               <div data-testid={"status-" + status}></div>
             )}
             <TimerDisplay timers={stopwatch} />
+            {status === 'generating-proof' && <CounterDisplay>Elapsed Time: {counter}s</CounterDisplay>}
           </ProcessStatus>
-        </Column>
-        <Column>
-          <SubHeader>Output</SubHeader>
-          <LabeledTextArea
-            label="Proof Output"
-            value={proof}
-            onChange={(e) => {
-              setProof(e.currentTarget.value);
-            }}
-            warning={verificationMessage}
-            warningColor={verificationPassed ? "green" : "red"}
-          />
-          <LabeledTextArea
-            label="..."
-            value={publicSignals}
-            secret
-            onChange={(e) => {
-              setPublicSignals(e.currentTarget.value);
-            }}
-            // warning={
-            // }
-          />
-          <Button
-            disabled={emailFull.trim().length === 0 || proof.length === 0}
-            onClick={async () => {
-              try {
-                setLastAction("verify");
-                let ok = true;
-                const res: boolean = await verifyProof(
-                  JSON.parse(proof),
-                  JSON.parse(publicSignals),
-                  // @ts-ignore
-                  import.meta.env.VITE_CIRCUIT_ARTIFACTS_URL,
-                  CIRCUIT_NAME
-                );
-                console.log(res);
-                if (!res) throw Error("Verification failed!");
-                setVerificationMessage("Passed!");
-                setVerificationPassed(ok);
-              } catch (er: any) {
-                setVerificationMessage("Failed to verify " + er.toString());
-                setVerificationPassed(false);
-              }
-            }}
-          >
-            Verify
-          </Button>
-          <Button
-            disabled={!verificationPassed || isLoading || isSuccess || !write}
-            onClick={async () => {
-              setStatus("sending-on-chain");
-              write?.();
-            }}
-          >
-            {isSuccess
-              ? "Successfully sent to chain!"
-              : isLoading
-              ? "Confirm in wallet"
-              : !write
-              ? "Connect Wallet first, scroll to top!"
-              : verificationPassed
-              ? "Mint Twitter badge on-chain"
-              : "Verify first, before minting on-chain!"}
-          </Button>
-          {isSuccess && (
-            <div>
-              Transaction:{" "}
-              <a href={"https://sepolia.etherscan.io/tx/" + data?.hash}>
-                {data?.hash}
-              </a>
-            </div>
-          )}
-        </Column>
-      </Main>
-    </Container>
+          </Column>
+          </Box>   
+                 
+        )}
+        {/* --------- END OF: GENERATE PROOF USING INPUTS - STEP 3 --------- */}
+
+
+
+
+
+
+        {/* --------- VERIFY & MINT ON CHAIN TWITTER BADGE - STEP 4 --------- */}
+        {activeStep ==4 && (
+          <Box>
+            <Box sx={{marginTop:'100px', marginBottom: '40px'}}>
+              <Typography variant='h1' sx={{marginBottom:'20px'}}>VERIFY & MINT ON CHAIN TWITTER BADGE</Typography>
+              <Typography>Click "Verify" and then "Mint Twitter Badge On-Chain", and approve to mint the NFT badge that proves Twitter ownership! Note that it is 700K gas right now so only feasible on Sepolia, though we intend to reduce this soon.</Typography>
+            </Box>
+
+
+            <Column>
+              <SubHeader>Output</SubHeader>
+              {verificationMessage && (
+                <StatusTag statusMessage={verificationMessage} statusPassed={verificationPassed}/>
+              )}
+              <LabeledTextArea
+                label="Proof Output"
+                value={proof}
+                onChange={(e) => {
+                  setProof(e.currentTarget.value);
+                }}
+              />
+              <LabeledTextArea
+                label="Public Info Sent On Chain"
+                value={publicSignals}
+                // secret
+                onChange={(e) => {
+                  setPublicSignals(e.currentTarget.value);
+                }}
+              />
+              <Button
+                highlighted={verificationMessage!='Passed!'}
+                disabled={emailFull.trim().length === 0 || proof.length === 0}
+                onClick={async () => {
+                  try {
+                    setLastAction("verify");
+                    let ok = true;
+                    const res: boolean = await verifyProof(
+                      JSON.parse(proof),
+                      JSON.parse(publicSignals),
+                      // @ts-ignore
+                      import.meta.env.VITE_CIRCUIT_ARTIFACTS_URL,
+                      CIRCUIT_NAME
+                    );
+                    console.log(res);
+                    if (!res) throw Error("Verification failed!");
+                    setVerificationMessage("Passed!");
+                    setVerificationPassed(ok);
+                  } catch (er: any) {
+                    setVerificationMessage("Failed to verify " + er.toString());
+                    setVerificationPassed(false);
+                  }
+                }}
+              >
+                Verify
+              </Button>
+              <Button
+                highlighted={verificationMessage === 'Passed!' || isSuccess}
+                disabled={!verificationPassed || isLoading || isSuccess || !write}
+                onClick={async () => {
+                  if (isSuccess) {
+                    window.open(`https://sepolia.etherscan.io/tx/${data?.hash}`, "_blank");
+                  } else {
+                    setStatus("sending-on-chain");
+                    write?.();
+                  }
+                }}
+                endIcon={isSuccess ? <ArrowOutwardIcon /> : null}
+              >
+                {isSuccess
+                  ? "SUCCESSFULLY SENT ON CHAIN"
+                  : isLoading
+                  ? "Confirm in wallet"
+                  : !write
+                  ? "Connect Wallet first, scroll to top!"
+                  : verificationPassed
+                  ? "Mint Twitter badge on-chain"
+                  : "Verify first, before minting on-chain!"}
+              </Button>
+            </Column>
+          </Box>
+        )}
+        {/* --------- END OF: VERIFY & MINT ON CHAIN TWITTER BADGE - STEP 4 --------- */}
+
+
+        </Stepper>
+        </Box>
+      </Grid>
+
+
+      {/* --------- RIGHT SIDE FOR INSTRUCTION VIDEO / ACCOMPANING GRAPHICS FOR THE STEP --------- */}
+      <Grid item xs={12} md={6} sx={{ maxHeight: '100vh',     overflow: 'hidden', backgroundColor:'#C3C3C3' }}>
+        {/* <Typography  sx={{color:'#ffffff'}}>HERE IS WHERE WE WILL PUT THE INSTRUCTION STEP VIDEO ON THE RIGHT SIDE </Typography>
+        
+        {activeStep ==0 && (
+            <Typography  sx={{color:'#ffffff'}}>video for step 0</Typography>
+        )}
+        {activeStep ==1 && (
+            <Typography  sx={{color:'#ffffff'}}>video for step 1</Typography>
+        )}
+        {activeStep ==2 && (
+            <Typography  sx={{color:'#ffffff'}}>video for step 2</Typography>
+        )}
+        {activeStep ==3 && (
+            <Typography  sx={{color:'#ffffff'}}>video for step 3</Typography>
+        )}
+        {activeStep ==4 && (
+            <Typography sx={{color:'#ffffff'}}>video for step 4</Typography>
+        )} */}
+        <Video/>
+      </Grid>
+    </Grid>
   );
 };
 
@@ -731,10 +969,17 @@ const TimerDisplay = ({ timers }: { timers: Record<string, number> }) => {
   );
 };
 
+
+const CounterDisplay = styled.div`
+  font-size: 12px;
+  font-weight: bold;
+  color: black;
+`;
+
 const Header = styled.span`
   font-weight: 600;
   margin-bottom: 1em;
-  color: #fff;
+  color: #000000;
   font-size: 2.25rem;
   line-height: 2.5rem;
   letter-spacing: -0.02em;
@@ -743,77 +988,37 @@ const Header = styled.span`
 const SubHeader = styled(Header)`
   font-size: 1.7em;
   margin-bottom: 16px;
-  color: rgba(255, 255, 255, 0.9);
+  color: "#000000";
 `;
 
-const Main = styled(Row)`
-  width: 100%;
-  gap: 1rem;
-`;
+
 
 const Column = styled(Col)`
-  width: 100%;
+  width: fit;
   gap: 1rem;
   align-self: flex-start;
-  background: rgba(255, 255, 255, 0.1);
-  padding: 1rem;
-  border-radius: 4px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: #FFFFFC;
+  padding: 2rem;
+  border-radius: 10px;
+  border: 1px solid #C7C7C7;
 `;
 
-const Container = styled.div`
+
+
+const Overlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
   display: flex;
-  flex-direction: column;
-  margin: 0 auto;
-  & .title {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  & .main {
-    & .signaturePane {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      & > :first-child {
-        height: calc(30vh + 24px);
-      }
-    }
-  }
-
-  & .bottom {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    & p {
-      text-align: center;
-    }
-    & .labeledTextAreaContainer {
-      align-self: center;
-      max-width: 50vw;
-      width: 500px;
-    }
-  }
-
-  a {
-    color: rgba(30, 144, 255, 0.9); /* Bright blue color */
-    text-decoration: none; /* Optional: Removes the underline */
-  }
-
-  a:hover {
-    color: rgba(65, 105, 225, 0.9); /* Darker blue color on hover */
-  }
-
-  a:visited {
-    color: rgba(153, 50, 204, 0.9); /* Purple color for visited links */
-  }
-
-  a:active {
-    color: rgba(
-      255,
-      69,
-      0,
-      0.9
-    ); /* Orange-red color for active (clicked) links */
-  }
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 24px;
 `;
+
+
+export default MainPage;
