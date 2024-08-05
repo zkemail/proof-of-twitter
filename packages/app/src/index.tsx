@@ -31,42 +31,22 @@ const config = createConfig({
   connectors: connectors,
 });
 
-if (import.meta.env.VITE_GOOGLE_CLIENT_ID) {
-  ReactDOM.render(
-    <React.StrictMode>
-      <ZkRegexProvider
-        clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}
-        zkRegexRegistryUrl="https://registry-dev.zkregex.com"
-      >
-        <WagmiConfig config={config}>
-          <RainbowKitProvider chains={[sepolia]} theme={darkTheme()}>
-            <GoogleOAuthProvider
-              clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}
-            >
-              <GoogleAuthProvider>
-                <App />
-              </GoogleAuthProvider>
-            </GoogleOAuthProvider>
-          </RainbowKitProvider>
-        </WagmiConfig>{" "}
-      </ZkRegexProvider>
-    </React.StrictMode>,
-    document.getElementById("root")
-  );
-} else {
-  ReactDOM.render(
-    <React.StrictMode>
-      <ZkRegexProvider
-        clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}
-        zkRegexRegistryUrl="https://registry-dev.zkregex.com"
-      >
-        <WagmiConfig config={config}>
-          <RainbowKitProvider chains={[sepolia]} theme={darkTheme()}>
-            <App />
-          </RainbowKitProvider>
-        </WagmiConfig>
-      </ZkRegexProvider>
-    </React.StrictMode>,
-    document.getElementById("root")
-  );
-}
+ReactDOM.render(
+  <React.StrictMode>
+    <ZkRegexProvider
+      clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}
+      zkRegexRegistryUrl="https://registry-dev.zkregex.com"
+    >
+      <WagmiConfig config={config}>
+        <RainbowKitProvider chains={[sepolia]} theme={darkTheme()}>
+          <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+            <GoogleAuthProvider>
+              <App />
+            </GoogleAuthProvider>
+          </GoogleOAuthProvider>
+        </RainbowKitProvider>
+      </WagmiConfig>{" "}
+    </ZkRegexProvider>
+  </React.StrictMode>,
+  document.getElementById("root")
+);
