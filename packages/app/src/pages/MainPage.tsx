@@ -30,8 +30,8 @@ import {
 } from "../hooks/useGmailClient";
 import { formatDateTime } from "../helpers/dateTimeFormat";
 import EmailInputMethod from "../components/EmailInputMethod";
-import { useZkRegex } from "../../zk-regex-sdk";
 import { randomUUID } from "crypto";
+import { useZkRegex } from "@zk-email/zk-regex-sdk";
 
 const CIRCUIT_NAME = "twitter";
 

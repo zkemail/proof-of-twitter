@@ -8,8 +8,5 @@
   "keywords": [],
   "author": "",
   "license": "MIT",
-  "packageManager": "yarn@3.2.3",
-  "resolutions": {
-    "zk-regex-sdk": "portal:/Users/savitar/Projects/opensource/proof-of-twitter/packages/app/zk-regex-sdk"
-  }
+  "packageManager": "yarn@3.2.3"
 }

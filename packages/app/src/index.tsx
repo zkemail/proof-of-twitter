@@ -14,7 +14,7 @@ import {
 import "@rainbow-me/rainbowkit/styles.css";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { GoogleAuthProvider } from "./contexts/GoogleAuth";
-import { ZkRegexProvider } from "../zk-regex-sdk";
+import { ZkRegexProvider } from "@zk-email/zk-regex-sdk";
 
 const { connectors } = getDefaultWallets({
   appName: "ZK Email - Twitter Verifier",
