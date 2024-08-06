@@ -30,6 +30,8 @@ import {
 } from "../hooks/useGmailClient";
 import { formatDateTime } from "../helpers/dateTimeFormat";
 import EmailInputMethod from "../components/EmailInputMethod";
+import { randomUUID } from "crypto";
+import { useZkRegex } from "@zk-email/zk-regex-sdk";
 
 const CIRCUIT_NAME = "twitter";
 
@@ -44,6 +46,14 @@ export const MainPage: React.FC<{}> = (props) => {
     googleLogIn,
     googleLogOut,
   } = useGoogleAuth();
+
+  const {
+    createInputWorker,
+    generateInputFromEmail,
+    generateProofRemotely,
+    proofStatus,
+    inputWorkers,
+  } = useZkRegex();
 
   const [ethereumAddress, setEthereumAddress] = useState<string>(address ?? "");
   const [emailFull, setEmailFull] = useState<string>(
@@ -60,6 +70,7 @@ export const MainPage: React.FC<{}> = (props) => {
   const [lastAction, setLastAction] = useState<"" | "sign" | "verify" | "send">(
     ""
   );
+  const [workerReady, setWorkerReady] = useState<boolean>(false);
   const [isFetchEmailLoading, setIsFetchEmailLoading] = useState(false);
   const [fetchedEmails, setFetchedEmails] = useState<RawEmailResponse[]>([]);
   const [showBrowserWarning, setShowBrowserWarning] = useState<boolean>(false);
@@ -80,6 +91,10 @@ export const MainPage: React.FC<{}> = (props) => {
     | "proof-files-downloaded-successfully"
     | "sent"
   >("not-started");
+  const [isRemoteProofGenerationLoading, setIsRemoteProofGenerationLoading] =
+    useState<boolean>(false);
+  const [areInputWorkersCreating, setAreInputWorkerCreating] =
+    useState<boolean>(false);
 
   const [stopwatch, setStopwatch] = useState<Record<string, number>>({
     startedDownloading: 0,
@@ -185,6 +200,13 @@ export const MainPage: React.FC<{}> = (props) => {
     return () => window.removeEventListener("keydown", handleKeyDown);
   });
 
+  useEffect(() => {
+    if (!inputWorkers["zk-email/proof-of-twitter-v2"]) {
+      setAreInputWorkerCreating(true);
+      createInputWorker("zk-email/proof-of-twitter-v2");
+    }
+  }, []);
+
   // local storage stuff
   useUpdateEffect(() => {
     if (emailFull) {
@@ -246,6 +268,44 @@ export const MainPage: React.FC<{}> = (props) => {
 
     downloadZKey();
   }, []);
+
+  const handleGenerateProofRemotely = async () => {
+    setIsRemoteProofGenerationLoading(true);
+    const input = await generateInputFromEmail(
+      "zk-email/proof-of-twitter-v2",
+      emailFull
+    );
+    const body = Buffer.from(input.emailBody).toString("utf-8");
+    console.log("input", input);
+    console.log(input);
+    try {
+      const proofRes = await generateProofRemotely(
+        "zk-email/proof-of-twitter-v2",
+        input
+      );
+    } catch (err) {
+      console.log("Something went wrong", err);
+      setIsRemoteProofGenerationLoading(false);
+    } finally {
+    }
+  };
+  useEffect(() => {
+    if (proofStatus[Object.keys(proofStatus)[0]]?.status == "COMPLETED") {
+      setIsRemoteProofGenerationLoading(false);
+      setProof(JSON.stringify(proofStatus[Object.keys(proofStatus)[0]].proof));
+      setPublicSignals(
+        JSON.stringify(proofStatus[Object.keys(proofStatus)[0]].publicOutput)
+      );
+    }
+  }, [proofStatus]);
+
+  useEffect(() => {
+    if (inputWorkers["zk-email/proof-of-twitter-v2"]) {
+      setAreInputWorkerCreating(false);
+    }
+  }, [inputWorkers]);
+
+  console.log(inputWorkers);
 
   return (
     <Container>
@@ -392,7 +452,8 @@ export const MainPage: React.FC<{}> = (props) => {
               )}
             </div>
           ) : null}
-          {inputMethod === "EML_FILE" || !import.meta.env.VITE_GOOGLE_CLIENT_ID ? (
+          {inputMethod === "EML_FILE" ||
+          !import.meta.env.VITE_GOOGLE_CLIENT_ID ? (
             <>
               {" "}
               <DragAndDropTextBox onFileDrop={onFileDrop} />
@@ -427,7 +488,8 @@ export const MainPage: React.FC<{}> = (props) => {
               displayMessage !== "Prove" ||
               emailFull.length === 0 ||
               ethereumAddress.length === 0 ||
-              status !== "proof-files-downloaded-successfully"
+              status !== "proof-files-downloaded-successfully" ||
+              isRemoteProofGenerationLoading
             }
             onClick={async () => {
               let input: ITwitterCircuitInputs;
@@ -497,6 +559,23 @@ export const MainPage: React.FC<{}> = (props) => {
             }}
           >
             {displayMessage}
+          </Button>
+          <Button
+            data-testid="remote-prove-button"
+            onClick={handleGenerateProofRemotely}
+            disabled={
+              areInputWorkersCreating ||
+              emailFull.length === 0 ||
+              isRemoteProofGenerationLoading ||
+              !inputWorkers["zk-email/proof-of-twitter-v2"]
+            }
+          >
+            Generate Proof Remotely{" "}
+            {isRemoteProofGenerationLoading || areInputWorkersCreating ? (
+              <div className="loader" style={{ marginLeft: "1rem" }} />
+            ) : (
+              ""
+            )}
           </Button>
           {displayMessage ===
             "Downloading compressed proving files... (this may take a few minutes)" && (

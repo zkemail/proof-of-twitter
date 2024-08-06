@@ -14,6 +14,7 @@ import {
 import "@rainbow-me/rainbowkit/styles.css";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { GoogleAuthProvider } from "./contexts/GoogleAuth";
+import { ZkRegexProvider } from "@zk-email/zk-regex-sdk";
 
 const { connectors } = getDefaultWallets({
   appName: "ZK Email - Twitter Verifier",
@@ -30,9 +31,12 @@ const config = createConfig({
   connectors: connectors,
 });
 
-if (import.meta.env.VITE_GOOGLE_CLIENT_ID) {
-  ReactDOM.render(
-    <React.StrictMode>
+ReactDOM.render(
+  <React.StrictMode>
+    <ZkRegexProvider
+      clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}
+      zkRegexRegistryUrl="https://registry-dev.zkregex.com"
+    >
       <WagmiConfig config={config}>
         <RainbowKitProvider chains={[sepolia]} theme={darkTheme()}>
           <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
@@ -41,19 +45,8 @@ if (import.meta.env.VITE_GOOGLE_CLIENT_ID) {
             </GoogleAuthProvider>
           </GoogleOAuthProvider>
         </RainbowKitProvider>
-      </WagmiConfig>
-    </React.StrictMode>,
-    document.getElementById("root")
-  );
-} else {
-  ReactDOM.render(
-    <React.StrictMode>
-      <WagmiConfig config={config}>
-        <RainbowKitProvider chains={[sepolia]} theme={darkTheme()}>
-          <App />
-        </RainbowKitProvider>
-      </WagmiConfig>
-    </React.StrictMode>,
-    document.getElementById("root")
-  );
-}
+      </WagmiConfig>{" "}
+    </ZkRegexProvider>
+  </React.StrictMode>,
+  document.getElementById("root")
+);
