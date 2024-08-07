@@ -752,7 +752,7 @@ export const MainPage: React.FC<{}> = (props) => {
                   // alert("Generating proof, will fail due to input");
 
 
-                  // //TEST CHANGES W/ WORKER BELOW
+                  // //TEST CHANGES W/ WORKER BELOW COMMENTED OUT
                   const { proof, publicSignals } = await generateProof(
                     input,
                     // @ts-ignore
@@ -766,7 +766,7 @@ export const MainPage: React.FC<{}> = (props) => {
                   //   CIRCUIT_NAME
                   // );
 
-                  // TEST CHANGES ABOVE
+                  // TEST CHANGES  W/ WORKER ABOVE COMMENTED OUT
 
 
                   //const proof = JSON.parse('{"pi_a": ["19201501460375869359786976350200749752225831881815567077814357716475109214225", "11505143118120261821370828666956392917988845645366364291926723724764197308214", "1"], "pi_b": [["17114997753466635923095897108905313066875545082621248342234075865495571603410", "7192405994185710518536526038522451195158265656066550519902313122056350381280"], ["13696222194662648890012762427265603087145644894565446235939768763001479304886", "2757027655603295785352548686090997179551660115030413843642436323047552012712"], ["1", "0"]], "pi_c": ["6168386124525054064559735110298802977718009746891233616490776755671099515304", "11077116868070103472532367637450067545191977757024528865783681032080180232316", "1"], "protocol": "groth16", "curve": "bn128"}');
@@ -909,7 +909,7 @@ export const MainPage: React.FC<{}> = (props) => {
               </Button>
               <Button
                 highlighted={verificationMessage === 'Passed!' || isSuccess}
-                disabled={!verificationPassed || isLoading || isSuccess || !write}
+                disabled={!verificationPassed || isLoading || !write}
                 onClick={async () => {
                   if (isSuccess) {
                     window.open(`https://sepolia.etherscan.io/tx/${data?.hash}`, "_blank");
