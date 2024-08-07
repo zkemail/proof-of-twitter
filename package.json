@@ -9,9 +9,6 @@
   "author": "",
   "license": "MIT",
   "packageManager": "yarn@3.2.3",
-  "resolutions": {
-    "zk-regex-sdk": "portal:/Users/savitar/Projects/opensource/proof-of-twitter/packages/app/zk-regex-sdk"
-  },
   "devDependencies": {
     "autoprefixer": "^10.4.19",
     "postcss": "^8.4.40",
