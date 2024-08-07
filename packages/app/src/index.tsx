@@ -14,7 +14,7 @@ import {
 import "@rainbow-me/rainbowkit/styles.css";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { GoogleAuthProvider } from "./contexts/GoogleAuth";
-import { ZkRegexProvider } from "../zk-regex-sdk";
+import { ZkRegexProvider } from "@zk-email/zk-regex-sdk";
 
 import { ThemeProvider, CssBaseline } from '@mui/material';
 import theme from './theme'; 
@@ -34,44 +34,25 @@ const config = createConfig({
   connectors: connectors,
 });
 
-if (import.meta.env.VITE_GOOGLE_CLIENT_ID) {
-  ReactDOM.render(
-    <React.StrictMode>
-      <ThemeProvider theme={theme}>
-        <ZkRegexProvider
-          clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}
-          zkRegexRegistryUrl="https://registry-dev.zkregex.com"
-        >
-          <WagmiConfig config={config}>
-            <RainbowKitProvider chains={[sepolia]} theme={darkTheme()}>
-              <GoogleOAuthProvider
-                clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}
-              >
-                <GoogleAuthProvider>
-                  <App />
-                </GoogleAuthProvider>
-              </GoogleOAuthProvider>
-            </RainbowKitProvider>
-          </WagmiConfig>{" "}
-        </ZkRegexProvider>
-      </ThemeProvider>
-    </React.StrictMode>,
-    document.getElementById("root")
-  );
-} else {
-  ReactDOM.render(
-    <React.StrictMode>
+
+ReactDOM.render(
+  <React.StrictMode>
+    <ThemeProvider theme={theme}> 
       <ZkRegexProvider
         clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}
         zkRegexRegistryUrl="https://registry-dev.zkregex.com"
       >
         <WagmiConfig config={config}>
           <RainbowKitProvider chains={[sepolia]} theme={darkTheme()}>
-            <App />
+            <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+              <GoogleAuthProvider>
+                <App />
+              </GoogleAuthProvider>
+            </GoogleOAuthProvider>
           </RainbowKitProvider>
-        </WagmiConfig>
+        </WagmiConfig>{" "}
       </ZkRegexProvider>
-    </React.StrictMode>,
-    document.getElementById("root")
-  );
-}
+    </ThemeProvider>
+  </React.StrictMode>,
+  document.getElementById("root")
+);
