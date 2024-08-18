@@ -90,14 +90,14 @@ const AboutPage: React.FC = () => {
             <Box component="span" sx={{ display: { xs: 'none', sm: 'inline', md: 'inline' } }}>
               <br />
             </Box>
-            you received some email and mask out any private data,
+            &nbsp; you received some email and mask out any private data,
             <Box component="span" sx={{ display: { xs: 'none', sm: 'inline', md: 'inline' } }}>
               <br />
             </Box>
             without trusting our server to keep your privacy.
           </Typography>
 
-          <Box sx={{ display: 'flex', gap: { xs: '3px', sm: '10px' }, width: { xs: '240px', sm: '300px' }, marginX: 'auto' }}>
+          <Box sx={{ display: 'flex', gap: { xs: '5px', sm: '10px' }, width: { xs: '230px', sm: '300px' }, marginX: 'auto' }}>
             <Button endIcon={<ArrowOutwardIcon />} href='/'  highlighted={true}>
               Try it out
             </Button>
@@ -113,24 +113,24 @@ const AboutPage: React.FC = () => {
         {/* STEPS ROW */}
         <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%', height:'fit-content', gap: {xs:'12px', sm:'15px', md:'50px', }, marginX: 'auto', marginY: '80px', alignItems:'center'}}>
           <Box sx={{textAlign:'center'}}>
-            <MailOutlineIcon sx={{fontSize:{xs:'12px', md:'40px',}}}/>
-            <Typography sx={{fontSize:{xs:'10px', md:'15px' }}}>SEND RESET EMAIL</Typography>    
+            <MailOutlineIcon sx={{fontSize:{xs:'12px', sm:'25px', md:'40px',}}}/>
+            <Typography sx={{fontSize:{xs:'9px',sm:'10px', md:'15px' }}}>SEND RESET EMAIL</Typography>    
           </Box>
           <Box sx={{textAlign:'center'}}>
-            <ContentPasteIcon sx={{fontSize:{xs:'12px', md:'40px' }}}/>
-            <Typography sx={{fontSize:{xs:'10px', md:'15px' }}}>COPY/PASTE DKIM SIG</Typography> 
+            <ContentPasteIcon sx={{fontSize:{xs:'12px',  sm:'25px', md:'40px' }}}/>
+            <Typography sx={{fontSize:{xs:'9px',sm:'10px', md:'15px' }}}>COPY/PASTE DKIM SIG</Typography> 
           </Box>
           <Box sx={{textAlign:'center'}}>
-            <FingerprintIcon sx={{fontSize:{xs:'12px', md:'40px' }}}/>
-            <Typography sx={{fontSize:{xs:'10px', md:'15px' }}}>ADD ADDRESS</Typography>
+            <FingerprintIcon sx={{fontSize:{xs:'12px',  sm:'25px', md:'40px' }}}/>
+            <Typography sx={{fontSize:{xs:'9px',sm:'10px', md:'15px' }}}>ADD ADDRESS</Typography>
           </Box>
           <Box sx={{textAlign:'center'}}>
-            <RefreshIcon sx={{fontSize:{xs:'12px', md:'40px' }}}/>
-            <Typography sx={{fontSize:{xs:'10px', md:'15px' }}}>GENERATE PROOF</Typography>
+            <RefreshIcon sx={{fontSize:{xs:'12px',  sm:'25px', md:'40px' }}}/>
+            <Typography sx={{fontSize:{xs:'9px',sm:'10px', md:'15px' }}}>GENERATE PROOF</Typography>
           </Box>
           <Box sx={{textAlign:'center'}}>
-            <CheckCircleOutlineIcon sx={{fontSize:{xs:'12px', md:'40px' }}}/>
-            <Typography sx={{fontSize:{xs:'10px', md:'15px' }}}>VERIFY & MINT</Typography>
+            <CheckCircleOutlineIcon sx={{fontSize:{xs:'12px', sm:'25px', md:'40px' }}}/>
+            <Typography sx={{fontSize:{xs:'9px',sm:'10px', md:'15px' }}}>VERIFY & MINT</Typography>
           </Box>
         </Box>
         
@@ -164,7 +164,7 @@ const AboutPage: React.FC = () => {
                 <Typography variant='h5' paddingTop="10px" sx={{ fontSize: { xs: '12px', md: '15px' } }}>
                   Have a Question that isn’t answered?
                 </Typography>
-                <Stack spacing={2} direction="row" sx={{ paddingTop: "16px", width: '150px' }}>
+                <Stack spacing={2} direction="row" sx={{ paddingTop: "16px", width: {xs:'120px',sm:'150px'} }}>
                   <Button href='https://t.me/zkemail' target='_blank'> Drop Us a Line</Button>
                 </Stack>
               </Grid>

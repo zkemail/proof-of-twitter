@@ -425,49 +425,49 @@ export const MainPage: React.FC<{}> = (props) => {
 
 
 
-  // 
-  const [message, setMessage] = useState<string>("just a test: testing web worker");
 
-  useEffect(() => {
-    const worker = new Worker(new URL('../testWorker.js', import.meta.url));
+  // const [message, setMessage] = useState<string>("just a test: testing web worker");
 
-    worker.onmessage = (e) => {
-      setMessage(e.data);
-      worker.terminate();
-    };
+  // useEffect(() => {
+  //   const worker = new Worker(new URL('../testWorker.js', import.meta.url));
 
-    worker.postMessage({});
-  }, []);
+  //   worker.onmessage = (e) => {
+  //     setMessage(e.data);
+  //     worker.terminate();
+  //   };
 
-
+  //   worker.postMessage({});
+  // }, []);
 
 
 
-  const generateProofWithWorker = (input: any, circuitArtifactsUrl: string, circuitName: string): Promise<{ proof: any, publicSignals: any, error?: string }> => {
-    return new Promise((resolve, reject) => {
-      // const proofWorker = new Worker(new URL('../proofWorker.tsx', import.meta.url));
-      const proofWorker = new Worker(new URL('../proofWorker.tsx', import.meta.url), { type: 'module' });
 
 
-      proofWorker.onmessage = (e) => {
-        resolve(e.data);
-        proofWorker.terminate();
-      };
+  // const generateProofWithWorker = (input: any, circuitArtifactsUrl: string, circuitName: string): Promise<{ proof: any, publicSignals: any, error?: string }> => {
+  //   return new Promise((resolve, reject) => {
+  //     // const proofWorker = new Worker(new URL('../proofWorker.tsx', import.meta.url));
+  //     const proofWorker = new Worker(new URL('../proofWorker.tsx', import.meta.url), { type: 'module' });
 
-      proofWorker.onerror = (e) => {
-        reject(new Error(`Worker error: ${e.message}`));
-        proofWorker.terminate();
-      };
 
-      proofWorker.postMessage({ input, circuitArtifactsUrl, circuitName });
-    });
-  };
+  //     proofWorker.onmessage = (e) => {
+  //       resolve(e.data);
+  //       proofWorker.terminate();
+  //     };
+
+  //     proofWorker.onerror = (e) => {
+  //       reject(new Error(`Worker error: ${e.message}`));
+  //       proofWorker.terminate();
+  //     };
+
+  //     proofWorker.postMessage({ input, circuitArtifactsUrl, circuitName });
+  //   });
+  // };
 
 
 
   return (
     <Grid container >
-      {isOverlayVisible && <Overlay>Generating Proof... Reload page if Unresponsive after 6 Minutes </Overlay>}
+      {isOverlayVisible && <Overlay> </Overlay>}
       {showBrowserWarning && (
         <TopBanner
           message={"ZK Email only works on Chrome or Chromium-based browsers."}
@@ -477,7 +477,7 @@ export const MainPage: React.FC<{}> = (props) => {
 
       <Grid item xs={12} md={6} sx={{   height: '100vh', overflowY: 'auto', backgroundColor:'#ffbfbf', background:'radial-gradient(70.71% 70.71% at 50% 50%, #FFF 19%, rgba(255, 255, 255, 0.00) 61%), linear-gradient(38deg, rgba(255, 255, 255, 0.00) 60%, rgba(255, 255, 255, 0.69) 100%), linear-gradient(45deg, #FFF 10%, rgba(255, 255, 255, 0.00) 23.5%), linear-gradient(36deg, #FFF 12.52%, rgba(255, 255, 255, 0.00) 76.72%), linear-gradient(214deg, rgba(255, 255, 255, 0.00) 0%, rgba(255, 220, 234, 0.40) 37.53%, rgba(255, 255, 255, 0.00) 71%), linear-gradient(212deg, rgba(255, 255, 255, 0.00) 15%, #E4F1FE 72.5%, rgba(255, 255, 255, 0.00) 91.5%)'}}>
       <Nav splitscreen={true}/>
-      <Box sx={{backgroundColor:'#FFFFFF', padding:'20px', color:'#000000', minHeight:'650px', paddingX:'60px'}} >
+      <Box sx={{backgroundColor:'#FFFFFF', padding:'20px', color:'#000000', minHeight:'650px', paddingX:{sm: '40px', md:'60px'}}} >
       <Stepper
         steps={steps}
         activeStep={activeStep}
@@ -489,8 +489,7 @@ export const MainPage: React.FC<{}> = (props) => {
           <Box sx={{marginTop:'100px', marginBottom: '40px'}}>
             <Typography variant='h1' sx={{marginBottom:'20px'}}>SEND TWITTER PASSWORD RESET EMAIL</Typography>
             <Typography>Send yourself a password reset email from Twitter. <br></br>(Reminder: Twitter name with emoji might fail to pass DKIM verification)</Typography>
-            {/* test web worker */}
-            <Typography sx={{marginTop:'20px', fontWeight:'bold', color:'red'}}>{message}</Typography>
+            {/* <Typography sx={{marginTop:'20px', fontWeight:'bold', color:'red'}}>{message}</Typography>  */}
           </Box>
         )}
         {/* --------- END OF: SEND TWITTER PASSWORD RESET EMAIL SECTION - STEP 0 --------- */}
@@ -546,30 +545,50 @@ export const MainPage: React.FC<{}> = (props) => {
                   ) : (
                     <>
                     <Typography variant="h6" sx={{ marginBottom: '1rem' }}>
-                    Select the 'Password reset request' email from twitter, then proceed
+                    Select the "Password Reset Request" Email from Twitter!
                     </Typography>
                     {fetchedEmails.map((email, index) => (
-                      <div
-                        style={{
+                      <Box
+                        sx={{
                           borderBottom: "1px solid lightgrey",
                           width: "100%",
                           padding: "0 1rem",
                           display: "flex",
                           justifyContent: "space-between",
                           cursor: 'pointer',
-                          color:
-                            email.decodedContents === emailFull
-                              ? theme.palette.accent.main
-                              : theme.palette.secondary.main,
                           borderTop: index === 0 ? "1px solid white" : "none", // Conditional border top
                         }}
                         onClick={() => {
                           setEmailFull(email.decodedContents);
                         }}
                       >
-                      <p style={{   overflow: 'hidden',}}>{email.subject}</p>
-                      <p style={{ flex:'end', marginRight:'0px', width:'100px', textAlign:'right'}}>{formatDateTime(email.internalDate)}</p>
-                      </div>
+                        <Typography 
+                          sx={{   
+                            overflow: 'hidden', 
+                            padding: "0.7rem 0rem",                          
+                            color:
+                                email.decodedContents === emailFull
+                                  ? theme.palette.accent.main
+                                  : theme.palette.secondary.main
+                        }}>
+                          {email.subject}
+                        </Typography>
+                        <Typography 
+                          sx={{
+                            flex:'end', 
+                            marginRight:'0px', 
+                            width:'100px', 
+                            textAlign:'right',
+                            overflow: 'hidden', 
+                            padding: "0.7rem 0rem",                          
+                            color:
+                                email.decodedContents === emailFull
+                                  ? theme.palette.accent.main
+                                  : theme.palette.secondary.main
+                        }}>
+                          {formatDateTime(email.internalDate)}
+                        </Typography>
+                      </Box>
                     ))}
                     </>
                   )}
@@ -745,14 +764,13 @@ export const MainPage: React.FC<{}> = (props) => {
                   console.time("zk-gen");
                   recordTimeForActivity("startedProving");
                   setDisplayMessage(
-                    "Starting proof generation... (this will take 6-10 minutes and ~5GB RAM)"
+                    "Starting proof generation (this will take 6-10 minutes & ~5GB RAM)"
                   );
                   setStatus("generating-proof");
                   console.log("Starting proof generation");
                   // alert("Generating proof, will fail due to input");
 
 
-                  // //TEST CHANGES W/ WORKER BELOW COMMENTED OUT
                   const { proof, publicSignals } = await generateProof(
                     input,
                     // @ts-ignore
@@ -766,7 +784,7 @@ export const MainPage: React.FC<{}> = (props) => {
                   //   CIRCUIT_NAME
                   // );
 
-                  // TEST CHANGES  W/ WORKER ABOVE COMMENTED OUT
+
 
 
                   //const proof = JSON.parse('{"pi_a": ["19201501460375869359786976350200749752225831881815567077814357716475109214225", "11505143118120261821370828666956392917988845645366364291926723724764197308214", "1"], "pi_b": [["17114997753466635923095897108905313066875545082621248342234075865495571603410", "7192405994185710518536526038522451195158265656066550519902313122056350381280"], ["13696222194662648890012762427265603087145644894565446235939768763001479304886", "2757027655603295785352548686090997179551660115030413843642436323047552012712"], ["1", "0"]], "pi_c": ["6168386124525054064559735110298802977718009746891233616490776755671099515304", "11077116868070103472532367637450067545191977757024528865783681032080180232316", "1"], "protocol": "groth16", "curve": "bn128"}');
@@ -839,7 +857,7 @@ export const MainPage: React.FC<{}> = (props) => {
               <div data-testid={"status-" + status}></div>
             )}
             <TimerDisplay timers={stopwatch} />
-            {status === 'generating-proof' && <CounterDisplay>Elapsed Time: {counter}s</CounterDisplay>}
+            {/* {status === 'generating-proof' && <CounterDisplay>Elapsed Time: {counter}s</CounterDisplay>} */}
           </ProcessStatus>
           </Column>
           </Box>   

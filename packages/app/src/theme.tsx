@@ -98,7 +98,6 @@
 
 // export default theme;
 
-
 import { createTheme } from '@mui/material/styles';
 import { Palette, PaletteOptions } from '@mui/material/styles/createPalette';
 
@@ -135,32 +134,32 @@ const theme = createTheme({
   typography: {
     fontFamily: "Space Grotesk",
     h1: {
-      fontSize: '1.4rem', // Default font size for the smallest screens (xs)
+      fontSize: '1.4rem',
       letterSpacing: -1,
       fontWeight: '500',
       '@media (min-width:600px)': {
-        fontSize: '1.5rem', // font size for small screens
+        fontSize: '1.5rem',
       },
       '@media (min-width:960px)': {
-        fontSize: '1.7rem', // font size for medium screens
+        fontSize: '1.7rem',
       },
       '@media (min-width:1280px)': {
-        fontSize: '2rem', // font size for large screens
+        fontSize: '2rem',
       },
     },
     h2: {
-      fontSize: '1.75rem', // Default font size for the smallest screens (xs)
+      fontSize: '1.75rem',
       fontWeight: '700', 
       color: '#333741',
       letterSpacing: -1,
       '@media (min-width:600px)': {
-        fontSize: '2.5rem', // font size for small screens
+        fontSize: '2.5rem',
       },
       '@media (min-width:960px)': {
-        fontSize: '3.0rem', // font size for medium screens
+        fontSize: '3.0rem',
       },
       '@media (min-width:1280px)': {
-        fontSize: '3.5rem', // font size for large screens
+        fontSize: '3.5rem',
       },
     },
     h4: {
@@ -171,43 +170,93 @@ const theme = createTheme({
     },
     h6: {
       color: '#8E8E8E',
-      fontSize: '20px', // Default font size for the smallest screens (xs)
+      fontSize: '.7rem',
       fontWeight: '500',
       lineHeight: '140%',
-    },
-    body1: {
-      fontSize: '0.875rem', // Default font size for the smallest screens (xs)
-      fontWeight: '400',
-      lineHeight: '1.5',
-      color: '#333741', // Ensure good contrast and readability
       '@media (min-width:600px)': {
-        fontSize: '0.85rem', // font size for small screens
+        fontSize: '0.85rem',
       },
       '@media (min-width:960px)': {
-        fontSize: '0.9rem', // font size for medium screens
+        fontSize: '1rem',
       },
       '@media (min-width:1280px)': {
-        fontSize: '1.0rem', // font size for large screens
+        fontSize: '1.2rem',
       },
     },
-    body2: {
-      fontSize: '0.5rem', // Default font size for the smallest screens (xs)
+    body1: {
+      fontSize: '0.6rem',
       fontWeight: '400',
       lineHeight: '1.5',
       color: '#333741',
       '@media (min-width:600px)': {
-        fontSize: '0.85rem', // font size for small screens
+        fontSize: '0.8rem',
       },
       '@media (min-width:960px)': {
-        fontSize: '0.9rem', // font size for medium screens
+        fontSize: '0.9rem',
       },
       '@media (min-width:1280px)': {
-        fontSize: '1.0rem', // font size for large screens
+        fontSize: '1.0rem',
+      },
+    },
+    body2: {
+      fontSize: '0.5rem',
+      fontWeight: '400',
+      lineHeight: '1.5',
+      color: '#333741',
+      '@media (min-width:600px)': {
+        fontSize: '0.85rem',
+      },
+      '@media (min-width:960px)': {
+        fontSize: '0.9rem',
+      },
+      '@media (min-width:1280px)': {
+        fontSize: '1.0rem',
       },
     }
   },
 
   components: {
+    MuiInputBase: {
+      styleOverrides: {
+        root: {
+          fontFamily: 'Space Grotesk', // Use the same font family as your theme
+          fontSize: '0.6rem', // Customize the font size for text areas
+          lineHeight: '1.5',
+          color: '#333741',
+          '@media (min-width:600px)': {
+            fontSize: '0.85rem',
+          },
+          '@media (min-width:960px)': {
+            fontSize: '0.9rem',
+          },
+          '@media (min-width:1280px)': {
+            fontSize: '1.0rem',
+          },
+        },
+      },
+    },
+
+    MuiTextField: {
+      styleOverrides: {
+        root: {
+          '& textarea': {
+            fontFamily: 'Space Grotesk',
+            fontSize: '0.2rem', // Customize the font size inside the textarea
+            lineHeight: '1.5',
+            color: '#333741',
+            '@media (min-width:600px)': {
+              fontSize: '0.85rem',
+            },
+            '@media (min-width:960px)': {
+              fontSize: '0.9rem',
+            },
+            '@media (min-width:1280px)': {
+              fontSize: '1.0rem',
+            },
+          },
+        },
+      },
+    },
   },
 });
 
