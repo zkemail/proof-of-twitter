@@ -31,7 +31,7 @@ import {
 import { formatDateTime } from "../helpers/dateTimeFormat";
 import EmailInputMethod from "../components/EmailInputMethod";
 import { randomUUID } from "crypto";
-import { useZkRegex } from "@zk-email/zk-regex-sdk";
+import { useZkEmailSDK } from "@zk-email/zk-email-sdk";
 
 const CIRCUIT_NAME = "twitter";
 
@@ -53,7 +53,7 @@ export const MainPage: React.FC<{}> = (props) => {
     generateProofRemotely,
     proofStatus,
     inputWorkers,
-  } = useZkRegex();
+  } = useZkEmailSDK();
 
   const [ethereumAddress, setEthereumAddress] = useState<string>(address ?? "");
   const [emailFull, setEmailFull] = useState<string>(
@@ -95,6 +95,9 @@ export const MainPage: React.FC<{}> = (props) => {
     useState<boolean>(false);
   const [areInputWorkersCreating, setAreInputWorkerCreating] =
     useState<boolean>(false);
+  const [externalInputs, setExternalInputs] = useState<Record<string, string>>(
+    {}
+  );
 
   const [stopwatch, setStopwatch] = useState<Record<string, number>>({
     startedDownloading: 0,
@@ -204,6 +207,19 @@ export const MainPage: React.FC<{}> = (props) => {
     if (!inputWorkers["zk-email/proof-of-twitter-v2"]) {
       setAreInputWorkerCreating(true);
       createInputWorker("zk-email/proof-of-twitter-v2");
+      const entryExternalInputs = [
+        {
+          name: "address",
+          maxLength: 64,
+        },
+      ];
+
+      for (const input of entryExternalInputs) {
+        setExternalInputs({
+          ...externalInputs,
+          [input.name]: "",
+        });
+      }
     }
   }, []);
 
@@ -273,7 +289,8 @@ export const MainPage: React.FC<{}> = (props) => {
     setIsRemoteProofGenerationLoading(true);
     const input = await generateInputFromEmail(
       "zk-email/proof-of-twitter-v2",
-      emailFull
+      emailFull,
+      externalInputs
     );
     const body = Buffer.from(input.emailBody).toString("utf-8");
     console.log("input", input);

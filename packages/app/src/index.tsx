@@ -14,7 +14,7 @@ import {
 import "@rainbow-me/rainbowkit/styles.css";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { GoogleAuthProvider } from "./contexts/GoogleAuth";
-import { ZkRegexProvider } from "@zk-email/zk-regex-sdk";
+import { ZkEmailSDKProvider } from "@zk-email/zk-email-sdk";
 
 const { connectors } = getDefaultWallets({
   appName: "ZK Email - Twitter Verifier",
@@ -33,9 +33,9 @@ const config = createConfig({
 
 ReactDOM.render(
   <React.StrictMode>
-    <ZkRegexProvider
+    <ZkEmailSDKProvider
       clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}
-      zkRegexRegistryUrl="https://registry-dev.zkregex.com"
+      zkEmailSDKRegistryUrl="https://registry-dev.zkregex.com"
     >
       <WagmiConfig config={config}>
         <RainbowKitProvider chains={[sepolia]} theme={darkTheme()}>
@@ -46,7 +46,7 @@ ReactDOM.render(
           </GoogleOAuthProvider>
         </RainbowKitProvider>
       </WagmiConfig>{" "}
-    </ZkRegexProvider>
+    </ZkEmailSDKProvider>
   </React.StrictMode>,
   document.getElementById("root")
 );
