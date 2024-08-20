@@ -16,6 +16,9 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import { GoogleAuthProvider } from "./contexts/GoogleAuth";
 import { ZkEmailSDKProvider } from "@zk-email/zk-email-sdk";
 
+import { ThemeProvider, CssBaseline } from '@mui/material';
+import theme from './theme'; 
+
 const { connectors } = getDefaultWallets({
   appName: "ZK Email - Twitter Verifier",
   chains: [sepolia],

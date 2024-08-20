@@ -1,7 +1,8 @@
 import _ from "lodash";
 import React, { CSSProperties } from "react";
-import styled from "styled-components";
+import styled, { ThemeProvider, css } from "styled-components";
 import { Col } from "./Layout";
+import { Box, Typography, useTheme } from "@mui/material";
 
 export const LabeledTextArea: React.FC<{
   style?: CSSProperties;
@@ -14,47 +15,54 @@ export const LabeledTextArea: React.FC<{
   disabledReason?: string;
   secret?: boolean;
   onChange?: React.ChangeEventHandler<HTMLTextAreaElement>;
+  highlighted?: boolean;
 }> = ({
   style,
   warning,
   warningColor,
-  disabled,
+  disabled = false, // Default value set to false
   disabledReason,
   label,
   value,
   onChange,
   className,
   secret,
+  highlighted = false,
 }) => {
-  return (
-    <LabeledTextAreaContainer
-      className={_.compact(["labeledTextAreaContainer", className]).join(" ")}
-    >
-      <Label>{label}</Label>
-      {warning && (
-        <span className="warning" style={{ color: warningColor }}>
-          {warning}
-        </span>
-      )}
-      <TextArea
-        style={style}
-        aria-label={label} 
-        title={disabled ? disabledReason : ""}
-        disabled={disabled}
-        value={value}
-        onChange={onChange}
-      />
 
-      {secret && (
-        <div className="secret">Hover to reveal public info sent to chain</div>
-      )}
-    </LabeledTextAreaContainer>
+  const theme = useTheme();
+
+  return (
+    <ThemeProvider theme={theme}>
+      <LabeledTextAreaContainer
+        className={_.compact(["labeledTextAreaContainer", className]).join(" ")}
+      >
+        <Typography sx={{ color: theme.palette.secondary.main, fontWeight:'medium' }}>{label}</Typography>
+
+        {warning && (
+          <Box className="warning" minWidth='100px' maxWidth='150px' sx={{ color: "white", padding: '10px', borderRadius: '20px', backgroundColor: warningColor, textAlign: 'center' }}>
+            {warning}
+          </Box>
+        )}
+
+        <TextArea
+          style={style}
+          aria-label={label}
+          title={disabled ? disabledReason : ""}
+          disabled={disabled}
+          value={value}
+          onChange={onChange}
+          highlighted={highlighted}
+          theme={theme}
+        />
+
+        {secret && (
+          <div className="secret">Hover to reveal public info sent to chain</div>
+        )}
+      </LabeledTextAreaContainer>
+    </ThemeProvider>
   );
 };
-
-const Label = styled.label`
-  color: rgba(255, 255, 255, 0.8);
-`;
 
 const LabeledTextAreaContainer = styled(Col)`
   height: 15vh;
@@ -62,7 +70,6 @@ const LabeledTextAreaContainer = styled(Col)`
   position: relative;
   gap: 8px;
   & .warning {
-    color: #bd3333;
     font-size: 80%;
   }
   .secret {
@@ -86,14 +93,51 @@ const LabeledTextAreaContainer = styled(Col)`
   }
 `;
 
-const TextArea = styled.textarea`
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  background: rgba(0, 0, 0, 0.3);
-  border-radius: 4px;
+const TextArea = styled.textarea<{ highlighted: boolean }>`
+  border: 0px solid #1C1C1C;
+  background: #F3F2F2;
+  border-radius: 10px;
+  color: ${({ theme }) => theme.palette.secondary.main};
   height: 480px;
-	padding: 16px;
-	transition: all 0.2s ease-in-out;
-	resize: none;
-  &:hover {
-		border: 1px solid rgba(255, 255, 255, 0.8);
+  padding: 16px;
+  transition: all 0.2s ease-in-out;
+  resize: none;
+  outline: none;
+
+  /* Apply different font sizes based on breakpoints */
+  ${({ theme }) => css`
+    font-size: 0.5rem; /* Default font size */
+
+    ${theme.breakpoints.up('sm')} {
+      font-size: 0.8rem; /* Font size for small screens and up */
+    }
+
+    ${theme.breakpoints.up('md')} {
+      font-size: 0.9rem; /* Font size for medium screens and up */
+    }
+
+    ${theme.breakpoints.up('lg')} {
+      font-size: 1rem; /* Font size for large screens and up */
+    }
+  `}
+
+  ${({ highlighted, theme }) =>
+    highlighted
+      ? css`
+          border: 2px solid ${theme.palette.accent.main};
+          &:hover {
+            border: 2px solid ${theme.palette.accent.main};
+          }
+          &:focus {
+            border: 1px solid ${theme.palette.accent.main};
+            box-shadow: 0 0 0 2px ${theme.palette.accent.main};
+          }
+        `
+      : css`
+          &:focus {
+            border: 2px solid #1C1C1C;
+          }
+        `}
 `;
+
+export default LabeledTextArea;
