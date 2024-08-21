@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useMount, useUpdateEffect } from "react-use";
 import styled from "styled-components";
 import _ from "lodash";
-import { useAccount, useContractWrite, usePrepareContractWrite } from "wagmi";
+import { useAccount, useWriteContract } from "wagmi";
 import {
   downloadProofFiles,
   generateProof,
@@ -166,7 +166,7 @@ export const MainPage: React.FC<{}> = (props) => {
     },
   });
 
-  const { data, isLoading, isSuccess, write } = useContractWrite(config);
+  const { data, isPending, isSuccess, writeContract } = useWriteContract();
 
   const handleFetchEmails = async () => {
     try {
@@ -660,17 +660,26 @@ export const MainPage: React.FC<{}> = (props) => {
             Verify
           </Button>
           <Button
-            disabled={!verificationPassed || isLoading || isSuccess || !write}
+            disabled={!verificationPassed || isPending || isSuccess || !writeContract}
             onClick={async () => {
               setStatus("sending-on-chain");
-              write?.();
+              writeContract({
+                // @ts-ignore
+                address: import.meta.env.VITE_CONTRACT_ADDRESS,
+                abi: abi,
+                functionName: "mint",
+                args: [
+                  reformatProofForChain(proof),
+                  publicSignals ? JSON.parse(publicSignals) : [],
+                ],
+              });
             }}
           >
             {isSuccess
               ? "Successfully sent to chain!"
-              : isLoading
+              : isPending
               ? "Confirm in wallet"
-              : !write
+              : false
               ? "Connect Wallet first, scroll to top!"
               : verificationPassed
               ? "Mint Twitter badge on-chain"
