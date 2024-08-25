@@ -24,8 +24,8 @@ describe("Twitter email test", function () {
     circuit = await wasm_tester(path.join(__dirname, "../src/twitter.circom"), {
       // NOTE: We are running tests against pre-compiled circuit in the below path
       // You need to manually compile when changes are made to circuit if `recompile` is set to `false`.
-      recompile: true,
-      output: path.join(__dirname, "../build/twitter"),
+      recompile: false,
+      output: path.join(__dirname, "../build/"),
       include: [path.join(__dirname, "../node_modules"), path.join(__dirname, "../../../node_modules")],
     });
   });
