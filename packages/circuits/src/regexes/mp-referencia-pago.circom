@@ -2,8 +2,8 @@ pragma circom 2.1.5;
 
 include "@zk-email/zk-regex-circom/circuits/regex_helpers.circom";
 
-// regex: Referencia de pago:</span><br><span style=3D"font-fam=ily:&#39;Proxima Nova&#39;,_apple_system,&#39;Helvetica Neue&#39;,Helvetica=,Roboto,Arial,sans-serif;font-size:14px;color:rgba(0,0,0,0.8);font-weight:n=ormal;line-height:1.43;margin:0px;letter-spacing:-0.025px">[0-9]+
-template TwitterResetRegex(msg_bytes) {
+// regex: Referencia de pago:\r\n( |=\r\n|0|1|2|3|4|5|6|7|8|9)+\r\n
+template RegexReferenciaPago(msg_bytes) {
 	signal input msg[msg_bytes];
 	signal output out;
 
