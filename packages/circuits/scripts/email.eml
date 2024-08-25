@@ -1,0 +1,859 @@
+Delivered-To: nico@ddfundacion.org
+Received: by 2002:ab3:65cc:0:b0:273:7fe6:c17b with SMTP id m12csp641909lti;
+        Fri, 23 Aug 2024 20:28:03 -0700 (PDT)
+X-Received: by 2002:a05:6902:11cc:b0:e0b:f6aa:8097 with SMTP id 3f1490d57ef6-e17a86ba2camr5206017276.0.1724470081016;
+        Fri, 23 Aug 2024 20:28:01 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1724470081; cv=none;
+        d=google.com; s=arc-20160816;
+        b=oVIynWLJgfj6ojykjD78mMcSVTLekbSj/1359BNweKxxpODQ0OPEPERdupcKlzDgxk
+         IUOMllTao7FfuGAbrSXTCnFuAUehXFRitIaC5su+2Q2ZF0uFFBvH7QLgWi1mYCUxj02S
+         1mOE3NtIW47Znpp5geA5CZ4O3sGM9DAm95qWcsI6qadNKo2zA3UrIPjSsFaX5D2YdTxh
+         WxOVX8iuz8ONfmOuc3MqhyG/yufxuIj75hNiJhC1khAPlDAIOrEP2xJvoMl60ffOmArI
+         bss11IkkimRsOUAuyckb/UUkOt0aHU7xMkTXbMUWTUr+ZdBDJcgdYtZaYHWDLm4m/wMW
+         SttA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
+         :dkim-signature;
+        bh=1zQmNDBX5M1UGLgul+/VOhNyGqoyJODSY10wMw+hu94=;
+        fh=m/mPoB2mvKbU2mgW7gRigkp5x8inqGaFsUSRepRvgZk=;
+        b=UBG4zKtko/kw3qQOPtpXe4WA/47ZTXx4dqLXjLHafCFe8ek51e543TnEp8XLOmYls4
+         WsuL/URDWJcibuqdD7lUt1HOjjbWMS8xW6oQLlczomkKW0e5Zx2RXH7e+Ihe3Lv/1Dz3
+         uPPRAUneusfQvDK66XCSK7ueYQHp5pupFlvkjJ8EajZo5GnBsvPp8d4lxCDE8/7tWRYy
+         Vw28e3Me01NOgwtWgmCx6uOIRYFzhXYUwxhuevsakVWZlTqW1Bt1qMzfQNVii2Q0MQrm
+         IPKSJqfO6MQQrRS8sMtcx1ywUMAbT5AtA4HoTNbQXiZ/YIeAEeodq3gMaLXiMWKkzpDw
+         alxQ==;
+        dara=google.com
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@gmail.com header.s=20230601 header.b=I5kkl8Sw;
+       spf=pass (google.com: domain of nicoacosta8@gmail.com designates 209.85.220.41 as permitted sender) smtp.mailfrom=nicoacosta8@gmail.com;
+       dmarc=pass (p=NONE sp=QUARANTINE dis=NONE) header.from=gmail.com;
+       dara=pass header.i=@ddfundacion.org
+Return-Path: <nicoacosta8@gmail.com>
+Received: from mail-sor-f41.google.com (mail-sor-f41.google.com. [209.85.220.41])
+        by mx.google.com with SMTPS id 3f1490d57ef6-e178e6d13c7sor3723396276.17.2024.08.23.20.28.00
+        for <nico@ddfundacion.org>
+        (Google Transport Security);
+        Fri, 23 Aug 2024 20:28:00 -0700 (PDT)
+Received-SPF: pass (google.com: domain of nicoacosta8@gmail.com designates 209.85.220.41 as permitted sender) client-ip=209.85.220.41;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@gmail.com header.s=20230601 header.b=I5kkl8Sw;
+       spf=pass (google.com: domain of nicoacosta8@gmail.com designates 209.85.220.41 as permitted sender) smtp.mailfrom=nicoacosta8@gmail.com;
+       dmarc=pass (p=NONE sp=QUARANTINE dis=NONE) header.from=gmail.com;
+       dara=pass header.i=@ddfundacion.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1724470080; x=1725074880; darn=ddfundacion.org;
+        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1zQmNDBX5M1UGLgul+/VOhNyGqoyJODSY10wMw+hu94=;
+        b=I5kkl8SwMSyoGLdChpkOyYQV0SaztMT3/mODDOY7Jg5KtC9qEJYMb/yiOE3ermmdB6
+         USszDxK+zBqD3b9DtdB6FLMUDnpmxJa87C+BVzffjWbSPJao9gK7Vg0ntRLzAb1phaIv
+         1ce8jfbXi9t7i60L4vd44L/0+OIDv/x51IHAYWUjiIrK8BWwX+g/e/Egki343wMK3Xu2
+         gtCInloYDA7co6E6sD/G7OZQ/qgSXH3z6yJSttgcpQMfZDhRkYYKuiKOVXkRahLUgxAK
+         tMWAoDHkE5idLvXgMik9T268QG/u1cClS22SQ4HR050cZ56LmJYPfpImkYP70luJiG6w
+         IycQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1724470080; x=1725074880;
+        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1zQmNDBX5M1UGLgul+/VOhNyGqoyJODSY10wMw+hu94=;
+        b=F5OzYCQz291ocdfSzfGZR17z5EkLePmumL75kZnZQT52regiXEqPjCEmTLMWxgOecz
+         Ti7ykW4AWAYbVjOn9S9sTS6QQBdA81/o4le2Sra4wgFlQLEgowKaF6cHWNJO3tXaUZV8
+         sJDe79QR7hl5DI8VP/Tjfcsr911oD3cJVs4c4Yaa8e43QCierjP53NVigue7vvGVxYIb
+         7o5yMXC8ibdL18RZx/UOrfey47N8aEYhfxL6pds0oaFdf4OGTbqDBXXXUZ1mcqQC3fo+
+         r5EcAwZbjBwfqeaGGgzm528NkmMjIL8rrBEDHlE+9f+pA0JuDrYgu0sgrul4QWkwty13
+         Vyiw==
+X-Gm-Message-State: AOJu0YwLS4pYGqTwC8BvOE7OOXbjQRTBz1r7Mu45t/2j1D3XCt3VPthI
+	jMgvXIGTfTkNirln3WjHWRXYSpNgvMcigBEssvxnIYFSyOU0o3Rl72DnxWO8woxpauj6ZO12Mqh
+	bE2M81YsPr45NqQaA9nwuIG8WqlfiyA==
+X-Google-Smtp-Source: AGHT+IHlGAn0y1ECQN2wJlkvhgLeRYfFWt3ae0eqLoxdLfTqXbKjnX6ia48aEZM3aIaeGk68sdo/lKf0sKv+vHA8eEw=
+X-Received: by 2002:a05:6902:1617:b0:e11:7246:9632 with SMTP id
+ 3f1490d57ef6-e17a88bdcf2mr5151093276.4.1724470080158; Fri, 23 Aug 2024
+ 20:28:00 -0700 (PDT)
+MIME-Version: 1.0
+References: <Wxo9UZ1bTdmjZf77IvRSpg@geopod-ismtpd-6>
+In-Reply-To: <Wxo9UZ1bTdmjZf77IvRSpg@geopod-ismtpd-6>
+From: =?UTF-8?Q?Nicol=C3=A1s_Acosta?= <nicoacosta8@gmail.com>
+Date: Sat, 24 Aug 2024 00:27:48 -0300
+Message-ID: <CALeY8w7SvA6pHoKyUt96+Yczo72qb7haMaiWBRroPS2kqc4iJA@mail.gmail.com>
+Subject: Fwd: Recibiste un pago por Producto
+To: =?UTF-8?Q?Nicol=C3=A1s_Acosta?= <nico@ddfundacion.org>
+Content-Type: multipart/alternative; boundary="0000000000008dc4130620657a9e"
+
+--0000000000008dc4130620657a9e
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+---------- Forwarded message ---------
+From: Mercado Pago <info@mercadopago.com>
+Date: Fri, Jul 19, 2024 at 9:48=E2=80=AFPM
+Subject: Recibiste un pago por Producto
+To: <nicoacosta8@gmail.com>
+
+
+[image: Mercado Pago] Nicol=C3=A1s Acosta
+Nicol=C3=A1s ya recibi=C3=B3 tu pago
+Se acredit=C3=B3 un pago en tu cuenta de Mercado Pago.
+Nicol=C3=A1s, te compartimos los detalles:
+$ 15,00
+Comisi=C3=B3n de Mercado Pago: - $ 0,15
+Total acreditado en tu cuenta: *$ 14,85*
+(El total puede incluir el descuento por percepciones y/o retenciones)
+
+Referencia de pago:
+82969637905
+Referencia del vendedor:
+MP-QR-115366102-db421863-de96-4879-96e9-6638879a6d2e-10008TAG
+Fecha:
+19/07/2024 18:34:00
+Pago procesado por Mercado Pago
+No respondas este e-mail.
+=C2=BFTienes dudas? Consulta nuestro centro de ayuda.
+<http://mercadopago.com.ar/ayuda>
+
+Te enviamos este e-mail a nicoacosta8@gmail.com.
+
+Administrar preferencias de e-mails
+<https://www.mercadopago.com.ar/communication-preferences>.
+
+Nunca env=C3=ADes tu clave o datos de tu cuenta por e-mail.
+
+Conoc=C3=A9 c=C3=B3mo cuidamos tu Privacidad
+<https://www.mercadopago.com.ar/privacidad> y visit=C3=A1 los T=C3=A9rminos=
+ y
+Condiciones de Mercado Pago
+<https://www.mercadopago.com.ar/ayuda/terminos-y-condiciones_299>.
+
+--0000000000008dc4130620657a9e
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail=
+_attr">---------- Forwarded message ---------<br>From: <strong class=3D"gma=
+il_sendername" dir=3D"auto">Mercado Pago</strong> <span dir=3D"auto">&lt;<a=
+ href=3D"mailto:info@mercadopago.com">info@mercadopago.com</a>&gt;</span><b=
+r>Date: Fri, Jul 19, 2024 at 9:48=E2=80=AFPM<br>Subject: Recibiste un pago =
+por Producto<br>To:  &lt;<a href=3D"mailto:nicoacosta8@gmail.com">nicoacost=
+a8@gmail.com</a>&gt;<br></div><br><br><div class=3D"msg8712189116040337145"=
+>     <u></u>
+
+
+   =20
+   =20
+   =20
+   =20
+   =20
+   =20
+   =20
+   =20
+   =20
+   =20
+
+
+<div width=3D"100%" style=3D"margin:0;padding:0">
+
+<div style=3D"width:100%;margin:auto" class=3D"m_3445247178104867881email-c=
+ontainer">
+   =20
+    <table role=3D"presentation" cellspacing=3D"0" cellpadding=3D"0" border=
+=3D"0" align=3D"center" width=3D"100%" class=3D"m_3445247178104867881email-=
+container" style=3D"min-width:100%;background:#f5f5f5">
+        <tbody><tr>
+            <td id=3D"m_3445247178104867881templateContent" style=3D"paddin=
+g:0px">
+                <table cellspacing=3D"0" cellpadding=3D"0" width=3D"100%" s=
+tyle=3D"min-width:100%">
+                    <tbody>
+                        <tr>
+                            <td align=3D"center">
+                               =20
+                                <table cellspacing=3D"0" cellpadding=3D"0" =
+width=3D"100%" align=3D"center" style=3D"background:rgb(255,255,255);font-f=
+amily:Arial,sans-serif;height:55px;min-width:100%">
+                                    <tbody>
+                                        <tr>
+                                            <td class=3D"m_3445247178104867=
+881header-content" align=3D"left" valign=3D"middle" style=3D"padding:8px 24=
+px">
+                                                <a class=3D"m_3445247178104=
+867881logo-mp" title=3D"Mercado Pago">
+                                                    <img border=3D"0" src=
+=3D"https://static.mlstatic.com/org-img/mkt/email-mkt-assets/checkout-off/l=
+ogo-mp-284x70.png" width=3D"112" height=3D"29" alt=3D"Mercado Pago" style=
+=3D"display:block;max-height:100%;border:0px">
+                                                </a>
+                                            </td>
+                                           =20
+                                            <td class=3D"m_3445247178104867=
+881header-content m_3445247178104867881hide" align=3D"right" style=3D"color=
+:rgb(102,102,102);padding:8px 24px;font-size:12px;font-family:&quot;Proxima=
+ Nova&quot;,_apple_system,&quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial=
+,sans-serif;font-weight:400">
+                                                Nicol=C3=A1s Acosta
+                                            </td>
+                                           =20
+                                        </tr>
+                                    </tbody>
+                                </table>
+                               =20
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table border=3D"0" cellspacing=3D"0" cellpadding=3D"0" wid=
+th=3D"100%">
+                    <tbody>
+                        <tr>
+                            <td align=3D"center">
+                                <table cellspacing=3D"0" cellpadding=3D"0" =
+border=3D"0" width=3D"100%">
+                                    <tbody>
+
+                                       =20
+    <tr>
+    <td height=3D"100%" width=3D"100%" align=3D"center" style=3D"border:0px=
+;font-size:0px;font-weight:300;margin:0px;padding:0px;vertical-align:top;te=
+xt-align:center">
+        <table role=3D"presentation" cellspacing=3D"0" cellpadding=3D"0" wi=
+dth=3D"100%" align=3D"center" style=3D"width:100%;max-width:600px">
+            <tbody>
+                <tr>
+                    <td height=3D"100%" width=3D"100%" style=3D"border:0px;=
+font-size:0px;font-weight:300;margin:0px;padding:0px;vertical-align:top;tex=
+t-align:center">
+                       =20
+                        <table cellpadding=3D"0" cellspacing=3D"0" width=3D=
+"100%" style=3D"background-color:#00a650" bgcolor=3D"#00a650">
+                            <tbody>
+                                <tr>
+                                    <td valign=3D"top" align=3D"center" sty=
+le=3D"font-family:&#39;Proxima Nova&#39;,-apple-system,&#39;Lato&#39;,Helve=
+tica,Arial,sans-serif;font-size:0">
+                                        <table align=3D"center" cellpadding=
+=3D"0" cellspacing=3D"0" width=3D"100%">
+                                            <tbody>
+                                                <tr>
+                                                    <td align=3D"center" va=
+lign=3D"top" style=3D"font-family:&#39;Proxima Nova&#39;,-apple-system,&#39=
+;Lato&#39;,Helvetica,Arial,sans-serif;font-size:0">
+                                                        <img title=3D"" alt=
+=3D"" src=3D"https://mercadolibre.com/org-img/mkt/email-mkt-assets/checkout=
+-off/spacer.png" height=3D"34" width=3D"0" border=3D"0" style=3D"font-size:=
+0;border:0;display:block">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td align=3D"center" st=
+yle=3D"font-family:&#39;Proxima Nova&#39;,-apple-system,&#39;Lato&#39;,Helv=
+etica,Arial,sans-serif;font-size:0">
+                                                        <table class=3D"m_3=
+445247178104867881hide--large" align=3D"center" cellpadding=3D"0" cellspaci=
+ng=3D"0" width=3D"100%" style=3D"display:none">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td sty=
+le=3D"font-family:&#39;Proxima Nova&#39;,-apple-system,&#39;Lato&#39;,Helve=
+tica,Arial,sans-serif;font-size:0">
+                                                                        <im=
+g title=3D"" alt=3D"" src=3D"https://mercadolibre.com/org-img/mkt/email-mkt=
+-assets/checkout-off/spacer.png" height=3D"1" width=3D"32" border=3D"0" sty=
+le=3D"font-size:0;border:0;display:block">
+                                                                    </td>
+                                                                    <td ali=
+gn=3D"center" valign=3D"middle" style=3D"font-family:&#39;Proxima Nova&#39;=
+,-apple-system,&#39;Lato&#39;,Helvetica,Arial,sans-serif;font-size:0">
+                                                                        <im=
+g alt=3D"" src=3D"http://static.mlstatic.com/org-img/mkt/email-mkt-assets/2=
+x/davinci/group-14@2x.png" border=3D"0" style=3D"font-size:0;border:0;displ=
+ay:block;max-width:80px;height:auto">
+                                                                    </td>
+                                                                    <td sty=
+le=3D"font-family:&#39;Proxima Nova&#39;,-apple-system,&#39;Lato&#39;,Helve=
+tica,Arial,sans-serif;font-size:0">
+                                                                        <im=
+g title=3D"" alt=3D"" src=3D"https://mercadolibre.com/org-img/mkt/email-mkt=
+-assets/checkout-off/spacer.png" height=3D"1" width=3D"32" border=3D"0" sty=
+le=3D"font-size:0;border:0;display:block">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td sty=
+le=3D"font-family:&#39;Proxima Nova&#39;,-apple-system,&#39;Lato&#39;,Helve=
+tica,Arial,sans-serif;font-size:0">
+                                                                        <im=
+g title=3D"" alt=3D"" src=3D"https://mercadolibre.com/org-img/mkt/email-mkt=
+-assets/checkout-off/spacer.png" height=3D"18" width=3D"0" border=3D"0" sty=
+le=3D"font-size:0;border:0;display:block">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td sty=
+le=3D"font-family:&#39;Proxima Nova&#39;,-apple-system,&#39;Lato&#39;,Helve=
+tica,Arial,sans-serif;font-size:0">
+                                                                        <im=
+g title=3D"" alt=3D"" src=3D"https://mercadolibre.com/org-img/mkt/email-mkt=
+-assets/checkout-off/spacer.png" height=3D"1" width=3D"32" border=3D"0" sty=
+le=3D"font-size:0;border:0;display:block">
+                                                                    </td>
+                                                                    <td ali=
+gn=3D"center" valign=3D"top" style=3D"font-size:24px;font-family:&#39;Proxi=
+ma Nova&#39;,-apple-system,&#39;Helvetica Neue&#39;,Helvetica,&#39;Roboto&#=
+39;,Arial,sans-serif;line-height:1.25;font-weight:600;color:#fff">
+                                                                        <sp=
+an style=3D"font-family:&#39;Proxima Nova&#39;,-apple-system,&#39;Lato&#39;=
+,Helvetica,Arial,sans-serif">
+                                                                           =
+=20
+                                                                           =
+     Nicol=C3=A1s ya recibi=C3=B3 tu pago
+                                                                           =
+=20
+                                                                        </s=
+pan>
+                                                                    </td>
+                                                                    <td sty=
+le=3D"font-family:&#39;Proxima Nova&#39;,-apple-system,&#39;Lato&#39;,Helve=
+tica,Arial,sans-serif;font-size:0">
+                                                                        <im=
+g title=3D"" alt=3D"" src=3D"https://mercadolibre.com/org-img/mkt/email-mkt=
+-assets/checkout-off/spacer.png" height=3D"1" width=3D"32" border=3D"0" sty=
+le=3D"font-size:0;border:0;display:block">
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                        <table class=3D"m_3=
+445247178104867881hide--small" align=3D"center" cellpadding=3D"0" cellspaci=
+ng=3D"0" width=3D"100%">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td sty=
+le=3D"font-family:&#39;Proxima Nova&#39;,-apple-system,&#39;Lato&#39;,Helve=
+tica,Arial,sans-serif;font-size:0">
+                                                                        <im=
+g title=3D"" alt=3D"" src=3D"https://mercadolibre.com/org-img/mkt/email-mkt=
+-assets/checkout-off/spacer.png" height=3D"1" width=3D"22" border=3D"0" sty=
+le=3D"font-size:0;border:0;display:block">
+                                                                    </td>
+                                                                    <td ali=
+gn=3D"center" style=3D"font-family:&#39;Proxima Nova&#39;,-apple-system,&#3=
+9;Lato&#39;,Helvetica,Arial,sans-serif;font-size:0">
+                                                                        <ta=
+ble style=3D"width:396px" width=3D"396">
+                                                                           =
+ <tbody>
+                                                                           =
+     <tr>
+                                                                           =
+         <td align=3D"left" valign=3D"top" style=3D"font-size:24px;font-fam=
+ily:&#39;Proxima Nova&#39;,-apple-system,&#39;Helvetica Neue&#39;,Helvetica=
+,&#39;Roboto&#39;,Arial,sans-serif;line-height:1.25;font-weight:600;color:#=
+fff">
+                                                                           =
+             <span style=3D"font-family:&#39;Proxima Nova&#39;,-apple-syste=
+m,&#39;Lato&#39;,Helvetica,Arial,sans-serif">
+                                                                           =
+                 Se acredit=C3=B3 un pago en tu cuenta de Mercado Pago.
+                                                                           =
+             </span>
+                                                                           =
+         </td>
+                                                                           =
+         <td align=3D"center" valign=3D"top" style=3D"font-family:&#39;Prox=
+ima Nova&#39;,-apple-system,&#39;Lato&#39;,Helvetica,Arial,sans-serif;font-=
+size:0">
+                                                                           =
+             <div style=3D"font-family:&#39;Proxima Nova&#39;,-apple-system=
+,&#39;Lato&#39;,Helvetica,Arial,sans-serif">
+                                                                           =
+                 <img title=3D"" alt=3D"" src=3D"https://mercadolibre.com/o=
+rg-img/mkt/email-mkt-assets/checkout-off/spacer.png" height=3D"1" width=3D"=
+14" border=3D"0" style=3D"font-size:0;border:0;display:block">
+                                                                           =
+             </div>
+                                                                           =
+         </td>
+                                                                           =
+         <td align=3D"left" valign=3D"middle" style=3D"font-family:&#39;Pro=
+xima Nova&#39;,-apple-system,&#39;Lato&#39;,Helvetica,Arial,sans-serif;font=
+-size:0">
+                                                                           =
+             <img alt=3D"" src=3D"http://static.mlstatic.com/org-img/mkt/em=
+ail-mkt-assets/2x/davinci/group-14@2x.png" border=3D"0" style=3D"font-size:=
+0;border:0;display:block;max-width:80px;height:auto">
+                                                                           =
+         </td>
+                                                                           =
+     </tr>
+                                                                           =
+ </tbody>
+                                                                        </t=
+able>
+                                                                    </td>
+                                                                    <td sty=
+le=3D"font-family:&#39;Proxima Nova&#39;,-apple-system,&#39;Lato&#39;,Helve=
+tica,Arial,sans-serif;font-size:0">
+                                                                        <im=
+g title=3D"" alt=3D"" src=3D"https://mercadolibre.com/org-img/mkt/email-mkt=
+-assets/checkout-off/spacer.png" height=3D"1" width=3D"22" border=3D"0" sty=
+le=3D"font-size:0;border:0;display:block">
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td align=3D"center" va=
+lign=3D"top" style=3D"font-family:&#39;Proxima Nova&#39;,-apple-system,&#39=
+;Lato&#39;,Helvetica,Arial,sans-serif;font-size:0;line-height:0">
+                                                        <img title=3D"" alt=
+=3D"" src=3D"https://mercadolibre.com/org-img/mkt/email-mkt-assets/checkout=
+-off/spacer.png" height=3D"34" width=3D"0" border=3D"0" style=3D"font-size:=
+0;border:0;display:block">
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                       =20
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </td>
+</tr>
+
+<tr>
+    <td dir=3D"ltr" height=3D"100%" width=3D"100%" align=3D"center" style=
+=3D"border:0px;font-size:0px;font-weight:300;margin:0px;padding:0px;vertica=
+l-align:top;text-align:center">
+       =20
+        <table align=3D"center" role=3D"presentation" cellpadding=3D"0" cel=
+lspacing=3D"0" width=3D"100%" style=3D"width:100%;max-width:600px">
+            <tbody>
+                <tr>
+                    <td height=3D"32" align=3D"left" style=3D"display:none;=
+max-height:0px;overflow:hidden">
+                    </td>
+                    <td rowspan=3D"2" width=3D"448" style=3D"background:url=
+(&quot;http://static.mlstatic.com/org-img/mkt/email-mkt-assets/2x/davinci/1=
+x46-00a650.png&quot;) left top repeat-x">
+                        <table cellspacing=3D"0" cellpadding=3D"0" width=3D=
+"100%" align=3D"center" class=3D"m_3445247178104867881inner-card-container"=
+ style=3D"max-width:600px">
+                            <tbody>
+                                <tr>
+                                    <td dir=3D"ltr" height=3D"100%" width=
+=3D"100%" align=3D"center" style=3D"vertical-align:top;text-align:center;pa=
+dding:0px;font-size:0px">
+                                        <table class=3D"m_34452471781048678=
+81card-content" role=3D"presentation" cellpadding=3D"0" cellspacing=3D"0" w=
+idth=3D"100%" align=3D"center" style=3D"background:rgb(255,255,255);max-wid=
+th:448px;overflow:hidden;margin:0px auto;border-radius:4px">
+                                            <tbody>
+                                               =20
+                                               =20
+
+<tr>
+    <td class=3D"m_3445247178104867881card-content-td" style=3D"font-size:0=
+px;padding:32px;text-align:center">
+        <table role=3D"presentation" cellpadding=3D"0" cellspacing=3D"0" wi=
+dth=3D"100%" align=3D"center" style=3D"padding:0px;font-size:0px">
+            <tbody>
+                <tr>
+                    <td valign=3D"middle" align=3D"left" style=3D"padding:0=
+px;font-size:0px">
+                        <div style=3D"max-width:380px;font-family:&#39;Prox=
+ima Nova&#39;,_apple_system,&#39;Helvetica Neue&#39;,Helvetica,Roboto,Arial=
+,sans-serif;font-size:16px;color:rgba(0,0,0,0.8);font-weight:500;line-heigh=
+t:1.25;margin:0px">
+                            Nicol=C3=A1s, te compartimos los detalles:
+                        </div>
+                    </td>
+                </tr>
+           =20
+               =20
+                <tr>
+    <td valign=3D"middle" align=3D"center" style=3D"padding-top:32px;font-s=
+ize:0px">
+        <table cellspacing=3D"0" cellpadding=3D"0" width=3D"100%" align=3D"=
+center" style=3D"max-width:600px">
+            <tbody>
+            <tr>
+               =20
+                    <td style=3D"width:36px;padding-right:20px;vertical-ali=
+gn:top">
+                        <img src=3D"https://http2.mlstatic.com/storage/logo=
+s-api-admin/f4fec170-571b-11e8-9a2d-4b2bd7b1bf77-xl.png" width=3D"30" heigh=
+t=3D"30" style=3D"max-width:100%;height:auto;display:block">
+                    </td>
+               =20
+                <td style=3D"padding:0px">
+                    <table width=3D"100%">
+                       =20
+                        <tbody><tr>
+                            <td style=3D"padding:0px">
+                                <span style=3D"font-family:&#39;Proxima Nov=
+a&#39;,_apple_system,&#39;Helvetica Neue&#39;,Helvetica,Roboto,Arial,sans-s=
+erif;font-size:16px;color:rgba(0,0,0,0.8);font-weight:normal;line-height:1.=
+33;margin:0px;letter-spacing:-0.025px">
+                                    $ 15,00
+
+                                   =20
+                                </span>
+                            </td>
+                        </tr>
+                       =20
+                       =20
+                            <tr>
+                                <td style=3D"padding-top:8px">
+                                    <span style=3D"font-family:&#39;Proxima=
+ Nova&#39;,_apple_system,&#39;Helvetica Neue&#39;,Helvetica,Roboto,Arial,sa=
+ns-serif;font-size:14px;color:rgba(0,0,0,0.45);font-weight:normal;line-heig=
+ht:1.33;margin:0px;letter-spacing:-0.025px">
+                                        Comisi=C3=B3n de Mercado Pago: - $ =
+0,15
+                                    </span>
+                                </td>
+                            </tr>
+                       =20
+                       =20
+                       =20
+                       =20
+                       =20
+                       =20
+                           =20
+                           =20
+                           =20
+                                <tr>
+                                    <td style=3D"padding-top:16px">
+                                        <span style=3D"font-family:&#39;Pro=
+xima Nova&#39;,_apple_system,&#39;Helvetica Neue&#39;,Helvetica,Roboto,Aria=
+l,sans-serif;font-size:14px;color:rgba(0,0,0,0.45);font-weight:normal;line-=
+height:1.33;margin:0px;letter-spacing:-0.025px">
+                                           =20
+                                            Total acreditado en tu cuenta: =
+<strong>$ 14,85</strong>
+                                        </span>
+                                       =20
+                                            <br>
+                                            <span style=3D"font-family:&#39=
+;Proxima Nova&#39;,_apple_system,&#39;Helvetica Neue&#39;,Helvetica,Roboto,=
+Arial,sans-serif;font-size:14px;color:rgba(0,0,0,0.45);font-weight:normal;l=
+ine-height:1.33;margin:0px;letter-spacing:-0.025px">
+                                                (El total puede incluir el =
+descuento por percepciones y/o retenciones)
+                                            </span>
+                                       =20
+                                    </td>
+                                </tr>
+                           =20
+                       =20
+                    </tbody></table>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </td>
+</tr>
+
+           =20
+               =20
+            </tbody>
+        </table>
+    </td>
+</tr>
+
+                                               =20
+
+                                                <tr>
+                                                    <td height=3D"100%" wid=
+th=3D"100%" align=3D"center">
+                                                        <div style=3D"width=
+:100%;height:1px;background-color:#eeeeee">
+                                                        </div>
+                                                    </td>
+                                                </tr>
+
+                                               =20
+                                                <tr>
+    <td class=3D"m_3445247178104867881card-content-td" style=3D"font-size:0=
+px;padding:32px;text-align:center">
+        <table role=3D"presentation" cellpadding=3D"0" cellspacing=3D"0" wi=
+dth=3D"100%" align=3D"center" style=3D"padding:0px;font-size:0px">
+            <tbody>
+                <tr>
+                    <td valign=3D"middle" align=3D"left" style=3D"padding:0=
+px;font-size:0px">
+                        <table cellspacing=3D"0" cellpadding=3D"0" width=3D=
+"100%" align=3D"center" style=3D"max-width:600px">
+                            <tbody>
+                                <tr>
+                                   =20
+                                        <td style=3D"width:36px;padding-rig=
+ht:20px;vertical-align:top">
+                                            <img src=3D"http://static.mlsta=
+tic.com/org-img/mkt/email-mkt-assets/checkout-off/ticket@2x.png" width=3D"3=
+0" height=3D"30" style=3D"max-width:100%;height:auto;display:block">
+                                        </td>
+                                   =20
+
+                                    <td style=3D"padding:0px">
+                                        <table width=3D"100%">
+                                            <tbody><tr>
+                                                <td style=3D"padding:0px">
+                                                    <span style=3D"font-fam=
+ily:&#39;Proxima Nova&#39;,_apple_system,&#39;Helvetica Neue&#39;,Helvetica=
+,Roboto,Arial,sans-serif;font-size:14px;color:rgba(0,0,0,0.45);font-weight:=
+normal;line-height:1.38;margin:0px;letter-spacing:-0.025px">
+                                                        Referencia de pago:
+                                                    </span>
+                                                    <br>
+                                                    <span style=3D"font-fam=
+ily:&#39;Proxima Nova&#39;,_apple_system,&#39;Helvetica Neue&#39;,Helvetica=
+,Roboto,Arial,sans-serif;font-size:14px;color:rgba(0,0,0,0.8);font-weight:n=
+ormal;line-height:1.43;margin:0px;letter-spacing:-0.025px">
+                                                        82969637905
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                           =20
+                                                <tr>
+                                                    <td style=3D"padding-to=
+p:20px">
+                                                        <span style=3D"font=
+-family:&#39;Proxima Nova&#39;,_apple_system,&#39;Helvetica Neue&#39;,Helve=
+tica,Roboto,Arial,sans-serif;font-size:14px;color:rgba(0,0,0,0.45);font-wei=
+ght:normal;line-height:1.38;margin:0px;letter-spacing:-0.025px">
+                                                            Referencia del =
+vendedor:
+                                                        </span>
+                                                        <br>
+                                                        <span style=3D"font=
+-family:&#39;Proxima Nova&#39;,_apple_system,&#39;Helvetica Neue&#39;,Helve=
+tica,Roboto,Arial,sans-serif;font-size:14px;color:rgba(0,0,0,0.8);font-weig=
+ht:normal;line-height:1.43;margin:0px;letter-spacing:-0.025px">
+                                                            MP-QR-115366102=
+-db421863-de96-4879-96e9-6638879a6d2e-10008TAG
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                           =20
+
+                                           =20
+                                               =20
+                                               =20
+                                           =20
+
+                                            <tr>
+                                                <td style=3D"padding-top:20=
+px">
+                                                    <span style=3D"font-fam=
+ily:&#39;Proxima Nova&#39;,_apple_system,&#39;Helvetica Neue&#39;,Helvetica=
+,Roboto,Arial,sans-serif;font-size:14px;color:rgba(0,0,0,0.45);font-weight:=
+normal;line-height:1.38;margin:0px;letter-spacing:-0.025px">
+                                                        Fecha:
+                                                    </span>
+                                                    <br>
+                                                    <span style=3D"font-fam=
+ily:&#39;Proxima Nova&#39;,_apple_system,&#39;Helvetica Neue&#39;,Helvetica=
+,Roboto,Arial,sans-serif;font-size:14px;color:rgba(0,0,0,0.8);font-weight:n=
+ormal;line-height:1.43;margin:0px;letter-spacing:-0.025px">
+                                                        19/07/2024 18:34:00
+                                                    </span>
+                                                </td>
+                                            </tr>
+
+                                           =20
+                                        </tbody></table>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </td>
+</tr>
+
+                                               =20
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+       =20
+    </td>
+</tr>
+
+
+
+
+
+                                    </tbody>
+                                </table>
+                            </td>
+                            <td height=3D"32" align=3D"right" style=3D"back=
+ground:rgb(0,166,80);display:none;max-height:0px;overflow:hidden">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td height=3D"100%" align=3D"left" style=3D"bac=
+kground:rgb(245,245,245);display:none;max-height:0px;overflow:hidden">
+                            </td>
+                            <td height=3D"100%" align=3D"right" style=3D"ba=
+ckground:rgb(245,245,245);display:none;max-height:0px;overflow:hidden">
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+               =20
+            </td>
+        </tr>
+    </tbody></table>
+    <table border=3D"0" cellspacing=3D"0" cellpadding=3D"0" width=3D"100%" =
+style=3D"min-width:100%;background-color:#f5f5f5">
+        <tbody><tr>
+            <td align=3D"center">
+                <table cellspacing=3D"0" cellpadding=3D"0" border=3D"0" wid=
+th=3D"100%" align=3D"center">
+                    <tbody>
+                    <tr>
+                        <td align=3D"center" style=3D"text-align:center;pad=
+ding:32px 40px">
+                           =20
+                            <table cellspacing=3D"0" cellpadding=3D"0" bord=
+er=3D"0" width=3D"100%" align=3D"center">
+                                <tbody>
+                               =20
+                               =20
+                                   =20
+                                   =20
+                                        <tr>
+                                            <td align=3D"center" style=3D"f=
+ont-family:&quot;Proxima Nova&quot;,_apple_system,&quot;Helvetica Neue&quot=
+;,Helvetica,Roboto,Arial,sans-serif;font-size:12px;margin:0px auto;padding:=
+0px;line-height:1.21;text-align:center;color:rgb(153,153,153);font-weight:4=
+00">
+                                                Pago procesado por Mercado =
+Pago
+                                            </td>
+                                        </tr>
+                                   =20
+                               =20
+                                </tbody>
+                            </table>
+                           =20
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+    </tbody></table>
+
+    <table border=3D"0" cellspacing=3D"0" cellpadding=3D"0" width=3D"100%" =
+style=3D"min-width:100%;background-color:#e3e3e3">
+        <tbody><tr>
+            <td align=3D"center">
+                <table cellspacing=3D"0" cellpadding=3D"0" width=3D"100%" a=
+lign=3D"center">
+                    <tbody>
+                        <tr>
+                            <td align=3D"center">
+                               =20
+                                <table role=3D"presentation" cellspacing=3D=
+"0" cellpadding=3D"0" width=3D"100%" align=3D"center" style=3D"background-c=
+olor:#e3e3e3">
+                                    <tbody>
+                                        <tr>
+                                            <td align=3D"center" style=3D"f=
+ont-weight:400;font-family:&quot;Proxima Nova&quot;,_apple_system,&quot;Hel=
+vetica Neue&quot;,Helvetica,Roboto,Arial,sans-serif;font-size:12px;line-hei=
+ght:1.45;color:rgb(140,140,140);padding:24px;text-align:center">
+                                                No respondas este e-mail.
+                                                <br>
+                                                =C2=BFTienes dudas?
+                                                <a href=3D"http://mercadopa=
+go.com.ar/ayuda" style=3D"color:#009ee3" target=3D"_blank">
+                                                    Consulta nuestro centro=
+ de ayuda.
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                               =20
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+    </tbody></table>
+   =20
+</div>
+
+<img src=3D"https://u9647731.ct.sendgrid.net/wf/open?upn=3Du001.-2BYJYAzqPs=
+n4q3HNnDLB4Ax9COjcSrfAYZ1PKR8TZ8pRKsZ2tqF3N18urzgc2wLfyM9ne4wU31LqLJYFcmvhf=
+-2FT3yQIYcGq7CIyYxCg5BkOO47G4KYRnuSfETE2O60MvMFNbOPDtMk-2B1-2BL4TBX8K1ZV0TJ=
+pSkN1wVVRLOdRUTgiXqcVkjCqrJ6gyq8aZJjDARMMd406owoWrODX3Rgry9wteTtHXD99s4kxCy=
+XSJ3ihFYzWtYYVYIR6blLiZ7XNaEHOIEF9UwDqg3ClhzxCBXq-2FkMTJY0eR3AnKmlV0Y-2FkaR=
+7PuPdXZkr0xYuisF0V5BTf7Tswv-2BZPq5BRUk-2BAqBrjmoNBc3gwj8m6yk-2BKgMwbazfoaij=
+iwuJguI7RUhPnPfIXVyrc09N8Ta3cGoKrampV0fN1h5KxRUI64MiKZjWzVGqDuk7PCxq0rYaO7q=
+xRDBWOfsY0mh2ou5n-2BnryZClN03uTgiffjPtdQV7I-2FG8DVhlyJiRyJdiVhXz7Bm8-2BfP5G=
+Yts7VVprvJ709ue2rywAlV9IcaPFCMrnazO6egUPRlq3WXd9bHoZ-2FwDkCF4pelW0tgJ7JFHxE=
+Y-2Fe8IiKscZx9hdsUN0iPRHSOcbRNrkRvrJuvsGmeOFA0oU-2F6HjmUB3xh45ofNWgvYhWO737=
+-2Fm0tb1uaF9ITpVmeDpsLedyZ6aIdCGiURtBORXYlPiGBqOcAPstAI-2FiLH-2Fqv1ldviL-2B=
+0cDZhL6FwgdQadxvyVLInsjA-3D" alt=3D"" width=3D"1" height=3D"1" border=3D"0"=
+ style=3D"height:1px!important;width:1px!important;border-width:0!important=
+;margin-top:0!important;margin-bottom:0!important;margin-right:0!important;=
+margin-left:0!important;padding-top:0!important;padding-bottom:0!important;=
+padding-right:0!important;padding-left:0!important"></div>
+
+
+     <table role=3D"presentation" cellspacing=3D"0" cellpadding=3D"0" borde=
+r=3D"0" width=3D"100%" style=3D"width:100%;max-width:520px;margin:0px auto"=
+><tbody><tr><td valign=3D"middle" align=3D"left" style=3D"width:100%;max-wi=
+dth:520px;padding-top:40px;padding-bottom:40px"><table role=3D"presentation=
+" cellspacing=3D"0" cellpadding=3D"0" border=3D"0" width=3D"100%"><tbody><t=
+r><td valign=3D"middle" align=3D"left"><table role=3D"presentation" cellspa=
+cing=3D"0" cellpadding=3D"0" border=3D"0" width=3D"100%"><tbody><tr><td><p =
+style=3D"font-family:&#39;Proxima Nova&#39;,-apple-system,&#39;Helvetica Ne=
+ue&#39;,Helvetica,Roboto,Arial,sans-serif;font-weight:400;font-size:12px;co=
+lor:rgba(0,0,0,0.45);margin:0px">Te enviamos este e-mail a <a href=3D"mailt=
+o:nicoacosta8@gmail.com" target=3D"_blank">nicoacosta8@gmail.com</a>.</p><p=
+ style=3D"font-family:&#39;Proxima Nova&#39;,-apple-system,&#39;Helvetica N=
+eue&#39;,Helvetica,Roboto,Arial,sans-serif;font-weight:400;font-size:12px;c=
+olor:rgba(0,0,0,0.45);margin:0px"><a href=3D"https://www.mercadopago.com.ar=
+/communication-preferences" style=3D"font-family:&#39;Proxima Nova&#39;,-ap=
+ple-system,&#39;Helvetica Neue&#39;,Helvetica,Roboto,Arial,sans-serif;font-=
+weight:400;color:rgb(0,158,227);text-decoration:none" target=3D"_blank">Adm=
+inistrar preferencias de e-mails</a>.</p><p style=3D"font-family:&#39;Proxi=
+ma Nova&#39;,-apple-system,&#39;Helvetica Neue&#39;,Helvetica,Roboto,Arial,=
+sans-serif;font-weight:400;font-size:12px;color:rgba(0,0,0,0.45);margin:0px=
+">Nunca env=C3=ADes tu clave o datos de tu cuenta por e-mail.</p><p style=
+=3D"font-family:&#39;Proxima Nova&#39;,-apple-system,&#39;Helvetica Neue&#3=
+9;,Helvetica,Roboto,Arial,sans-serif;font-weight:400;font-size:12px;color:r=
+gba(0,0,0,0.45);margin:0px">Conoc=C3=A9 <a href=3D"https://www.mercadopago.=
+com.ar/privacidad" style=3D"font-family:&#39;Proxima Nova&#39;,-apple-syste=
+m,&#39;Helvetica Neue&#39;,Helvetica,Roboto,Arial,sans-serif;font-weight:40=
+0;color:rgb(0,158,227);text-decoration:none" target=3D"_blank">c=C3=B3mo cu=
+idamos tu Privacidad</a> y visit=C3=A1 los <a href=3D"https://www.mercadopa=
+go.com.ar/ayuda/terminos-y-condiciones_299" style=3D"font-family:&#39;Proxi=
+ma Nova&#39;,-apple-system,&#39;Helvetica Neue&#39;,Helvetica,Roboto,Arial,=
+sans-serif;font-weight:400;color:rgb(0,158,227);text-decoration:none" targe=
+t=3D"_blank">T=C3=A9rminos y Condiciones de Mercado Pago</a>.</p></td></tr>=
+</tbody></table></td></tr></tbody></table></td></tr></tbody></table>
+</div></div></div>
+
+--0000000000008dc4130620657a9e--
