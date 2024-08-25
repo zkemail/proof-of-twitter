@@ -84,4 +84,4 @@ template TwitterVerifier(maxHeadersLength, maxBodyLength, n, k, exposeFrom) {
 }
 
 
-component main { public [ address ] } = TwitterVerifier(1024, 1536, 121, 17, 0);
+component main { public [ address ] } = TwitterVerifier(1024, 24128, 121, 17, 0);

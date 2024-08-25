@@ -22,6 +22,7 @@ export async function generateTwitterVerifierCircuitInputs(
 ): Promise<ITwitterCircuitInputs> {
   const emailVerifierInputs = await generateEmailVerifierInputs(email, {
     shaPrecomputeSelector: STRING_PRESELECTOR,
+    maxBodyLength: 24128
   });
 
   const bodyRemaining = emailVerifierInputs.emailBody!.map((c) => Number(c)); // Char array to Uint8Array
