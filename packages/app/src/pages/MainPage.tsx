@@ -32,8 +32,45 @@ import { formatDateTime } from "../helpers/dateTimeFormat";
 import EmailInputMethod from "../components/EmailInputMethod";
 import { randomUUID } from "crypto";
 import { useZkEmailSDK } from "@zk-email/zk-email-sdk";
+import { calculateSignalLength, circuitOutputToArgs } from "../utils";
+import { Hex } from "viem";
 
 const CIRCUIT_NAME = "twitter";
+const entry = {
+  id: "clyhcz1tl0001r4i0t87dk48g",
+  title: "Proof of Twitter V2",
+  slug: "zk-email/proof-of-twitter-v2",
+  description:
+    "Use a password reset email to proof you own the email connected to a twitter handle.",
+  createdAt: "2024-07-11T14:22:41.146Z",
+  updatedAt: "2024-08-16T08:10:32.501Z",
+  createdBy: "zk-email",
+  tags: ["twitter", "identity", "email"],
+  status: "COMPLETED",
+  parameters: {
+    name: "twitterProof",
+    values: [
+      {
+        name: "handle",
+        parts: [
+          { is_public: false, regex_def: "email was meant for @" },
+          { is_public: true, regex_def: "[a-zA-Z0-9_]+" },
+        ],
+        location: "body",
+        maxLength: 64,
+      },
+    ],
+    version: "v2",
+    senderDomain: "x.com",
+    externalInputs: [{ name: "address", maxLength: 64 }],
+    emailBodyMaxLength: 2816,
+    ignoreBodyHashCheck: false,
+    shaPrecomputeSelector: ">Not my account<",
+  },
+  emailQuery: "Password reset request from: info@x.com ",
+  verifierContractAddress: "0xdb862d400104ba05590b9b657e3fb2e80e202c15",
+  contractAddress: "0x53acd2f8d26f7bc292852aadd8484531a3117157",
+};
 
 export const MainPage: React.FC<{}> = (props) => {
   const { address } = useAccount();
@@ -98,6 +135,11 @@ export const MainPage: React.FC<{}> = (props) => {
   const [externalInputs, setExternalInputs] = useState<Record<string, string>>(
     {}
   );
+  const [signalLength, setSignalLength] = useState<number>(1);
+  const [
+    isRemoteProofVerificationLoading,
+    setIsRemoteProofVerificationLoading,
+  ] = useState<boolean>(false);
 
   const [stopwatch, setStopwatch] = useState<Record<string, number>>({
     startedDownloading: 0,
@@ -150,22 +192,6 @@ export const MainPage: React.FC<{}> = (props) => {
     ].flat();
   };
 
-  const { config } = usePrepareContractWrite({
-    // @ts-ignore
-    address: import.meta.env.VITE_CONTRACT_ADDRESS,
-    abi: abi,
-    functionName: "mint",
-    args: [
-      reformatProofForChain(proof),
-      publicSignals ? JSON.parse(publicSignals) : [],
-    ],
-    enabled: !!(proof && publicSignals),
-    onError: (error: { message: any }) => {
-      console.error(error.message);
-      // TODO: handle errors
-    },
-  });
-
   const { data, isPending, isSuccess, writeContract } = useWriteContract();
 
   const handleFetchEmails = async () => {
@@ -207,6 +233,8 @@ export const MainPage: React.FC<{}> = (props) => {
     if (!inputWorkers["zk-email/proof-of-twitter-v2"]) {
       setAreInputWorkerCreating(true);
       createInputWorker("zk-email/proof-of-twitter-v2");
+      setSignalLength(calculateSignalLength(entry));
+
       const entryExternalInputs = [
         {
           name: "address",
@@ -322,7 +350,64 @@ export const MainPage: React.FC<{}> = (props) => {
     }
   }, [inputWorkers]);
 
-  console.log(inputWorkers);
+  console.log(
+    proofStatus[Object.keys(proofStatus)[0]]?.proof,
+    proofStatus[Object.keys(proofStatus)[0]],
+    proofStatus
+  );
+
+  const verifyRemoteProof = async (id: string) => {
+    if (!proofStatus[Object.keys(proofStatus)[0]]) {
+      return;
+    }
+    setIsRemoteProofVerificationLoading(true);
+    await writeContract(
+      {
+        abi: [
+          {
+            inputs: [
+              {
+                internalType: "uint256[2]",
+                name: "a",
+                type: "uint256[2]",
+              },
+              {
+                internalType: "uint256[2][2]",
+                name: "b",
+                type: "uint256[2][2]",
+              },
+              {
+                internalType: "uint256[2]",
+                name: "c",
+                type: "uint256[2]",
+              },
+              {
+                internalType: `uint256[${signalLength}]`,
+                name: "signals",
+                type: `uint256[${signalLength}]`,
+              },
+            ],
+            name: "verify",
+            outputs: [],
+            stateMutability: "nonpayable",
+            type: "function",
+          },
+        ] as const,
+        address: entry.contractAddress! as Hex,
+        functionName: "verify",
+        args: circuitOutputToArgs({
+          proof: proofStatus[Object.keys(proofStatus)[0]].proof,
+          public: proofStatus[Object.keys(proofStatus)[0]].publicOutput,
+        }) as any,
+      },
+      {
+        onError: (error, variables, context) =>
+          setIsRemoteProofVerificationLoading(false),
+        onSuccess: (data, variables, context) =>
+          setIsRemoteProofVerificationLoading(false),
+      }
+    );
+  };
 
   return (
     <Container>
@@ -497,6 +582,10 @@ export const MainPage: React.FC<{}> = (props) => {
             value={ethereumAddress}
             onChange={(e) => {
               setEthereumAddress(e.currentTarget.value);
+              setExternalInputs({
+                ...externalInputs,
+                address: e.target.value,
+              });
             }}
           />
           <Button
@@ -660,7 +749,9 @@ export const MainPage: React.FC<{}> = (props) => {
             Verify
           </Button>
           <Button
-            disabled={!verificationPassed || isPending || isSuccess || !writeContract}
+            disabled={
+              !verificationPassed || isPending || isSuccess || !writeContract
+            }
             onClick={async () => {
               setStatus("sending-on-chain");
               writeContract({
@@ -685,6 +776,25 @@ export const MainPage: React.FC<{}> = (props) => {
               ? "Mint Twitter badge on-chain"
               : "Verify first, before minting on-chain!"}
           </Button>
+          <Button
+            disabled={!proofStatus[Object.keys(proofStatus)[0]]}
+            onClick={async () => {
+              try {
+                verifyRemoteProof(entry.id);
+              } catch (er: any) {
+                setVerificationMessage("Failed to verify " + er.toString());
+                setVerificationPassed(false);
+              }
+            }}
+          >
+            Verify Remote proof
+            {isRemoteProofVerificationLoading ? (
+              <div className="loader" style={{ marginLeft: "1rem" }} />
+            ) : (
+              ""
+            )}
+          </Button>
+
           {isSuccess && (
             <div>
               Transaction:{" "}
