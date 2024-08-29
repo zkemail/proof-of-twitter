@@ -14,6 +14,8 @@ import {
 import "@rainbow-me/rainbowkit/styles.css";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { GoogleAuthProvider } from "./contexts/GoogleAuth";
+import { ThemeProvider, CssBaseline } from '@mui/material';
+import theme from './theme'; 
 
 const { connectors } = getDefaultWallets({
   appName: "ZK Email - Twitter Verifier",
@@ -33,15 +35,17 @@ const config = createConfig({
 if (import.meta.env.VITE_GOOGLE_CLIENT_ID) {
   ReactDOM.render(
     <React.StrictMode>
-      <WagmiConfig config={config}>
-        <RainbowKitProvider chains={[sepolia]} theme={darkTheme()}>
-          <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
-            <GoogleAuthProvider>
-              <App />
-            </GoogleAuthProvider>
-          </GoogleOAuthProvider>
-        </RainbowKitProvider>
-      </WagmiConfig>
+      <ThemeProvider theme={theme}>
+        <WagmiConfig config={config}>
+          <RainbowKitProvider chains={[sepolia]} theme={darkTheme()}>
+            <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+              <GoogleAuthProvider>
+                <App />
+              </GoogleAuthProvider>
+            </GoogleOAuthProvider>
+          </RainbowKitProvider>
+        </WagmiConfig>
+      </ThemeProvider>
     </React.StrictMode>,
     document.getElementById("root")
   );
