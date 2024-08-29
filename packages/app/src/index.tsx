@@ -3,8 +3,8 @@ import ReactDOM from "react-dom";
 import App from "./App";
 import { WagmiConfig, WagmiProvider, createConfig } from "wagmi";
 import { createPublicClient, http } from "viem";
-import { configureChains } from "wagmi";
-import { publicProvider } from "wagmi/providers/public";
+// import { configureChains } from "wagmi";
+// import { publicProvider } from "wagmi/providers/public";
 import { sepolia } from "wagmi/chains";
 import {
   getDefaultWallets,
@@ -17,6 +17,8 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import { GoogleAuthProvider } from "./contexts/GoogleAuth";
 import { ZkEmailSDKProvider } from "@zk-email/zk-email-sdk";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ThemeProvider, CssBaseline } from '@mui/material';
+import theme from './theme'; 
 
 // const { connectors } = getDefaultWallets({
 //   appName: "ZK Email - Twitter Verifier",
@@ -44,22 +46,24 @@ const queryClient = new QueryClient();
 
 ReactDOM.render(
   <React.StrictMode>
-    <ZkEmailSDKProvider
-      clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}
-      zkEmailSDKRegistryUrl="https://registry-dev.zkregex.com"
-    >
-      <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
-        <WagmiProvider config={config}>
-          <QueryClientProvider client={queryClient}>
-            <RainbowKitProvider theme={darkTheme()}>
-              <GoogleAuthProvider>
-                <App />
-              </GoogleAuthProvider>
-            </RainbowKitProvider>
-          </QueryClientProvider>
-        </WagmiProvider>{" "}
-      </GoogleOAuthProvider>
-    </ZkEmailSDKProvider>
+    <ThemeProvider theme={theme}>
+      <ZkEmailSDKProvider
+        clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}
+        zkEmailSDKRegistryUrl="https://registry-dev.zkregex.com"
+      >
+        <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+          <WagmiProvider config={config}>
+            <QueryClientProvider client={queryClient}>
+              <RainbowKitProvider theme={darkTheme()}>
+                <GoogleAuthProvider>
+                  <App />
+                </GoogleAuthProvider>
+              </RainbowKitProvider>
+            </QueryClientProvider>
+          </WagmiProvider>{" "}
+        </GoogleOAuthProvider>
+      </ZkEmailSDKProvider>
+    </ThemeProvider>
   </React.StrictMode>,
   document.getElementById("root")
 );
