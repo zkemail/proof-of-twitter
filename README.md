@@ -2,7 +2,7 @@
 
 Prove ownership of a X (Twitter) account using an email from Twitter, and mint an NFT with your Twitter username.
 
-This project is a demonstration of ZK Email. You can fork it to build other projects using ZK Email.
+This project is a demonstration of ZK Email. You can fork it to build other projects using ZK Email. 
 
 Try it here: https://twitter.prove.email/
 
