@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useMount, useUpdateEffect } from "react-use";
 import styled from "styled-components";
 import _ from "lodash";
-import { useAccount, useWriteContract } from "wagmi";
+import { useAccount, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import {
   downloadProofFiles,
   generateProof,
@@ -204,6 +204,12 @@ export const MainPage: React.FC<{}> = (props) => {
   };
 
   const { data, isPending, isSuccess, writeContract } = useWriteContract();
+  const { isLoading: isConfirming, isSuccess: isConfirmed, isError, error: txError } =
+  useWaitForTransactionReceipt({
+    hash: data,
+  })
+
+  console.log(data, isPending, isSuccess, writeContract, isConfirming, isConfirmed, isError, txError)
 
   const handleFetchEmails = async () => {
     try {
@@ -340,7 +346,6 @@ export const MainPage: React.FC<{}> = (props) => {
         "zk-email/proof-of-twitter-v2",
         input
       );
-      setActiveStep(4);
     } catch (err) {
       console.log("Something went wrong", err);
       setIsRemoteProofGenerationLoading(false);
@@ -354,6 +359,7 @@ export const MainPage: React.FC<{}> = (props) => {
       setPublicSignals(
         JSON.stringify(proofStatus[Object.keys(proofStatus)[0]].publicOutput)
       );
+      setActiveStep(4);
     }
   }, [proofStatus]);
 
@@ -362,12 +368,6 @@ export const MainPage: React.FC<{}> = (props) => {
       setAreInputWorkerCreating(false);
     }
   }, [inputWorkers]);
-
-  console.log(
-    proofStatus[Object.keys(proofStatus)[0]]?.proof,
-    proofStatus[Object.keys(proofStatus)[0]],
-    proofStatus
-  );
 
   const verifyRemoteProof = async (id: string) => {
     if (!proofStatus[Object.keys(proofStatus)[0]]) {
@@ -415,9 +415,9 @@ export const MainPage: React.FC<{}> = (props) => {
       },
       {
         onError: (error, variables, context) =>
-          setIsRemoteProofVerificationLoading(false),
+          {setIsRemoteProofVerificationLoading(false); console.log(error)},
         onSuccess: (data, variables, context) =>
-          setIsRemoteProofVerificationLoading(false),
+          {setIsRemoteProofVerificationLoading(false); console.log(data)},
       }
     );
   };
@@ -1031,7 +1031,7 @@ export const MainPage: React.FC<{}> = (props) => {
                         onClick={async () => {
                           if (isSuccess) {
                             window.open(
-                              `https://sepolia.etherscan.io/tx/${data?.hash}`,
+                              `https://sepolia.etherscan.io/tx/${data}`,
                               "_blank"
                             );
                           } else {
@@ -1090,11 +1090,11 @@ export const MainPage: React.FC<{}> = (props) => {
                       </Button>
                     </>
                   )}
-                  {isSuccess && (
+                  {isSuccess || isConfirmed && (
                     <div>
                       Transaction:{" "}
-                      <a href={"https://sepolia.etherscan.io/tx/" + data?.hash}>
-                        {data?.hash}
+                      <a href={"https://sepolia.etherscan.io/tx/" + data}>
+                        {data}
                       </a>
                     </div>
                   )}
