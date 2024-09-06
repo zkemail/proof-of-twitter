@@ -1025,7 +1025,7 @@ export const MainPage: React.FC<{}> = (props) => {
                         disabled={
                           !verificationPassed ||
                           isPending ||
-                          isSuccess ||
+                          !isSuccess ||
                           !writeContract
                         }
                         onClick={async () => {
@@ -1067,6 +1067,7 @@ export const MainPage: React.FC<{}> = (props) => {
                     <>
                       <Button
                         disabled={!proofStatus[Object.keys(proofStatus)[0]]}
+                        
                         onClick={async () => {
                           try {
                             verifyRemoteProof(entry.id);
