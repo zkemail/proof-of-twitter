@@ -60,6 +60,10 @@ template TwitterVerifier(maxHeadersLength, maxBodyLength, n, k, exposeFrom) {
     if (exposeFrom) {
         signal input fromEmailIndex;
 
+        // Assert fromEmailIndex < emailHeaderLength
+        signal isFromIndexValid <== LessThan(log2Ceil(maxHeadersLength))([fromEmailIndex, emailHeaderLength]);
+        isFromIndexValid === 1;
+
         signal (fromEmailFound, fromEmailReveal[maxHeadersLength]) <== FromAddrRegex(maxHeadersLength)(emailHeader);
         fromEmailFound === 1;
 
@@ -74,6 +78,10 @@ template TwitterVerifier(maxHeadersLength, maxBodyLength, n, k, exposeFrom) {
     // section that you want to swap out via using the zk-regex library.
     signal (twitterFound, twitterReveal[maxBodyLength]) <== TwitterResetRegex(maxBodyLength)(emailBody);
     twitterFound === 1;
+
+    // Assert twitterUsernameIndex < emailBodyLength
+    signal isTwitterIndexValid <== LessThan(log2Ceil(maxBodyLength))([twitterUsernameIndex, emailBodyLength]);
+    isTwitterIndexValid === 1;
 
     // Pack the username to int
     var maxTwitterUsernameLength = 21;
