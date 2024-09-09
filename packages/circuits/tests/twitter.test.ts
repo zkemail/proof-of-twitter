@@ -60,6 +60,21 @@ describe("Twitter email test", function () {
     twitterVerifierInputs.twitterUsernameIndex = (Number((await twitterVerifierInputs).twitterUsernameIndex) + 1).toString();
 
     expect.assertions(1);
+
+    try {
+      const witness = await circuit.calculateWitness(twitterVerifierInputs);
+      await circuit.checkConstraints(witness);
+    } catch (error) {
+      expect((error as Error).message).toMatch("Assert Failed");
+    }
+  })
+
+  it("should fail if the twitterUsernameIndex is out of bounds", async function () {
+    const twitterVerifierInputs = await generateTwitterVerifierCircuitInputs(rawEmail, ethAddress);
+    twitterVerifierInputs.twitterUsernameIndex = (twitterVerifierInputs.emailBodyLength! + 1).toString();
+
+    expect.assertions(1);
+
     try {
       const witness = await circuit.calculateWitness(twitterVerifierInputs);
       await circuit.checkConstraints(witness);
