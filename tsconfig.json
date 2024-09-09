@@ -21,5 +21,8 @@
     "./node_modules",
     "./node_modules/*",
     "./node_modules/@types/node/index.d.ts",
-  ],
+    
+
+    "packages/app/tailwind.config.js",
+  ]
 }

@@ -1,12 +1,17 @@
-import { useState } from "react";
 import { Button, OutlinedButton } from "./Button";
 
-const EmailInputMethod = ({
-  onClickGoogle,
-  onClickEMLFile,
-}: {
+interface EmailInputMethodProps {
   onClickGoogle: () => void;
   onClickEMLFile: () => void;
+  highlighted?: boolean;
+  disabled?: boolean; // Optional disabled prop
+}
+
+const EmailInputMethod: React.FC<EmailInputMethodProps> = ({
+  onClickGoogle,
+  onClickEMLFile,
+  highlighted = false,
+  disabled = false, // Default value set to false
 }) => {
   return (
     <div
@@ -18,16 +23,21 @@ const EmailInputMethod = ({
         alignItems: "center",
       }}
     >
-      <Button onClick={onClickGoogle}>Sign in with Google</Button>
-      or
-      <OutlinedButton
-        data-testid="upload-email-eml-file-button"
-        onClick={() => {
-          onClickEMLFile();
-        }}
-      >
-        Upload email .eml file{" "}
-      </OutlinedButton>
+      <Button onClick={onClickGoogle} highlighted={highlighted} disabled={disabled}>
+        Sign in with Google
+      </Button>
+      {!disabled && (
+        <>
+          or
+          <OutlinedButton
+            highlighted={highlighted}
+            data-testid="upload-email-eml-file-button"
+            onClick={onClickEMLFile}
+          >
+            Upload email .eml file{" "}
+          </OutlinedButton>
+        </>
+      )}
     </div>
   );
 };
