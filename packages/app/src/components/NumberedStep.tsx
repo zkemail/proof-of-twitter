@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { CenterAllDiv, Row } from "./Layout";
 
 export const NumberedStep: React.FC<{
-  step: number;
+  step: string;
   children: React.ReactNode;
 }> = ({ step, children }) => {
   return (

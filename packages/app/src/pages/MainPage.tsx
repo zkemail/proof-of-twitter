@@ -284,50 +284,53 @@ export const MainPage: React.FC<{}> = (props) => {
           <br />
           If you wish to generate a ZK proof of Twitter badge (NFT), you must:
         </span>
-        <NumberedStep step={1}>
-          Send yourself a{" "}
-          <a
-            href="https://twitter.com/account/begin_password_reset"
-            target="_blank"
-            rel="noreferrer"
-          >
-            password reset email
-          </a>{" "}
-          from Twitter. (Reminder: Twitter name with emoji might fail to pass
-          DKIM verification)
-        </NumberedStep>
-        <NumberedStep step={2}>
-          In your inbox, find the email from Twitter and click the three dot
-          menu, then "Show original" then "Copy to clipboard". If on Outlook,
-          download the original email as .eml and copy it instead.
-        </NumberedStep>
-        <NumberedStep step={3}>
-          Copy paste or drop that into the box below. Note that we cannot use
-          this to phish you: we do not know your password, and we never get this
-          email info because we have no server at all. We are actively searching
-          for a less sketchy email.
-        </NumberedStep>
-        <NumberedStep step={4}>
-          Paste in your sending Ethereum address. This ensures that no one else
-          can "steal" your proof for another account (frontrunning protection!).
-        </NumberedStep>
-        <NumberedStep step={5}>
-          Click <b>"Prove"</b>. Note it is completely client side and{" "}
-          <a
-            href="https://github.com/zkemail/proof-of-twitter/"
-            target="_blank"
-            rel="noreferrer"
-          >
-            open source
-          </a>
-          , and no server ever sees your private information.
-        </NumberedStep>
-        <NumberedStep step={6}>
-          Click <b>"Verify"</b> and then <b>"Mint Twitter Badge On-Chain"</b>,
-          and approve to mint the NFT badge that proves Twitter ownership! Note
-          that it is 700K gas right now so only feasible on Sepolia, though we
-          intend to reduce this soon.
-        </NumberedStep>
+        <div>              
+          <NumberedStep step={"1"}>
+            Send yourself a{" "}
+            <a
+              href="https://twitter.com/account/begin_password_reset"
+              target="_blank"
+              rel="noreferrer"
+            >
+              password reset email
+            </a>{" "}
+            from Twitter. (Reminder: Twitter name with emoji might fail to pass DKIM verification)
+          </NumberedStep>
+          <NumberedStep step={"2"}>
+          <p>Sign in with Gmail, then select the most recent Twitter email.</p>
+          </NumberedStep>
+          <details>
+            <summary style={{ marginLeft: "20px", marginBottom: "10px" }}>Alternative method (for non-Gmail users or if you prefer not to sign in)</summary>
+            <div style={{ marginLeft: "20px" }}>
+              <NumberedStep step={"2a"}>
+                In your inbox, find the email from Twitter and click the three dot
+                menu, then "Show original" then "Copy to clipboard". If on Outlook,
+                download the original email as .eml and copy it instead.
+              </NumberedStep>
+              <NumberedStep step={"2b"}>
+                Copy paste or drop that into the box below. Note that we cannot use
+                this to phish you: we do not know your password, and we never get this
+                email info because we have no server at all. We are actively searching
+                for a less sketchy email.
+              </NumberedStep>
+            </div>
+          </details>
+          <NumberedStep step={"3"}>
+            Paste in your sending Ethereum address. This ensures that no one else
+            can "steal" your proof for another account (frontrunning protection!).
+          </NumberedStep>
+          <NumberedStep step={"4"}>
+            Click <b>"Prove"</b>. Note it is completely client side and{" "}
+            <a href="https://github.com/zkemail/proof-of-twitter/" target="_blank" rel="noreferrer">open source</a>, 
+            and no server ever sees your private information.
+          </NumberedStep>
+          <NumberedStep step={"5"}>
+            Click <b>"Verify"</b> and then <b>"Mint Twitter Badge On-Chain"</b>,
+            and approve to mint the NFT badge that proves Twitter ownership! Note
+            that it is 700K gas right now so only feasible on Sepolia, though we
+            intend to reduce this soon.
+          </NumberedStep>
+        </div>
       </Col>
       <Main>
         <Column>
