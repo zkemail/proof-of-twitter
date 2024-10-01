@@ -1,0 +1,9 @@
+{
+    "rewrites": [
+      {
+        "source": "/(.*)",
+        "destination": "https://proof-of-twitter-vert.vercel.app/$1"
+      }
+    ]
+  }
+  g
