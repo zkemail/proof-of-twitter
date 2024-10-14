@@ -143,14 +143,15 @@ library NFTSVG {
     function generateSVGCardMantle(string memory username, bool active) private pure returns (string memory svg) {
         svg = string(
             abi.encodePacked(
-                '<g mask="url(#fade-symbol)"><rect fill="none" x="0px" y="0px" width="290px" height="400px" /> <text y="70px" x="32px" fill="white" font-family="\'Courier New\', monospace" font-weight="200" font-size="36px">',
+                '<g mask="url(#fade-symbol)"><rect fill="none" x="0px" y="0px" width="290px" height="400px" /> <text y="70px" x="32px" fill="white" font-family="\'Courier New\', monospace" font-weight="200" font-size="24px">',
                 "My verified",
-                '</text><text y="115px" x="32px" fill="white" font-family="\'Courier New\', monospace" font-weight="200" font-size="36px">',
+                '</text><text y="105px" x="32px" fill="white" font-family="\'Courier New\', monospace" font-weight="200" font-size="24px">',
                 "Twitter account",
-                '</text><text y="160px" x="32px" fill="white" font-family="\'Courier New\', monospace" font-weight="200" font-size="36px">',
+                '</text><text y="140px" x="32px" fill="white" font-family="\'Courier New\', monospace" font-weight="200" font-size="24px">',
                 "is",
-                '</text><text y="205px" x="32px" fill="white" font-family="\'Courier New\', monospace" font-weight="200" font-size="36px">',
+                '</text><text y="175px" x="32px" fill="white" font-family="\'Courier New\', monospace" font-weight="200" font-size="24px">',
                 username,
+                '</text><text y="210px" x="32px" fill="white" font-family="\'Courier New\', monospace" font-weight="200" font-size="24px">',
                 active ? ' (active)' : ' (inactive)',
                 "</text></g>",
                 '<rect x="16" y="16" width="258" height="468" rx="26" ry="26" fill="rgba(0,0,0,0)" stroke="rgba(255,255,255,0.2)" />'
