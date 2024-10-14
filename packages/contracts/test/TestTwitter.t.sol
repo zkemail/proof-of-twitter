@@ -9,8 +9,6 @@ import "../src/Verifier.sol";
 contract TwitterUtilsTest is Test {
     using StringUtils for *;
 
-    address constant VM_ADDR = 0x7109709ECfa91a80626fF3989D68f67F5b1DD12D; // Hardcoded address of the VM from foundry
-
     Verifier proofVerifier;
     DKIMRegistry dkimRegistry;
     ProofOfTwitter testVerifier;
@@ -90,35 +88,35 @@ contract TwitterUtilsTest is Test {
 
     // These proof and public input values are generated using scripts in packages/circuits/scripts/generate-proof.ts
     // The sample email in `/emls` is used as the input, but you will have different values if you generated your own zkeys
-    function testVerifyTestEmail() public {
-        uint256[3] memory publicSignals;
-        publicSignals[
-            0
-        ] = 1983664618407009423875829639306275185491946247764487749439145140682408188330;
-        publicSignals[1] = 131061634216091175196322682;
-        publicSignals[2] = 1163446621798851219159656704542204983322218017645;
+    function proofTestData() internal view returns (
+        uint256[3] memory publicSignals,
+        uint256[8] memory proof
+    ) {
+        publicSignals[0] = 1983664618407009423875829639306275185491946247764487749439145140682408188330;
+        publicSignals[1] = 60688095039584876602025332;
+        publicSignals[2] = 939406481697058082851001177880059329846108047162;
 
         uint256[2] memory proof_a = [
-            5797457318420687771988333280962152259257379892303951979169813170317326477434,
-            14189472520472776516417665921077060465051105690711006171274266938697420566951
+            2009445536733820940614696809993322277245951542303198989655358849969062470372,
+            8816577960801104870014601849299786208491980694496377614657829475846590189044
         ];
         // Note: you need to swap the order of the two elements in each subarray
         uint256[2][2] memory proof_b = [
             [
-                18921035250897022958148917928657494416170154529165080398233299677407236026846,
-                7543904973418857428529380479194238699124092071535155780217645796569464525390
+                14855789773713162959395469568085738009479688945606671646123078952384187715749,
+                5537551629211653307129736243267704849501872155474305257425810771375879194045
             ],
             [
-                16835983125386052464761616884519063200215669738277458297351574243466146108017,
-                16210421528119385263780767241818749780020239542889025688358560426656253630309
+                1132186781256405271827663020181423082108968049637269513640889795929913374755,
+                20283187854758064375389662408752458008801719101365442241161112666095010479777
             ]
         ];
         uint256[2] memory proof_c = [
-            19160114768014303520076125815800143167812482606052748549955911430674608929788,
-            18614452123455216414192085875877133967969502306927521502651735939542857695693
+            5044973743340357316712989815484977055865277059347265143314644500926851858180,
+            11111706666208986243818708247898127453788585043016564128696584275645826038016
         ];
 
-        uint256[8] memory proof = [
+        proof = [
             proof_a[0],
             proof_a[1],
             proof_b[0][0],
@@ -137,9 +135,65 @@ contract TwitterUtilsTest is Test {
             publicSignals
         );
         assertEq(verified, true);
+    }
 
+    // Need two proofs for the same account to test inactivity
+    function proofTestData2() internal view returns (
+        uint256[3] memory publicSignals,
+        uint256[8] memory proof
+    ) {
+        publicSignals[0] = 1983664618407009423875829639306275185491946247764487749439145140682408188330;
+        publicSignals[1] = 60688095039584876602025332;
+        publicSignals[2] = 939406481697058082851001177880059329846108047162;
+
+        uint256[2] memory proof_a = [
+            7799039678913605710259821229942352464082220364020014946144130184928336196865,
+            12130394184898533762274334952424785094770793233409037588953920933439195731442
+        ];
+        // Note: you need to swap the order of the two elements in each subarray
+        uint256[2][2] memory proof_b = [
+            [
+                20482212462660099379624491309707025656117065161929921230598395801723983742613,
+                6090631549061757191387350641326752562101523174229830619865248275166199071666
+            ],
+            [
+                7614549401779143625809358345392036412871867684423898593516000263403520566181,
+                9130965690958350324179373283450055322497354099003455526448543990473093311817
+            ]
+        ];
+        uint256[2] memory proof_c = [
+            1537938571189380464959355373094939980865238915155273757911400383684934917,
+            17243504316948413489100276038947070591642744340336274718832513702927574205343
+        ];
+
+        proof = [
+            proof_a[0],
+            proof_a[1],
+            proof_b[0][0],
+            proof_b[0][1],
+            proof_b[1][0],
+            proof_b[1][1],
+            proof_c[0],
+            proof_c[1]
+        ];
+
+        // Test proof verification
+        bool verified = proofVerifier.verifyProof(
+            proof_a,
+            proof_b,
+            proof_c,
+            publicSignals
+        );
+        assertEq(verified, true);
+    }
+
+    function proofTestUsername() public pure returns (string memory) {
+      return "test_zk9432";
+    }
+
+    function testVerifyTestEmail() public {
+        (uint256[3] memory publicSignals, uint256[8] memory proof) = proofTestData();
         // Test mint after spoofing msg.sender
-        Vm vm = Vm(VM_ADDR);
         vm.startPrank(0x0000000000000000000000000000000000000001);
         testVerifier.mint(proof, publicSignals);
         vm.stopPrank();
@@ -150,6 +204,62 @@ contract TwitterUtilsTest is Test {
         string memory svgValue = testVerifier.tokenURI(1);
         console.log(svgValue);
         assert(bytes(svgValue).length > 0);
+    }
+
+    function testDuplicateProofHash() public {
+        (uint256[3] memory publicSignals, uint256[8] memory proof) = proofTestData();
+        // Test mint after spoofing msg.sender
+        vm.startPrank(0x0000000000000000000000000000000000000001);
+
+        testVerifier.mint(proof, publicSignals);
+
+        vm.expectRevert("duplicate proof hash");
+        testVerifier.mint(proof, publicSignals);
+
+        vm.stopPrank();
+    }
+
+    function testInactive() public {
+        (uint256[3] memory publicSignals1, uint256[8] memory proof1) = proofTestData();
+        (uint256[3] memory publicSignals2, uint256[8] memory proof2) = proofTestData2();
+        string memory username = proofTestUsername();
+        // Test mint after spoofing msg.sender
+        vm.startPrank(0x0000000000000000000000000000000000000001);
+
+        // Mint first NFT
+        testVerifier.mint(proof1, publicSignals1);
+
+        // TokenID 0 does not exist, will always be inactive
+        assertEq(testVerifier.tokenActive(0), false);
+        // First NFT is active
+        assertEq(testVerifier.tokenActive(1), true);
+        // Username resolves to first NFT
+        assertEq(testVerifier.nameToTokenID(username), 1);
+        // NFT resolves to username
+        assertEq(testVerifier.tokenIDToName(1), username);
+
+        // Mint second NFT for the same username
+        testVerifier.mint(proof2, publicSignals2);
+
+        // Both NFTs resolve to username
+        assertEq(testVerifier.tokenIDToName(1), username);
+        assertEq(testVerifier.tokenIDToName(2), username);
+        // Username now resolves to second NFT
+        assertEq(testVerifier.nameToTokenID(username), 2);
+        // Second NFT is now active
+        assertEq(testVerifier.tokenActive(2), true);
+        // First NFT is now inactive
+        assertEq(testVerifier.tokenActive(1), false);
+
+        vm.stopPrank();
+
+        // TokenID 0 does not exist
+        vm.expectRevert();
+        testVerifier.tokenDesc(0);
+
+        // For manual verification
+        console.log(testVerifier.tokenDesc(1));
+        console.log(testVerifier.tokenDesc(2));
     }
 
     function testChainID() public view {
