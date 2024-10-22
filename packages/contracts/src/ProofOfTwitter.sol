@@ -26,25 +26,38 @@ contract ProofOfTwitter is ERC721Enumerable {
     Verifier public immutable verifier;
 
     mapping(uint256 => string) public tokenIDToName;
+    mapping(string => uint256) public nameToTokenID;
+    mapping(bytes32 => uint8) public publishedProofs;
 
     constructor(Verifier v, DKIMRegistry d) ERC721("VerifiedEmail", "VerifiedEmail") {
         verifier = v;
         dkimRegistry = d;
     }
 
+    function tokenActive(uint256 tokenId) public view returns(bool) {
+        if(tokenId == 0) return false;
+        return nameToTokenID[tokenIDToName[tokenId]] == tokenId;
+    }
+
     function tokenDesc(uint256 tokenId) public view returns (string memory) {
         string memory twitter_username = tokenIDToName[tokenId];
         address address_owner = ownerOf(tokenId);
-        string memory result = string(
-            abi.encodePacked("Twitter username", twitter_username, "is owned by", StringUtils.toString(address_owner))
-        );
+        bool active = tokenActive(tokenId);
+        string memory result = string(abi.encodePacked(
+            "Twitter username ",
+            twitter_username,
+            " is owned by ",
+            StringUtils.toString(address_owner),
+            active ? " (active)" : " (inactive)"
+        ));
         return result;
     }
 
     function tokenURI(uint256 tokenId) public view override returns (string memory) {
         string memory username = tokenIDToName[tokenId];
         address owner = ownerOf(tokenId);
-        return NFTSVG.constructAndReturnSVG(username, tokenId, owner);
+        bool active = tokenActive(tokenId);
+        return NFTSVG.constructAndReturnSVG(username, tokenId, owner, active);
     }
 
     function _domainCheck(uint256[] memory headerSignals) public pure returns (bool) {
@@ -77,7 +90,12 @@ contract ProofOfTwitter is ERC721Enumerable {
         bytes32 dkimPublicKeyHashInCircuit = bytes32(signals[pubKeyHashIndexInSignals]);
         require(dkimRegistry.isDKIMPublicKeyHashValid(domain, dkimPublicKeyHashInCircuit), "invalid dkim signature"); 
 
-        // Veiry RSA and proof
+        // Ensure every email is unique
+        bytes32 proofHash = keccak256(abi.encodePacked(proof));
+        require(publishedProofs[proofHash] == 0, "duplicate proof hash");
+        publishedProofs[proofHash] = 1;
+
+        // Verify RSA and proof
         require(
             verifier.verifyProof(
                 [proof[0], proof[1]],
@@ -106,6 +124,8 @@ contract ProofOfTwitter is ERC721Enumerable {
             bytesInPackedBytes
         );
         tokenIDToName[tokenId] = messageBytes;
+        // Latest mint for this username
+        nameToTokenID[messageBytes] = tokenId;
         _mint(msg.sender, tokenId);
         tokenCounter = tokenCounter + 1;
     }
