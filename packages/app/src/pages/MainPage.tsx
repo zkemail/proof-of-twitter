@@ -30,6 +30,7 @@ import {
 } from "../hooks/useGmailClient";
 import { formatDateTime } from "../helpers/dateTimeFormat";
 import EmailInputMethod from "../components/EmailInputMethod";
+import { detectIncognito } from "detectincognitojs";
 
 const CIRCUIT_NAME = "twitter";
 
@@ -97,6 +98,13 @@ export const MainPage: React.FC<{}> = (props) => {
   useEffect(() => {
     const userAgent = navigator.userAgent;
     const isChrome = userAgent.indexOf("Chrome") > -1;
+
+    detectIncognito().then((result) => {
+      if (result.isPrivate) {
+        setShowBrowserWarning(true);
+      }
+    });
+
     if (!isChrome) {
       setShowBrowserWarning(true);
     }
@@ -251,7 +259,7 @@ export const MainPage: React.FC<{}> = (props) => {
     <Container>
       {showBrowserWarning && (
         <TopBanner
-          message={"ZK Email only works on Chrome or Chromium-based browsers."}
+          message={"ZK Email only works on any non-incognito, Chrome or Chromium-based browsers."}
         />
       )}
       <div className="title">
@@ -284,7 +292,7 @@ export const MainPage: React.FC<{}> = (props) => {
           <br />
           If you wish to generate a ZK proof of Twitter badge (NFT), you must:
         </span>
-        <div>              
+        <div>
           <NumberedStep step={"1"}>
             Send yourself a{" "}
             <a
@@ -294,41 +302,55 @@ export const MainPage: React.FC<{}> = (props) => {
             >
               password reset email
             </a>{" "}
-            from Twitter. (Reminder: Twitter name with emoji might fail to pass DKIM verification)
+            from Twitter. (Reminder: Twitter name with emoji might fail to pass
+            DKIM verification)
           </NumberedStep>
           <NumberedStep step={"2"}>
-          <p>Sign in with Gmail, then select the most recent Twitter email.</p>
+            <p>
+              Sign in with Gmail, then select the most recent Twitter email.
+            </p>
           </NumberedStep>
           <details>
-            <summary style={{ marginLeft: "20px", marginBottom: "10px" }}>Alternative method (for non-Gmail users or if you prefer not to sign in)</summary>
+            <summary style={{ marginLeft: "20px", marginBottom: "10px" }}>
+              Alternative method (for non-Gmail users or if you prefer not to
+              sign in)
+            </summary>
             <div style={{ marginLeft: "20px" }}>
               <NumberedStep step={"2a"}>
-                In your inbox, find the email from Twitter and click the three dot
-                menu, then "Show original" then "Copy to clipboard". If on Outlook,
-                download the original email as .eml and copy it instead.
+                In your inbox, find the email from Twitter and click the three
+                dot menu, then "Show original" then "Copy to clipboard". If on
+                Outlook, download the original email as .eml and copy it
+                instead.
               </NumberedStep>
               <NumberedStep step={"2b"}>
-                Copy paste or drop that into the box below. Note that we cannot use
-                this to phish you: we do not know your password, and we never get this
-                email info because we have no server at all. We are actively searching
-                for a less sketchy email.
+                Copy paste or drop that into the box below. Note that we cannot
+                use this to phish you: we do not know your password, and we
+                never get this email info because we have no server at all. We
+                are actively searching for a less sketchy email.
               </NumberedStep>
             </div>
           </details>
           <NumberedStep step={"3"}>
-            Paste in your sending Ethereum address. This ensures that no one else
-            can "steal" your proof for another account (frontrunning protection!).
+            Paste in your sending Ethereum address. This ensures that no one
+            else can "steal" your proof for another account (frontrunning
+            protection!).
           </NumberedStep>
           <NumberedStep step={"4"}>
             Click <b>"Prove"</b>. Note it is completely client side and{" "}
-            <a href="https://github.com/zkemail/proof-of-twitter/" target="_blank" rel="noreferrer">open source</a>, 
-            and no server ever sees your private information.
+            <a
+              href="https://github.com/zkemail/proof-of-twitter/"
+              target="_blank"
+              rel="noreferrer"
+            >
+              open source
+            </a>
+            , and no server ever sees your private information.
           </NumberedStep>
           <NumberedStep step={"5"}>
             Click <b>"Verify"</b> and then <b>"Mint Twitter Badge On-Chain"</b>,
-            and approve to mint the NFT badge that proves Twitter ownership! Note
-            that it is 700K gas right now so only feasible on Sepolia, though we
-            intend to reduce this soon.
+            and approve to mint the NFT badge that proves Twitter ownership!
+            Note that it is 700K gas right now so only feasible on Sepolia,
+            though we intend to reduce this soon.
           </NumberedStep>
         </div>
       </Col>
@@ -395,7 +417,8 @@ export const MainPage: React.FC<{}> = (props) => {
               )}
             </div>
           ) : null}
-          {inputMethod === "EML_FILE" || !import.meta.env.VITE_GOOGLE_CLIENT_ID ? (
+          {inputMethod === "EML_FILE" ||
+          !import.meta.env.VITE_GOOGLE_CLIENT_ID ? (
             <>
               {" "}
               <DragAndDropTextBox onFileDrop={onFileDrop} />
