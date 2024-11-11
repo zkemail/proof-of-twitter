@@ -5,7 +5,7 @@ import  NotFoundPage  from "./pages/NotFoundPage";
 
 import "./styles.css";
 import {
-  BrowserRouter as Router, 
+  HashRouter as Router, 
   Route,
   Routes,
   Link,
@@ -18,7 +18,7 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 const App = () => {
   return (
-    <Router basename="/">
+    <Router>
       <div>
         <Routes>
         <Route path="/" element={<MainPage />} />
