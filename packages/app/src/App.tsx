@@ -5,7 +5,7 @@ import  NotFoundPage  from "./pages/NotFoundPage";
 
 import "./styles.css";
 import {
-  HashRouter as Router, 
+  BrowserRouter as Router, 
   Route,
   Routes,
   Link,
