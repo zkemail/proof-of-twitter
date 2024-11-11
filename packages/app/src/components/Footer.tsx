@@ -1,20 +1,22 @@
 'use client';
 import { useState } from 'react';
-import { Box, Typography, useTheme, Link } from "@mui/material";
+import { Box, Typography, Link } from "@mui/material";
+
+type ImgNames = 'XLogo' | 'YoutubeLogo' | 'TelegramLogo' | 'GithubLogo';
 
 const Footer = () => {
-  const [hoveredImgs, setHoveredImgs] = useState({
+  const [hoveredImgs, setHoveredImgs] = useState<Record<ImgNames, boolean>>({
     XLogo: false,
     YoutubeLogo: false,
     TelegramLogo: false,
     GithubLogo: false,
   });
 
-  const handleMouseEnter = (img) => {
+  const handleMouseEnter = (img: ImgNames) => {
     setHoveredImgs((prev) => ({ ...prev, [img]: true }));
   };
 
-  const handleMouseLeave = (img) => {
+  const handleMouseLeave = (img: ImgNames) => {
     setHoveredImgs((prev) => ({ ...prev, [img]: false }));
   };
 
@@ -70,9 +72,9 @@ const Footer = () => {
             >
               <Box
                 component="img"
-                onMouseEnter={() => handleMouseEnter(icon.name)}
-                onMouseLeave={() => handleMouseLeave(icon.name)}
-                src={hoveredImgs[icon.name] ? icon.hoveredImgSrc : icon.imgSrc}
+                onMouseEnter={() => handleMouseEnter(icon.name as ImgNames)}
+                onMouseLeave={() => handleMouseLeave(icon.name as ImgNames)}
+                src={hoveredImgs[icon.name as ImgNames] ? icon.hoveredImgSrc : icon.imgSrc}
                 alt={icon.alt}
                 height={20}
                 width={20}
