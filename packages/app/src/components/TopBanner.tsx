@@ -14,7 +14,7 @@ const Container = styled.div`
   right: 0;
   width: 100%;
   padding: 16px;
-  background: #8742f5;
+  background: #68A3E9;
   color: #fff;
   font-weight: 500;
 `;

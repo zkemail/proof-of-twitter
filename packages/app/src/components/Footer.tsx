@@ -28,17 +28,19 @@ const Footer = () => {
       borderColor="grey.100" 
       py={2} 
       bgcolor="white"
+
     >
       <Box 
         maxWidth="lg" 
         mx="auto" 
-        px={2} 
+        px={{xs:1, md:2}} 
         display="flex" 
         justifyContent="space-between" 
         alignItems="center"
       >
         {/* Left Side - Links */}
-        <Box display="flex" alignItems="center" gap={2}>
+        <Box display="flex" alignItems="center" gap={{xs:1, sm:2}}>
+          <Typography>
           <Link 
             href="https://docs.prove.email/introduction" 
             target="_blank" 
@@ -47,14 +49,18 @@ const Footer = () => {
           >
             Documentation
           </Link>
+          </Typography>
           <Typography color="grey.500">•</Typography>
+          <Typography>
           <Link 
             href="/privacy" 
             color="grey.900" 
             underline="hover"
+            noWrap={true}
           >
             Privacy Policy
           </Link>
+          </Typography>
         </Box>
 
         {/* Right Side - Social Icons */}
@@ -76,8 +82,15 @@ const Footer = () => {
                 onMouseLeave={() => handleMouseLeave(icon.name as ImgNames)}
                 src={hoveredImgs[icon.name as ImgNames] ? icon.hoveredImgSrc : icon.imgSrc}
                 alt={icon.alt}
-                height={20}
-                width={20}
+                sx={{
+                  height: {
+                    xs: 15,  
+                    sm: 17, 
+                    md: 20,  
+                    lg: 25, 
+                    xl: 30,  
+                  }
+                }}
               />
             </Link>
           ))}
