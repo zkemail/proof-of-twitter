@@ -1,8 +1,16 @@
 {
-  "routes": [
+  "rewrites": [
     {
-      "src": "/(.*)",
-      "dest": "/index.html"
+      "source": "/",
+      "destination": "/"
+    },
+    {
+      "source": "/about",
+      "destination": "/about"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "https://proof-of-twitter-vert.vercel.app/$1"
     }
   ]
 }
