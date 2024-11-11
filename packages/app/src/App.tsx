@@ -3,7 +3,7 @@ import  AboutPage  from "./pages/AboutPage";
 
 import "./styles.css";
 import {
-  BrowserRouter as Router,
+  HashRouter as Router, // Use HashRouter instead of BrowserRouter
   Route,
   Routes,
   Link,
@@ -22,6 +22,7 @@ const App = () => {
           <Route path="/" element={<MainPage />} />
           <Route path="/about" element={<AboutPage/>} />
           <Route element={<>Not found</>} />
+          <Route path="*" element={<>Not found</>} />
         </Routes>
       </div>
     </Router>
