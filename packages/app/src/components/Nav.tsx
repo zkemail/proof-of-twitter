@@ -109,10 +109,14 @@ const CustomConnectButton: React.FC<CustomConnectButtonProps> = ({ splitscreen =
 const Nav: React.FC<NavProps> = ({ splitscreen = false }) => {
   return (
     <Box display='flex' justifyContent='space-between' alignItems='center' width='100%' sx={{ padding: '20px', paddingX: { xs: '14px', sm: '20px' }, backgroundColor: '#ffffff', borderBottom: '1px solid #D9D9D9', width: 'fit' }}>
-    
-      <Link to={"/about"}>
-        <Typography fontWeight='bold' sx={{ letterSpacing: -0.5, paddingX: { xs: '5px', sm: '20px' }, fontSize: { xs: '12px', md: '14px' } }}>PROOF OF TWITTER</Typography>
-      </Link>
+
+      <Box display='flex' alignItems='center' sx={{paddingX: { xs: '5px', sm: '20px' }}}>
+        <img src={'/logo.png'} alt="Image" height={25} width={25}/>
+        <Link to={"/about"}>
+          <Typography fontWeight='bold' sx={{ letterSpacing: -0.5, paddingX: { xs: '5px', sm: '10px' }, fontSize: { xs: '12px', md: '14px' } }}>PROOF OF TWITTER</Typography>
+        </Link>
+      </Box>
+
 
       <Box display='flex' justifyContent='flex-end' alignItems='center' sx={{ gap: { xxs: '0px', xs: '5px', sm: splitscreen ? '50px' : '50px' }, flexGrow: 1, width: 'fit' }}>
         <Link to="https://prove.email/docs" target="_blank">

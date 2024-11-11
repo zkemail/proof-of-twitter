@@ -367,7 +367,7 @@ export const MainPage: React.FC<{}> = (props) => {
       <Grid
         item
         xs={12}
-        md={6}
+        md={12}
         sx={{
           height: "100vh",
           overflowY: "auto",
@@ -383,7 +383,7 @@ export const MainPage: React.FC<{}> = (props) => {
             padding: "20px",
             color: "#000000",
             minHeight: "650px",
-            paddingX: { sm: "40px", md: "60px" },
+            paddingX: { sm: "40px", md: "200px" },
           }}
         >
           <Stepper
@@ -394,12 +394,12 @@ export const MainPage: React.FC<{}> = (props) => {
 
             {/* --------- SEND TWITTER PASSWORD RESET EMAIL SECTION - STEP 0 --------- */}
             {activeStep == 0 && (
-              <Box sx={{ marginTop: "100px", marginBottom: "40px" }}>
+              <Box sx={{ marginTop: "50px", marginBottom: "40px" }}>
                 <Typography variant="h1" sx={{ marginBottom: "20px" }}>
                   SEND TWITTER PASSWORD RESET EMAIL
                 </Typography>
                 <Typography>
-                  Send yourself a password reset email from Twitter. <br></br>
+                  Send yourself a <a href="https://twitter.com/account/begin_password_reset" target="_blank" >password reset email</a> from Twitter. <br></br>
                   (Reminder: Twitter name with emoji might fail to pass DKIM
                   verification)
                 </Typography>
@@ -412,20 +412,33 @@ export const MainPage: React.FC<{}> = (props) => {
           {/* --------- COPY & PASTE THE EMAIL DKIM SIG - STEP 1 --------- */}
             {activeStep == 1 && (
               <Box>
-                <Box sx={{ marginTop: "100px", marginBottom: "40px" }}>
+                <Box sx={{ marginTop: "50px", marginBottom: "40px" }}>
                   <Typography variant="h1" sx={{ marginBottom: "20px" }}>
                     COPY & PASTE THE EMAIL DKIM SIG
                   </Typography>
                   <Typography>
-                    In your inbox, find the email from Twitter and click the
-                    three dot menu, then "Show original" then "Copy to
-                    clipboard". If on Outlook, download the original email as
-                    .eml and copy it instead. Copy paste or drop that into the
-                    box below. Note that we cannot use this to phish you: we do
-                    not know your password, and we never get this email info
-                    because we have no server at all. We are actively searching
-                    for a less sketchy email.
+                    Sign in with Gmail, then select the most recent Twitter email.
                   </Typography>
+                  <Typography>
+                  <details style={{ marginTop: "10px", marginBottom: "10px", cursor:'pointer'}}>
+                    <summary style={{ marginBottom: "10px" }}>
+                      Alternative method (for non-Gmail users or if you prefer not to sign in)
+                    </summary>
+                    
+                    <div style={{ marginLeft: "20px" }}>
+                      <div>
+                        In your inbox, find the email from Twitter and click the three
+                        dot menu, then "Show original" then "Copy to clipboard". If on
+                        Outlook, download the original email as .eml and copy it
+                        instead. Copy paste or drop that into the box below. Note that we cannot
+                        use this to phish you: we do not know your password, and we
+                        never get this email info because we have no server at all. We
+                        are actively searching for a less sketchy email.
+                      </div>
+                    </div>
+                  </details>
+                  </Typography>
+                  
                 </Box>
 
                 <Column>
@@ -581,16 +594,14 @@ export const MainPage: React.FC<{}> = (props) => {
             {/* --------- ADD ETHEREUM ADDRESS TO SECURE PROOF - STEP 2 --------- */}
             {activeStep == 2 && (
               <Box>
-                <Box sx={{ marginTop: "100px", marginBottom: "40px" }}>
+                <Box sx={{ marginTop: "50px", marginBottom: "40px" }}>
                   <Typography variant="h1" sx={{ marginBottom: "20px" }}>
                     ADD ETHEREUM ADDRESS TO SECURE PROOF
                   </Typography>
                   <Typography>
                     Paste in your sending Ethereum address. This ensures that no
                     one else can "steal" your proof for another account
-                    (frontrunning protection!). Click "Prove". Note it is
-                    completely client side and open source, and no server ever
-                    sees your private information.
+                    (frontrunning protection!)
                   </Typography>
                 </Box>
 
@@ -647,13 +658,13 @@ export const MainPage: React.FC<{}> = (props) => {
             {/* --------- GENERATE PROOF USING INPUTS - STEP 3 --------- */}
             {activeStep == 3 && (
               <Box>
-                <Box sx={{ marginTop: "100px", marginBottom: "40px" }}>
+                <Box sx={{ marginTop: "50px", marginBottom: "40px" }}>
                   <Typography variant="h1" sx={{ marginBottom: "20px" }}>
                     GENERATE PROOF USING INPUTS
                   </Typography>
                   <Typography>
-                    Click "Prove". Note it is completely client side and open
-                    source, and no server ever sees your private information.
+                    Click <span style={{fontWeight:'bold'}}>"Prove"</span>. Note it is completely client side and <a href='https://github.com/zkemail/proof-of-twitter/' target="_blank">open
+                    source</a>, and no server ever sees your private information.
                   </Typography>
                 </Box>
 
@@ -791,12 +802,12 @@ export const MainPage: React.FC<{}> = (props) => {
             {/* --------- VERIFY & MINT ON CHAIN TWITTER BADGE - STEP 4 --------- */}
             {activeStep == 4 && (
               <Box>
-                <Box sx={{ marginTop: "100px", marginBottom: "40px" }}>
+                <Box sx={{ marginTop: "50px", marginBottom: "40px" }}>
                   <Typography variant="h1" sx={{ marginBottom: "20px" }}>
                     VERIFY & MINT ON CHAIN TWITTER BADGE
                   </Typography>
                   <Typography>
-                    Click "Verify" and then "Mint Twitter Badge On-Chain", and
+                    Click <span style={{fontWeight:'bold'}}>"Verify"</span>and then <span style={{fontWeight:'bold'}}>"Mint Twitter Badge On-Chain"</span>, and
                     approve to mint the NFT badge that proves Twitter ownership!
                     Note that it is 700K gas right now so only feasible on
                     Sepolia, though we intend to reduce this soon.

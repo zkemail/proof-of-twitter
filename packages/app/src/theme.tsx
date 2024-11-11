@@ -18,16 +18,16 @@ declare module '@mui/material/styles' {
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#000000',
+      main: '#171819',
     },
     secondary: {
       main: '#8E8E8E',
     },
     accent: {
-      main: '#8372E4', // accent color 
+      main: '#68A3E9', // accent color 
     },
     active: {
-      main: '#abbeff',  // active non accent color 
+      main: '#68A3E9',  // active non accent color 
     }
   },
 
