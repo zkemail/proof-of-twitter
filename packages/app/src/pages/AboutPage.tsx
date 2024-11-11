@@ -4,7 +4,6 @@ import { Container, Typography, Box, Grid, Stack, useTheme } from '@mui/material
 import { Button, OutlinedButton } from '../components/Button';
 import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward';
 import Accordion from '../components/Accordion';
-import { Link } from 'react-router-dom';
 import { useMediaQuery } from "@mui/material";
 
 import LockResetIcon from '@mui/icons-material/LockReset';
@@ -39,10 +38,6 @@ const faqs = [
 
 const AboutPage: React.FC = () => {
   const theme = useTheme();
-  const isXs = useMediaQuery(theme.breakpoints.down('xs'));
-  const isSm = useMediaQuery(theme.breakpoints.down('sm'));
-  const isMd = useMediaQuery(theme.breakpoints.down('md'));
-
 
   return (
     <Box sx={{backgroundColor:'#f0f0f0', background:'radial-gradient(70.71% 70.71% at 50% 50%, #FFF 19%, rgba(255, 255, 255, 0.00) 61%), linear-gradient(38deg, #F5F3EF 60%, rgba(255, 255, 255, 0.69) 100%), linear-gradient(45deg, #FFF 10%, rgba(255, 255, 255, 0.00) 23.5%), linear-gradient(36deg, #FFF 12.52%, rgba(255, 255, 255, 0.00) 76.72%), linear-gradient(214deg, rgba(255, 255, 255, 0.00) 0%, rgba(255, 220, 234, 0.40) 37.53%, #E4F1FE 71%), linear-gradient(212deg, rgba(255, 255, 255, 0.00) 15%, #E4F1FE 72.5%, rgba(255, 255, 255, 0.00) 91.5%)'}}>
@@ -50,7 +45,7 @@ const AboutPage: React.FC = () => {
       <Container>
         <Box sx={{ marginTop: '120px', marginBottom: '100px', paddingX: '20px' }}>
 
-        <Link to="https://prove.email/" target="_blank">
+        <a to="https://prove.email/" target="_blank">
             <Box
               display="flex"
               alignItems="center"
@@ -78,7 +73,7 @@ const AboutPage: React.FC = () => {
                 ZKEmail Tech
               </Typography>
             </Box>
-          </Link>
+          </a>
           <Typography variant="h2" sx={{ textAlign: 'center', marginBottom: '20px' }}>
             Welcome to Proof of Twitter, {' '}
             <Box component="span" sx={{ display: { xs: 'none', sm: 'inline', md: 'inline' } }}>
