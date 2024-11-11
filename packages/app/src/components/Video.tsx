@@ -1,8 +1,8 @@
 /* LOCAL VIDEO VERSION BELOW */
-import React from 'react';
 import { Box } from '@mui/material';
+import React, { memo } from 'react';
 
-const Video: React.FC = () => {
+const Video = memo(() => {
   return (
     <Box sx={{ width: '100%', height: '100%' }}>
       <video style={{ width: '100%', height: '100%' }} controls>
@@ -11,6 +11,6 @@ const Video: React.FC = () => {
       </video>
     </Box>
   );
-}
+});
 
 export default Video;
