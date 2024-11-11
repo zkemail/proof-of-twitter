@@ -95,8 +95,9 @@ const StepperComponent: React.FC<StepperComponentProps> = ({
             variant="outlined"
             onClick={handleBack}
             sx={{
+              borderRadius: '8px',
               textTransform: 'none',
-              fontWeight: 'regular',
+              fontWeight: 600,
               padding: '10px 35px',
               border: `1px solid ${theme.palette.text.primary}`,
               marginY: '9px',
@@ -122,8 +123,9 @@ const StepperComponent: React.FC<StepperComponentProps> = ({
             onClick={handleNext}
             disabled={!steps.slice(0, activeStep + 1).every(step => step[1] === 'completed')}
             sx={{
+              borderRadius: '8px',
               textTransform: 'none',
-              fontWeight: 'regular',
+              fontWeight: 600,
               padding: '10px 35px',
               backgroundColor: theme.palette.text.primary,
               border: `1px solid ${theme.palette.text.primary}`,

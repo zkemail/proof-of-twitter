@@ -38,6 +38,7 @@ import ArrowOutwardIcon from "@mui/icons-material/ArrowOutward";
 import Nav from "../components/Nav";
 import { useTheme } from "@mui/material";
 import StatusTag from "../components/StatusTag";
+import Footer from "../components/Footer";
 
 const CIRCUIT_NAME = "twitter";
 
@@ -371,15 +372,13 @@ export const MainPage: React.FC<{}> = (props) => {
         sx={{
           height: "100vh",
           overflowY: "auto",
-          backgroundColor: "#ffbfbf",
-          background:
-            "radial-gradient(70.71% 70.71% at 50% 50%, #FFF 19%, rgba(255, 255, 255, 0.00) 61%), linear-gradient(38deg, rgba(255, 255, 255, 0.00) 60%, rgba(255, 255, 255, 0.69) 100%), linear-gradient(45deg, #FFF 10%, rgba(255, 255, 255, 0.00) 23.5%), linear-gradient(36deg, #FFF 12.52%, rgba(255, 255, 255, 0.00) 76.72%), linear-gradient(214deg, rgba(255, 255, 255, 0.00) 0%, rgba(255, 220, 234, 0.40) 37.53%, rgba(255, 255, 255, 0.00) 71%), linear-gradient(212deg, rgba(255, 255, 255, 0.00) 15%, #E4F1FE 72.5%, rgba(255, 255, 255, 0.00) 91.5%)",
+          backgroundColor:'#f0f0f0', background:'radial-gradient(70.71% 70.71% at 50% 50%, #FFF 19%, rgba(255, 255, 255, 0.00) 61%), linear-gradient(38deg, #F5F3EF 60%, rgba(255, 255, 255, 0.69) 100%), linear-gradient(45deg, #FFF 10%, rgba(255, 255, 255, 0.00) 23.5%), linear-gradient(36deg, #FFF 12.52%, rgba(255, 255, 255, 0.00) 76.72%), linear-gradient(214deg, rgba(255, 255, 255, 0.00) 0%, rgba(255, 220, 234, 0.40) 37.53%, #E4F1FE 71%), linear-gradient(212deg, rgba(255, 255, 255, 0.00) 15%, #E4F1FE 72.5%, rgba(255, 255, 255, 0.00) 91.5%)'
         }}
       >
         <Nav splitscreen={true} />
         <Box
           sx={{
-            backgroundColor: "#FFFFFF",
+          backgroundColor:'#f0f0f0', background:'radial-gradient(70.71% 70.71% at 50% 50%, #FFF 19%, rgba(255, 255, 255, 0.00) 61%), linear-gradient(38deg, #F5F3EF 60%, rgba(255, 255, 255, 0.69) 100%), linear-gradient(45deg, #FFF 10%, rgba(255, 255, 255, 0.00) 23.5%), linear-gradient(36deg, #FFF 12.52%, rgba(255, 255, 255, 0.00) 76.72%), linear-gradient(214deg, rgba(255, 255, 255, 0.00) 0%, rgba(255, 220, 234, 0.40) 37.53%, #E4F1FE 71%), linear-gradient(212deg, rgba(255, 255, 255, 0.00) 15%, #E4F1FE 72.5%, rgba(255, 255, 255, 0.00) 91.5%)',
             padding: "20px",
             color: "#000000",
             minHeight: "650px",
@@ -916,307 +915,6 @@ export const MainPage: React.FC<{}> = (props) => {
               </Box>
             )}
             {/* --------- END OF: VERIFY & MINT ON CHAIN TWITTER BADGE - STEP 4 --------- */}
- 
-{/* 
-        <Column>
-        <SubHeader>Input</SubHeader>
-                  {inputMethod ||
-                  !import.meta.env.VITE_GOOGLE_CLIENT_ID ? null : (
-                    <EmailInputMethod
-                      highlighted={true}
-                      onClickGoogle={() => {
-                        try {
-                          setIsFetchEmailLoading(true);
-                          setInputMethod("GOOGLE");
-                          googleLogIn();
-                        } catch (e) {
-                          console.log(e);
-                          setIsFetchEmailLoading(false);
-                        }
-                      }}
-                      onClickEMLFile={() => {
-                        setInputMethod("EML_FILE");
-                      }}
-                    />
-                  )}
-                  {inputMethod ? (
-                    <TextButton onClick={() => setInputMethod(null)}>
-                      ←{"  "}Go Back
-                    </TextButton>
-                  ) : null}
-                  {inputMethod === "GOOGLE" ? (
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        flexDirection: "column",
-                        padding: "1.25rem",
-                      }}
-                    >
-                      {isFetchEmailLoading ? (
-                        <div className="loader" />
-                      ) : (
-                        <>
-                          <Typography
-                            variant="h6"
-                            sx={{ marginBottom: "1rem" }}
-                          >
-                            Select the "Password Reset Request" Email from
-                            Twitter!
-                          </Typography>
-                          {fetchedEmails.map((email, index) => (
-                            <Box
-                              sx={{
-                                borderBottom: "1px solid lightgrey",
-                                width: "100%",
-                                padding: "0 1rem",
-                                display: "flex",
-                                justifyContent: "space-between",
-                                cursor: "pointer",
-                                borderTop:
-                                  index === 0 ? "1px solid white" : "none", // Conditional border top
-                              }}
-                              onClick={() => {
-                                setEmailFull(email.decodedContents);
-                              }}
-                            >
-                              <Typography
-                                sx={{
-                                  overflow: "hidden",
-                                  padding: "0.7rem 0rem",
-                                  color:
-                                    email.decodedContents === emailFull
-                                      ? theme.palette.accent.main
-                                      : theme.palette.secondary.main,
-                                }}
-                              >
-                                {email.subject}
-                              </Typography>
-                              <Typography
-                                sx={{
-                                  flex: "end",
-                                  marginRight: "0px",
-                                  width: "100px",
-                                  textAlign: "right",
-                                  overflow: "hidden",
-                                  padding: "0.7rem 0rem",
-                                  color:
-                                    email.decodedContents === emailFull
-                                      ? theme.palette.accent.main
-                                      : theme.palette.secondary.main,
-                                }}
-                              >
-                                {formatDateTime(email.internalDate)}
-                              </Typography>
-                            </Box>
-                          ))}
-                        </>
-                      )}
-                    </div>
-                  ) : null}
-          {inputMethod === "EML_FILE" ||
-          !import.meta.env.VITE_GOOGLE_CLIENT_ID ? (
-            <>
-              {" "}
-              <DragAndDropTextBox onFileDrop={onFileDrop} />
-              <h3
-                style={{
-                  textAlign: "center",
-                  marginTop: "0rem",
-                  marginBottom: "0rem",
-                }}
-              >
-                OR
-              </h3>
-              <LabeledTextArea
-                label="Full Email with Headers"
-                value={emailFull}
-                onChange={(e) => {
-                  setEmailFull(e.currentTarget.value);
-                }}
-              />
-            </>
-          ) : null}
-          <SingleLineInput
-            label="Ethereum Address"
-            value={ethereumAddress}
-            onChange={(e) => {
-              setEthereumAddress(e.currentTarget.value);
-            }}
-          />
-          <Button
-            data-testid="prove-button"
-            disabled={
-              displayMessage !== "Prove" ||
-              emailFull.length === 0 ||
-              ethereumAddress.length === 0 ||
-              status !== "proof-files-downloaded-successfully"
-            }
-            onClick={async () => {
-              let input: ITwitterCircuitInputs;
-              try {
-                setDisplayMessage("Generating proof...");
-                setStatus("generating-input");
-
-                input = await generateTwitterVerifierCircuitInputs(
-                  Buffer.from(emailFull),
-                  ethereumAddress
-                );
-
-                console.log("Generated input:", JSON.stringify(input));
-              } catch (e) {
-                console.log("Error generating input", e);
-                setDisplayMessage("Prove");
-                setStatus("error-bad-input");
-                return;
-              }
-
-              console.time("zk-gen");
-              recordTimeForActivity("startedProving");
-              setDisplayMessage(
-                "Starting proof generation... (this will take 6-10 minutes and ~5GB RAM)"
-              );
-              setStatus("generating-proof");
-              console.log("Starting proof generation");
-              // alert("Generating proof, will fail due to input");
-              const { proof, publicSignals } = await generateProof(
-                input,
-                // @ts-ignore
-                import.meta.env.VITE_CIRCUIT_ARTIFACTS_URL,
-                CIRCUIT_NAME
-              );
-              //const proof = JSON.parse('{"pi_a": ["19201501460375869359786976350200749752225831881815567077814357716475109214225", "11505143118120261821370828666956392917988845645366364291926723724764197308214", "1"], "pi_b": [["17114997753466635923095897108905313066875545082621248342234075865495571603410", "7192405994185710518536526038522451195158265656066550519902313122056350381280"], ["13696222194662648890012762427265603087145644894565446235939768763001479304886", "2757027655603295785352548686090997179551660115030413843642436323047552012712"], ["1", "0"]], "pi_c": ["6168386124525054064559735110298802977718009746891233616490776755671099515304", "11077116868070103472532367637450067545191977757024528865783681032080180232316", "1"], "protocol": "groth16", "curve": "bn128"}');
-              //const publicSignals = JSON.parse('["0", "0", "0", "0", "0", "0", "0", "0", "32767059066617856", "30803244233155956", "0", "0", "0", "0", "27917065853693287", "28015", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "113659471951225", "0", "0", "1634582323953821262989958727173988295", "1938094444722442142315201757874145583", "375300260153333632727697921604599470", "1369658125109277828425429339149824874", "1589384595547333389911397650751436647", "1428144289938431173655248321840778928", "1919508490085653366961918211405731923", "2358009612379481320362782200045159837", "518833500408858308962881361452944175", "1163210548821508924802510293967109414", "1361351910698751746280135795885107181", "1445969488612593115566934629427756345", "2457340995040159831545380614838948388", "2612807374136932899648418365680887439", "16021263889082005631675788949457422", "299744519975649772895460843780023483", "3933359104846508935112096715593287", "556307310756571904145052207427031380052712977221"]');
-              console.log("Finished proof generation");
-              console.timeEnd("zk-gen");
-              recordTimeForActivity("finishedProving");
-
-              console.log("publicSignals", publicSignals);
-
-              // alert("Done generating proof");
-              setProof(JSON.stringify(proof));
-              // let kek = publicSignals.map((x: string) => BigInt(x));
-              // let soln = packedNBytesToString(kek.slice(0, 12));
-              // let soln2 = packedNBytesToString(kek.slice(12, 147));
-              // let soln3 = packedNBytesToString(kek.slice(147, 150));
-              // setPublicSignals(`From: ${soln}\nTo: ${soln2}\nUsername: ${soln3}`);
-              setPublicSignals(JSON.stringify(publicSignals));
-
-              if (!input) {
-                setStatus("error-failed-to-prove");
-                return;
-              }
-              setLastAction("sign");
-              setDisplayMessage("Finished computing ZK proof");
-              setStatus("done");
-              try {
-                (window as any).cJson = JSON.stringify(input);
-                console.log(
-                  "wrote circuit input to window.cJson. Run copy(cJson)"
-                );
-              } catch (e) {
-                console.error(e);
-              }
-            }}
-          >
-            {displayMessage}
-          </Button>
-          {displayMessage ===
-            "Downloading compressed proving files... (this may take a few minutes)" && (
-            <ProgressBar
-              width={downloadProgress * 10}
-              label={`${downloadProgress} / 10 items`}
-            />
-          )}
-          <ProcessStatus status={status}>
-            {status !== "not-started" ? (
-              <div>
-                Status:
-                <span data-testid={"status-" + status}>{status}</span>
-              </div>
-            ) : (
-              <div data-testid={"status-" + status}></div>
-            )}
-            <TimerDisplay timers={stopwatch} />
-          </ProcessStatus>
-        </Column>
-
-
-
-        <Box>
-          <SubHeader>Output</SubHeader>
-          <LabeledTextArea
-            label="Proof Output"
-            value={proof}
-            onChange={(e) => {
-              setProof(e.currentTarget.value);
-            }}
-            warning={verificationMessage}
-            warningColor={verificationPassed ? "green" : "red"}
-          />
-          <LabeledTextArea
-            label="..."
-            value={publicSignals}
-            secret
-            onChange={(e) => {
-              setPublicSignals(e.currentTarget.value);
-            }}
-            // warning={
-            // }
-          />
-          <Button
-            disabled={emailFull.trim().length === 0 || proof.length === 0}
-            onClick={async () => {
-              try {
-                setLastAction("verify");
-                let ok = true;
-                const res: boolean = await verifyProof(
-                  JSON.parse(proof),
-                  JSON.parse(publicSignals),
-                  // @ts-ignore
-                  import.meta.env.VITE_CIRCUIT_ARTIFACTS_URL,
-                  CIRCUIT_NAME
-                );
-                console.log(res);
-                if (!res) throw Error("Verification failed!");
-                setVerificationMessage("Passed!");
-                setVerificationPassed(ok);
-              } catch (er: any) {
-                setVerificationMessage("Failed to verify " + er.toString());
-                setVerificationPassed(false);
-              }
-            }}
-          >
-            Verify
-          </Button>
-          <Button
-            disabled={!verificationPassed || isLoading || isSuccess || !write}
-            onClick={async () => {
-              setStatus("sending-on-chain");
-              write?.();
-            }}
-          >
-            {isSuccess
-              ? "Successfully sent to chain!"
-              : isLoading
-              ? "Confirm in wallet"
-              : !write
-              ? "Connect Wallet first, scroll to top!"
-              : verificationPassed
-              ? "Mint Twitter badge on-chain"
-              : "Verify first, before minting on-chain!"}
-          </Button>
-          {isSuccess && (
-            <div>
-              Transaction:{" "}
-              <a href={"https://sepolia.etherscan.io/tx/" + data?.hash}>
-                {data?.hash}
-              </a>
-            </div>
-          )}
-          </Box>
-          --------- END OF: VERIFY & MINT ON CHAIN TWITTER BADGE - STEP 4 --------- */}
           </Stepper>
         </Box>
         </Grid>
@@ -1236,6 +934,7 @@ export const MainPage: React.FC<{}> = (props) => {
         {/* <Video /> */}
       </Grid>
       {/* --------- END OF: RIGHT SIDE FOR INSTRUCTION VIDEO OR ACCOMPANING GRAPHICS  --------- */}
+      <Footer/>
       </Grid>
   );
 };
@@ -1308,8 +1007,9 @@ const Column = styled(Col)`
   align-self: flex-start;
   background: #fffffc;
   padding: 2rem;
-  border-radius: 10px;
-  border: 1px solid #c7c7c7;
+  border-radius: 24px;
+  border: 1px solid #D4D4D4;
+  box-shadow: 2px 4px 4px 0px rgba(0, 0, 0, 0.02), 2px 3px 6px 0px rgba(0, 0, 0, 0.07);
 `;
 
 const Overlay = styled.div`

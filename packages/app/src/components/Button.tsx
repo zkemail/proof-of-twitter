@@ -1,78 +1,3 @@
-// import styled from "styled-components";
-
-// export const Button = styled.button`
-//   padding: 0 14px;
-//   border-radius: 4px;
-//   background: #8272e4;
-//   border: none;
-//   display: flex;
-//   align-items: center;
-//   justify-content: center;
-//   font-weight: 600;
-//   font-size: 0.9rem;
-//   letter-spacing: -0.02em;
-//   color: #fff;
-//   cursor: pointer;
-//   height: 48px;
-//   width: 100%;
-//   min-width: 32px;
-//   transition: all 0.2s ease-in-out;
-//   &:hover {
-//     background: #9b8df2;
-//   }
-//   &:disabled {
-//     opacity: 0.5;
-//     cursor: not-allowed;
-//   }
-// `;
-
-// export const OutlinedButton = styled.button`
-//   padding: 0 14px;
-//   border-radius: 4px;
-//   border: none;
-//   display: flex;
-//   align-items: center;
-//   justify-content: center;
-//   font-weight: 500;
-//   font-size: 0.9rem;
-//   letter-spacing: -0.02em;
-//   color: #8272e4;
-//   cursor: pointer;
-//   height: 48px;
-//   width: 100%;
-//   min-width: 32px;
-//   transition: all 0.2s ease-in-out;
-//   background: transparent;
-//   border: 1px solid #8272e4;
-//   &:hover {
-//     background: #9b8df2;
-//     color: white;
-//   }
-//   &:disabled {
-//     opacity: 0.5;
-//     cursor: not-allowed;
-//   }
-// `;
-
-
-// export const TextButton = styled.button`
-// width: fit-content;
-// background: transparent;
-// border: none;
-// color: white;
-// font-weight: 500;
-// padding: 4px 16px;
-// border-radius: 4px;
-//   &:hover {
-//     background: #00000020;
-//     color: white;
-//   }
-//   &:disabled {
-//     opacity: 0.5;
-//     cursor: not-allowed;
-//   }
-// `;
-
 import React from 'react';
 import styled from "styled-components";
 import { useTheme, Button as MuiButton } from "@mui/material";
@@ -89,11 +14,11 @@ interface ButtonProps {
 
 const StyledButton = styled(MuiButton)<{ highlighted: boolean }>`
   text-transform: none;
-  border-radius: 9px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 600;
+  font-weight: 900;
   font-size: 0.9rem;
   letter-spacing: -0.02em;
   color: #fff;
@@ -129,11 +54,11 @@ const StyledButton = styled(MuiButton)<{ highlighted: boolean }>`
 
 const StyledOutlinedButton = styled(MuiButton)<{ highlighted: boolean }>`
   padding: 0 5px;
-  border-radius: 9px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 500;
+  font-weight: 900;
   font-size: 0.9rem;
   letter-spacing: -0.02em;
   text-transform: none;
@@ -173,8 +98,8 @@ const StyledTextButton = styled(MuiButton)<{ highlighted: boolean }>`
   background: '#ffffff';
   border: none;
   color: ${({ highlighted, theme }) => (highlighted ? theme.palette.accent.main : theme.palette.secondary.main)};
-  font-weight: 500;
-  border-radius: 9px;
+  font-weight: 900;
+  border-radius: 12px;
 
   &:hover {
     color: theme.palette.secondary.main;

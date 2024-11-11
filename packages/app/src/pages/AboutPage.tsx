@@ -15,6 +15,7 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 import ContentPasteIcon from '@mui/icons-material/ContentPaste';
 import DraftsOutlinedIcon from "@mui/icons-material/DraftsOutlined";
 import Video from '../components/Video';
+import Footer from '../components/Footer';
 
 
 const AboutPage: React.FC = () => {
@@ -43,7 +44,7 @@ const AboutPage: React.FC = () => {
   ];
 
   return (
-    <Box sx={{backgroundColor:'#ffbfbf', background:'radial-gradient(70.71% 70.71% at 50% 50%, #FFF 19%, rgba(255, 255, 255, 0.00) 61%), linear-gradient(38deg, rgba(255, 255, 255, 0.00) 60%, rgba(255, 255, 255, 0.69) 100%), linear-gradient(45deg, #FFF 10%, rgba(255, 255, 255, 0.00) 23.5%), linear-gradient(36deg, #FFF 12.52%, rgba(255, 255, 255, 0.00) 76.72%), linear-gradient(214deg, rgba(255, 255, 255, 0.00) 0%, rgba(255, 220, 234, 0.40) 37.53%, rgba(255, 255, 255, 0.00) 71%), linear-gradient(212deg, rgba(255, 255, 255, 0.00) 15%, #E4F1FE 72.5%, rgba(255, 255, 255, 0.00) 91.5%)'}}>
+    <Box sx={{backgroundColor:'#f0f0f0', background:'radial-gradient(70.71% 70.71% at 50% 50%, #FFF 19%, rgba(255, 255, 255, 0.00) 61%), linear-gradient(38deg, #F5F3EF 60%, rgba(255, 255, 255, 0.69) 100%), linear-gradient(45deg, #FFF 10%, rgba(255, 255, 255, 0.00) 23.5%), linear-gradient(36deg, #FFF 12.52%, rgba(255, 255, 255, 0.00) 76.72%), linear-gradient(214deg, rgba(255, 255, 255, 0.00) 0%, rgba(255, 220, 234, 0.40) 37.53%, #E4F1FE 71%), linear-gradient(212deg, rgba(255, 255, 255, 0.00) 15%, #E4F1FE 72.5%, rgba(255, 255, 255, 0.00) 91.5%)'}}>
       <Nav splitscreen={false}/>
       <Container>
         <Box sx={{ marginTop: '120px', marginBottom: '100px', paddingX: '20px' }}>
@@ -179,6 +180,7 @@ const AboutPage: React.FC = () => {
           </div>
         </Box>
       </Container>
+      <Footer/>
     </Box>
   );
 };

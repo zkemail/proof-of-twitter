@@ -1,0 +1,88 @@
+'use client';
+import { useState } from 'react';
+import { Box, Typography, useTheme, Link } from "@mui/material";
+
+const Footer = () => {
+  const [hoveredImgs, setHoveredImgs] = useState({
+    XLogo: false,
+    YoutubeLogo: false,
+    TelegramLogo: false,
+    GithubLogo: false,
+  });
+
+  const handleMouseEnter = (img) => {
+    setHoveredImgs((prev) => ({ ...prev, [img]: true }));
+  };
+
+  const handleMouseLeave = (img) => {
+    setHoveredImgs((prev) => ({ ...prev, [img]: false }));
+  };
+
+  return (
+    <Box 
+      component="footer" 
+      width="100%" 
+      borderTop="1px solid" 
+      borderColor="grey.100" 
+      py={2} 
+      bgcolor="white"
+    >
+      <Box 
+        maxWidth="lg" 
+        mx="auto" 
+        px={2} 
+        display="flex" 
+        justifyContent="space-between" 
+        alignItems="center"
+      >
+        {/* Left Side - Links */}
+        <Box display="flex" alignItems="center" gap={2}>
+          <Link 
+            href="https://docs.prove.email/introduction" 
+            target="_blank" 
+            color="grey.900" 
+            underline="hover"
+          >
+            Documentation
+          </Link>
+          <Typography color="grey.500">•</Typography>
+          <Link 
+            href="/privacy" 
+            color="grey.900" 
+            underline="hover"
+          >
+            Privacy Policy
+          </Link>
+        </Box>
+
+        {/* Right Side - Social Icons */}
+        <Box display="flex" alignItems="center" gap={2}>
+          {[
+            { name: 'XLogo', link: 'https://x.com/zkemail?lang=en', alt: 'twitter-logo', imgSrc: '/assets/XLogo.svg', hoveredImgSrc: '/assets/XLogoFilled.svg' },
+            { name: 'YoutubeLogo', link: 'https://www.youtube.com/@sigsing', alt: 'youtube-logo', imgSrc: '/assets/YoutubeLogo.svg', hoveredImgSrc: '/assets/YoutubeLogoFilled.svg' },
+            { name: 'TelegramLogo', link: 'https://t.me/zkemail', alt: 'telegram-logo', imgSrc: '/assets/TelegramLogo.svg', hoveredImgSrc: '/assets/TelegramLogoFilled.svg' },
+            { name: 'GithubLogo', link: 'https://github.com/zkemail', alt: 'github-logo', imgSrc: '/assets/GithubLogo.svg', hoveredImgSrc: '/assets/GithubLogoFilled.svg' }
+          ].map((icon) => (
+            <Link 
+              key={icon.name} 
+              href={icon.link} 
+              target="_blank"
+            >
+              <Box
+                component="img"
+                onMouseEnter={() => handleMouseEnter(icon.name)}
+                onMouseLeave={() => handleMouseLeave(icon.name)}
+                src={hoveredImgs[icon.name] ? icon.hoveredImgSrc : icon.imgSrc}
+                alt={icon.alt}
+                height={20}
+                width={20}
+              />
+            </Link>
+          ))}
+        </Box>
+      </Box>
+    </Box>
+  );
+};
+
+export default Footer;

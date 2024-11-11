@@ -49,7 +49,7 @@ const CustomConnectButton: React.FC<CustomConnectButtonProps> = ({ splitscreen =
               backgroundColor: !connected ? theme.palette.accent.main : '#1f1f1f',
               color: '#ffffff',
               padding: { xs: '7px 10px', sm: '10px 16px', md: splitscreen ? '8px 12px' : '10px 16px' },
-              borderRadius: '10px',
+              borderRadius: '12px',
               cursor: 'pointer',
               '&:hover': {
                 backgroundColor: !connected ? theme.palette.accent.main : '#333333',
