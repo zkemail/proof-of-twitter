@@ -139,7 +139,7 @@ const AboutPage: React.FC = () => {
 
 
         {/* VIDEO */}
-        <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%', marginX: 'auto', overflow: 'hidden' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%', marginX: 'auto', overflow: 'hidden', borderRadius:'12px' }}>
           <Video />
         </Box>
 
