@@ -95,7 +95,7 @@ const AboutPage: React.FC = () => {
           </Typography>
 
           <Box sx={{ display: 'flex', gap: { xs: '5px', sm: '10px' }, width: { xs: '230px', sm: '300px' }, marginX: 'auto' }}>
-            <Button endIcon={<ArrowOutwardIcon />} href='/'  highlighted={true}>
+            <Button   endIcon={<ArrowOutwardIcon sx={{ transform: {xs:'scale(0.6)', sm:'scale(0.75)', md: 'scale(1)' }}}/>} href='/'  highlighted={true}>
               Try it out
             </Button>
             <OutlinedButton href='https://prove.email/blog/twitter' target='_blank'>
@@ -148,7 +148,7 @@ const AboutPage: React.FC = () => {
         {/* FAQ ACCORDION */}
         {/* <Box sx={{'padding-[10%] py-[100px] my-[100px] z-50 bg-white w-full'}}> */}
 
-        <Box sx={{paddingY:'100px', marginY: '20px', width:'100%', marginLeft:'20px'}}>
+        <Box sx={{paddingY:'100px', marginY: '20px', width:'100%',}}>
           <div className='min-h-[200px]'>
             <div className='relative '>
               <Typography paddingY='20px' variant='h1' sx={{ textAlign: 'left' }}>
@@ -166,7 +166,7 @@ const AboutPage: React.FC = () => {
                 </Stack>
               </Grid>
 
-              <Grid item xs={12} sm={10}  className="relative col-span-2 py-[30px] w-[100%]" style={{ width: '100%', margin: '0 auto', zIndex: '100', marginRight:'0px' }}>
+              <Grid item xs={12} sm={10}  className="relative col-span-2 py-[30px] w-[100%]" style={{ width: '100%', margin: '0 auto', zIndex: '100', marginRight:0}}>
                 {faqs.map((faq, index) => (
                   <Accordion key={index} title={faq.title} contents={faq.contents} />
                 ))}

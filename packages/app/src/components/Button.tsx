@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from "styled-components";
-import { useTheme, Button as MuiButton } from "@mui/material";
+import { useTheme, Button as MuiButton, Box } from "@mui/material";
 
 interface ButtonProps {
   highlighted?: boolean;
@@ -14,11 +14,11 @@ interface ButtonProps {
 
 const StyledButton = styled(MuiButton)<{ highlighted: boolean }>`
   text-transform: none;
-  border-radius: 12px;
+  border-radius: 9px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 900;
+  font-weight: 600;
   font-size: 0.9rem;
   letter-spacing: -0.02em;
   color: #fff;
@@ -27,10 +27,12 @@ const StyledButton = styled(MuiButton)<{ highlighted: boolean }>`
   width: 100%;
   min-width: 32px;
   transition: all 0.2s ease-in-out;
-  background: ${({ highlighted, theme }) => (highlighted ? theme.palette.accent.main : '#1C1C1C')};
+  background: ${({ highlighted, theme }) =>
+    highlighted ? theme.palette.accent.main : '#1C1C1C'};
 
   &:hover {
-    background: ${({ highlighted, theme }) => (highlighted ? theme.palette.accent.main : '#1C1C1C')};
+    background: ${({ highlighted, theme }) =>
+      highlighted ? theme.palette.accent.main : '#1C1C1C'};
     opacity: 0.5;
   }
 
@@ -50,15 +52,34 @@ const StyledButton = styled(MuiButton)<{ highlighted: boolean }>`
     padding: 0 4px;
     height: 40px;
   }
+
+  & .MuiButton-endIcon {
+    margin-left: 8px;
+    font-size: 1.2rem;
+  }
+
+  @media (max-width: 600px) {
+    & .MuiButton-endIcon {
+      font-size: 1rem;
+      margin-left: 6px;
+    }
+  }
+
+  @media (max-width: 400px) {
+    & .MuiButton-endIcon {
+      font-size: 0.8rem;
+      margin-left: 4px;
+    }
+  }
 `;
 
 const StyledOutlinedButton = styled(MuiButton)<{ highlighted: boolean }>`
   padding: 0 5px;
-  border-radius: 12px;
+  border-radius: 9px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 900;
+  font-weight: 500;
   font-size: 0.9rem;
   letter-spacing: -0.02em;
   text-transform: none;
@@ -68,11 +89,15 @@ const StyledOutlinedButton = styled(MuiButton)<{ highlighted: boolean }>`
   min-width: 30px;
   transition: all 0.2s ease-in-out;
   background: '#ffffff';
-  border: 1px solid ${({ highlighted, theme }) => (highlighted ? theme.palette.accent.main : '#1C1C1C')};
-  color: ${({ highlighted, theme }) => (highlighted ? theme.palette.accent.main : '#1C1C1C')};
+  border: 1px solid
+    ${({ highlighted, theme }) =>
+      highlighted ? theme.palette.accent.main : '#1C1C1C'};
+  color: ${({ highlighted, theme }) =>
+    highlighted ? theme.palette.accent.main : '#1C1C1C'};
 
   &:hover {
-    background: ${({ highlighted, theme }) => (highlighted ? theme.palette.accent.main : '#1C1C1C')};
+    background: ${({ highlighted, theme }) =>
+      highlighted ? theme.palette.accent.main : '#1C1C1C'};
     color: white;
   }
 
@@ -91,18 +116,38 @@ const StyledOutlinedButton = styled(MuiButton)<{ highlighted: boolean }>`
     padding: 0 2px;
     height: 40px;
   }
+
+  & .MuiButton-endIcon {
+    margin-left: 8px;
+    font-size: 1.2rem;
+  }
+
+  @media (max-width: 600px) {
+    & .MuiButton-endIcon {
+      font-size: 1rem;
+      margin-left: 6px;
+    }
+  }
+
+  @media (max-width: 400px) {
+    & .MuiButton-endIcon {
+      font-size: 0.8rem;
+      margin-left: 4px;
+    }
+  }
 `;
 
 const StyledTextButton = styled(MuiButton)<{ highlighted: boolean }>`
   width: fit-content;
   background: '#ffffff';
   border: none;
-  color: ${({ highlighted, theme }) => (highlighted ? theme.palette.accent.main : theme.palette.secondary.main)};
-  font-weight: 900;
-  border-radius: 12px;
+  color: ${({ highlighted, theme }) =>
+    highlighted ? theme.palette.accent.main : theme.palette.secondary.main};
+  font-weight: 500;
+  border-radius: 9px;
 
   &:hover {
-    color: theme.palette.secondary.main;
+    color: ${({ theme }) => theme.palette.secondary.main};
   }
 
   &:disabled {
@@ -120,12 +165,41 @@ const StyledTextButton = styled(MuiButton)<{ highlighted: boolean }>`
     padding: 0 2px;
     height: 40px;
   }
+
+  & .MuiButton-endIcon {
+    margin-left: 8px;
+    font-size: 1.2rem;
+  }
+
+  @media (max-width: 600px) {
+    & .MuiButton-endIcon {
+      font-size: 1rem;
+      margin-left: 6px;
+    }
+  }
+
+  @media (max-width: 400px) {
+    & .MuiButton-endIcon {
+      font-size: 0.8rem;
+      margin-left: 4px;
+    }
+  }
 `;
 
-export const Button: React.FC<ButtonProps> = ({ highlighted = false, disabled, onClick, children, endIcon, href, target }) => {
+export const Button: React.FC<ButtonProps> = ({
+  highlighted = false,
+  disabled,
+  onClick,
+  children,
+  endIcon,
+  href,
+  target,
+}) => {
   const theme = useTheme();
 
-  const handleClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  const handleClick = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
     if (disabled) return;
     if (href) {
       window.open(href, target);
@@ -147,10 +221,20 @@ export const Button: React.FC<ButtonProps> = ({ highlighted = false, disabled, o
   );
 };
 
-export const OutlinedButton: React.FC<ButtonProps> = ({ highlighted = false, disabled, onClick, children, endIcon, href, target }) => {
+export const OutlinedButton: React.FC<ButtonProps> = ({
+  highlighted = false,
+  disabled,
+  onClick,
+  children,
+  endIcon,
+  href,
+  target,
+}) => {
   const theme = useTheme();
 
-  const handleClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  const handleClick = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
     if (disabled) return;
     if (href) {
       window.open(href, target);
@@ -172,10 +256,20 @@ export const OutlinedButton: React.FC<ButtonProps> = ({ highlighted = false, dis
   );
 };
 
-export const TextButton: React.FC<ButtonProps> = ({ highlighted = false, disabled, onClick, children, endIcon, href, target }) => {
+export const TextButton: React.FC<ButtonProps> = ({
+  highlighted = false,
+  disabled,
+  onClick,
+  children,
+  endIcon,
+  href,
+  target,
+}) => {
   const theme = useTheme();
 
-  const handleClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  const handleClick = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
     if (disabled) return;
     if (href) {
       window.open(href, target);
@@ -193,8 +287,6 @@ export const TextButton: React.FC<ButtonProps> = ({ highlighted = false, disable
       endIcon={endIcon}
     >
       {children}
-      {endIcon && <span style={{ marginLeft: '8px' }}>{endIcon}</span>}
     </StyledTextButton>
   );
 };
-
