@@ -1,4 +1,6 @@
 import { MainPage } from "./pages/MainPage";
+import  AboutPage  from "./pages/AboutPage";
+
 import "./styles.css";
 import {
   BrowserRouter as Router,
@@ -18,7 +20,7 @@ const App = () => {
       <div>
         <Routes>
           <Route path="/" element={<MainPage />} />
-          {/* <Route path="/about" element={<AboutPage/>} /> */}
+          <Route path="/about" element={<AboutPage/>} />
           <Route element={<>Not found</>} />
         </Routes>
       </div>

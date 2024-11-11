@@ -122,7 +122,7 @@ const Nav: React.FC<NavProps> = ({ splitscreen = false }) => {
         <Link to="https://prove.email/docs" target="_blank">
           <Typography sx={{ display: { xs: splitscreen ? 'none' : 'none', sm: 'block', md: splitscreen ? 'none' : 'block', lg: 'block' }, fontSize: { xs: '12px', md: '14px' } }}>Docs</Typography>
         </Link>
-        <Link to="https://prove.email/docs" target="_blank">
+        <Link to="https://prove.email/blog/twitter" target="_blank">
           <Typography sx={{ display: { xs: splitscreen ? 'none' : 'none', sm: 'block', md: splitscreen ? 'none' : 'block', lg: 'block' }, fontSize: { xs: '12px', md: '14px' } }}>Explore</Typography>
         </Link>
         <CustomConnectButton splitscreen={splitscreen} />

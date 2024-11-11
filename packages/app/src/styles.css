@@ -4,7 +4,7 @@
 
 body {
   margin: 0;
-  font-family: "Space Grotesk", sans-serif;
+  font-family: "Fustat", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -16,7 +16,7 @@ code {
 }
 
 .App {
-  font-family: "Space Grotesk", sans-serif;
+  font-family: "Fustat", sans-serif;
   text-align: center;
 }
 

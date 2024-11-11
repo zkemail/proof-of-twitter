@@ -32,11 +32,11 @@ const theme = createTheme({
   },
 
   typography: {
-    fontFamily: "Space Grotesk",
+    fontFamily: "Fustat",
     h1: {
       fontSize: '1.4rem',
       letterSpacing: -1,
-      fontWeight: '500',
+      fontWeight: '700',
       '@media (min-width:600px)': {
         fontSize: '1.5rem',
       },
@@ -119,7 +119,7 @@ const theme = createTheme({
     MuiInputBase: {
       styleOverrides: {
         root: {
-          fontFamily: 'Space Grotesk', // Use the same font family as your theme
+          fontFamily: 'Fustat', // Use the same font family as your theme
           fontSize: '0.6rem', // Customize the font size for text areas
           lineHeight: '1.5',
           color: '#333741',
@@ -140,7 +140,7 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           '& textarea': {
-            fontFamily: 'Space Grotesk',
+            fontFamily: 'Fustat',
             fontSize: '0.2rem', // Customize the font size inside the textarea
             lineHeight: '1.5',
             color: '#333741',
