@@ -1,9 +1,11 @@
 import { MainPage } from "./pages/MainPage";
 import  AboutPage  from "./pages/AboutPage";
+import  NotFoundPage  from "./pages/NotFoundPage";
+
 
 import "./styles.css";
 import {
-  HashRouter as Router, // Use HashRouter instead of BrowserRouter
+  BrowserRouter as Router, 
   Route,
   Routes,
   Link,
@@ -16,13 +18,12 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 const App = () => {
   return (
-    <Router>
+    <Router basename="/">
       <div>
         <Routes>
-          <Route path="/" element={<MainPage />} />
-          <Route path="/about" element={<AboutPage/>} />
-          <Route element={<>Not found</>} />
-          <Route path="*" element={<>Not found</>} />
+        <Route path="/" element={<MainPage />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="*" element={<NotFoundPage />} /> {/* Add a catch-all route with path="*" */}
         </Routes>
       </div>
     </Router>
