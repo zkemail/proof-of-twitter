@@ -228,6 +228,7 @@ export const MainPage: React.FC<{}> = (props) => {
     if (file.name.endsWith(".eml")) {
       const content = await file.text();
       setEmailFull(content);
+      setActiveStep(2)
     } else {
       alert("Only .eml files are allowed.");
     }
@@ -544,23 +545,6 @@ export const MainPage: React.FC<{}> = (props) => {
                       <DragAndDropTextBox
                         onFileDrop={onFileDrop}
                         highlighted={true}
-                      />
-                      <h3
-                        style={{
-                          textAlign: "center",
-                          marginTop: "0rem",
-                          marginBottom: "0rem",
-                        }}
-                      >
-                        OR
-                      </h3>
-                      <LabeledTextArea
-                        highlighted={true}
-                        label="Full Email with Headers"
-                        value={emailFull}
-                        onChange={(e) => {
-                          setEmailFull(e.currentTarget.value);
-                        }}
                       />
                     </>
                   ) : null}
