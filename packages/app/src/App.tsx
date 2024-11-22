@@ -1,6 +1,7 @@
 import { MainPage } from "./pages/MainPage";
 import  AboutPage  from "./pages/AboutPage";
 import  NotFoundPage  from "./pages/NotFoundPage";
+import TestPage from "./pages/TestPage"
 
 
 import "./styles.css";
@@ -23,6 +24,7 @@ const App = () => {
         <Routes>
         <Route path="/" element={<MainPage />} />
           <Route path="/about" element={<AboutPage />} />
+          <Route path="/test" element={<TestPage/>}/>
           <Route path="*" element={<NotFoundPage />} /> {/* Add a catch-all route with path="*" */}
         </Routes>
       </div>
