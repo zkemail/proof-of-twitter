@@ -20,6 +20,6 @@
     "@emotion/styled": "^11.13.0",
     "@mui/icons-material": "^6.1.6",
     "@mui/material": "^6.1.6",
-    "@zk-email/sdk": "^0.0.39"
+    "@zk-email/sdk": "^0.0.85-4"
   }
 }

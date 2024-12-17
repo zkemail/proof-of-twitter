@@ -1,3 +1,4 @@
+'use client'
 import React, { useEffect, useState } from "react";
 // @ts-ignore
 import { useMount, useUpdateEffect } from "react-use";
@@ -39,6 +40,9 @@ import Nav from "../components/Nav";
 import { useTheme } from "@mui/material";
 import StatusTag from "../components/StatusTag";
 import Footer from "../components/Footer";
+
+import zkeSDK, { Blueprint, testBlueprint, parseEmail, ExternalInputInput,  Proof, ProofStatus } from "@zk-email/sdk";
+
 
 const CIRCUIT_NAME = "twitter";
 
@@ -265,10 +269,130 @@ export const MainPage: React.FC<{}> = (props) => {
   }, []);
 
 
+/// REMOTE PROOF GENERATION
+  const [proofData, setProofData] = useState<any>(null);
+  const [publicData, setPublicData] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
+  const [blueprint, setBlueprint] = useState<Blueprint | null>(null);
+  const [externalInputs, setExternalInputs] = useState<ExternalInputInput[]>([]);
+  
+
+  const blueprintSlug = "wryonik/twitter@v2";
+
+    // Fetch blueprint and initialize external inputs
+    const initializeBlueprint = async () => {
+      try {
+        const sdk = zkeSDK();
+        const fetchedBlueprint = await sdk.getBlueprint(blueprintSlug);
+        setBlueprint(fetchedBlueprint);
+  
+        const inputs =
+          (fetchedBlueprint.props.externalInputs?.map((input) => ({
+            name: input.name,
+            maxLength: input.maxLength,
+            value: input.value || "",
+          })) as ExternalInputInput[]) || [];
+        setExternalInputs(inputs);
+      } catch (error) {
+        console.error("Error fetching blueprint:", error);
+      }
+    };
+
+    const handleInputChange = (index: number, value: string) => {
+      const updatedInputs = [...externalInputs];
+      updatedInputs[index] = { ...updatedInputs[index], value };
+      setExternalInputs(updatedInputs);
+    };
+    
+
+    const generateProofRemote = async () => {
+      if (!emailFull) {
+        alert("Please upload an EML file.");
+        return;
+      }
+      if (!blueprint) {
+        alert("Blueprint not initialized.");
+        return;
+      }
+  
+      setLoading(true);
+      try {
+        const fileContent = emailFull;
+
+        try {
+          await parseEmail(fileContent);
+        } catch (err) {
+          console.error('Failed to parse email, email is invalid: ', err);
+          throw err;
+          // TODO: Notify user about this, cannot go to next step, email is invalid
+        }
+  
+        const externalInputsObject = externalInputs.map((input) => ({
+          name: input.name,
+          value: input.value,
+          maxLength: input.maxLength,
+        }));
+  
+        console.log("Payload for Proof Generation:", { fileContent, externalInputsObject });
+  
+        const prover = blueprint.createProver();
+        let proof: Proof;
+        try {
+          proof = await prover.generateProofRequest(fileContent, externalInputsObject || []);
+        } catch (err) {
+          console.error("Failed to generate a proof request", err);
+          throw err;
+        }
+        console.log('logging PROOF: ', proof)
+  
+        
+        ///poll the proof until status isn't 1//
+        const sdk = zkeSDK();
+              // Continue checking status until it changes from InProgress
+              console.log('proof status: ', proof.props.status)
+              while (proof.props.status === 1) {
+                const completedProof = await sdk.getProof(proof.getId());
+                const status = await completedProof.checkStatus();
+                console.log('Current status:', status);
+        
+                // Wait for 5 seconds before checking again
+                await new Promise((resolve) => setTimeout(resolve, 5000));
+                proof = completedProof
+              }
+        /////
+  
+  
+        if (!proof || !proof.getProofData) {
+          throw new Error("Proof generation failed: Invalid proof object returned.");
+        }
+  
+        const { proofData: proofResult, publicData: publicResult } = proof.getProofData();
+
+        // setStatus('done')
 
 
+  
+        console.log("Proof Generated Successfully:", proofResult, publicResult);
+
+        setProof(JSON.stringify(proofResult, null, 2));
+        setPublicSignals(JSON.stringify(publicResult, null, 2));
 
 
+      } catch (error) {
+        console.error("Error generating proof:", error);
+        alert("An error occurred during proof generation. Check the console for details.");
+      } finally {
+        setLoading(false);
+
+
+      }
+    };
+  
+    useEffect(() => {
+      initializeBlueprint();
+    }, []);
+
+/// END : REMOTE PROOF GENERATION
 
   const theme = useTheme();
 
@@ -601,7 +725,7 @@ export const MainPage: React.FC<{}> = (props) => {
                     />
                   </>
 
-                  <SingleLineInput
+                  {/* <SingleLineInput
                     highlighted={true}
                     label="Ethereum Address"
                     value={ethereumAddress}
@@ -612,7 +736,21 @@ export const MainPage: React.FC<{}> = (props) => {
                       //   address: e.target.value,
                       // });
                     }}
-                  />
+                  /> */}
+
+                  {externalInputs.map((input, index) => (
+                        <div key={index} style={{ marginBottom: "15px" }}>
+                          <SingleLineInput
+                            highlighted={true}
+                            label="Ethereum Address"
+                            value={input.value}
+                            onChange={(e) => {
+                              setEthereumAddress(e.currentTarget.value);
+                              handleInputChange(index, e.target.value);
+                            }}
+                          />
+                        </div>
+                  ))}
 
                   {displayMessage ===
                     "Downloading compressed proving files... (this may take a few minutes)" && (
@@ -647,7 +785,7 @@ export const MainPage: React.FC<{}> = (props) => {
                   </Typography>
                   <Typography>
                     Click <span style={{fontWeight:'bold'}}>"Prove"</span>. Note it is completely client side and <a href='https://github.com/zkemail/proof-of-twitter/' target="_blank">open
-                    source</a>, and no server ever sees your private information.
+                    source</a>, and no server ever sees your private information - alternatively you can try remote proof generation for faster remote generation.
                   </Typography>
                 </Box>
 
@@ -667,10 +805,6 @@ export const MainPage: React.FC<{}> = (props) => {
                     value={ethereumAddress}
                     onChange={(e) => {
                       setEthereumAddress(e.currentTarget.value);
-                      // setExternalInputs({
-                      //   ...externalInputs,
-                      //   address: e.target.value,
-                      // });
                     }}
                   />
                   <Button
@@ -755,6 +889,20 @@ export const MainPage: React.FC<{}> = (props) => {
                   >
                     {displayMessage}
                   </Button>
+
+                  <Button
+                    highlighted={true}
+                    data-testid="prove-button"
+                    disabled={
+                      displayMessage !== "Prove" ||
+                      emailFull.length === 0 ||
+                      ethereumAddress.length === 0
+                    }
+                    onClick={generateProofRemote}
+                    >
+                      Remote Proof Generation
+                  </Button>
+
                   {displayMessage ===
                     "Downloading compressed proving files... (this may take a few minutes)" && (
                     <ProgressBar
