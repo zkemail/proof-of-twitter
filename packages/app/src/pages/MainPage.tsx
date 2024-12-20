@@ -284,10 +284,10 @@ export const MainPage: React.FC<{}> = (props) => {
           to keep your privacy. This demo is just one use case that lets you
           prove you own a Twitter username on-chain, by verifying confirmation
           emails (and their normally-hidden headers) from Twitter. Visit{" "}
-          <a href="https://prove.email/blog/zkemail">our blog</a> or{" "}
-          <a href="https://prove.email">website</a> to learn more about ZK
+          <a href="https://zk.email/blog/zkemail">our blog</a> or{" "}
+          <a href="https://zk.email">website</a> to learn more about ZK
           Email, and find the technical details on how this demo is built{" "}
-          <a href="https://prove.email/blog/twitter">here</a>.
+          <a href="https://zk.email/blog/twitter">here</a>.
           <br />
           <br />
           If you wish to generate a ZK proof of Twitter badge (NFT), you must:
