@@ -272,10 +272,11 @@ export const MainPage: React.FC<{}> = (props) => {
 /// REMOTE PROOF GENERATION
   const [proofData, setProofData] = useState<any>(null);
   const [publicData, setPublicData] = useState<any>(null);
+  const [proofID, setProofID] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [blueprint, setBlueprint] = useState<Blueprint | null>(null);
   const [externalInputs, setExternalInputs] = useState<ExternalInputInput[]>([]);
-  
+  const [isVerifyingProofLoading, setIsVerifyingProofLoading] = useState(false);
 
   const blueprintSlug = "wryonik/twitter@v2";
 
@@ -348,17 +349,19 @@ export const MainPage: React.FC<{}> = (props) => {
         
         ///poll the proof until status isn't 1//
         const sdk = zkeSDK();
-              // Continue checking status until it changes from InProgress
-              console.log('proof status: ', proof.props.status)
-              while (proof.props.status === 1) {
-                const completedProof = await sdk.getProof(proof.getId());
-                const status = await completedProof.checkStatus();
-                console.log('Current status:', status);
-        
-                // Wait for 5 seconds before checking again
-                await new Promise((resolve) => setTimeout(resolve, 5000));
-                proof = completedProof
-              }
+        console.log('proof status: ', proof.props.status)
+
+        // Continue checking status until it changes from InProgress
+        while (proof.props.status === 1) {
+          setProofID(proof.getId())
+          const completedProof = await sdk.getProof(proof.getId());
+          const status = await completedProof.checkStatus();
+          console.log('Current status:', status);
+
+          // Wait for 5 seconds before checking again
+          await new Promise((resolve) => setTimeout(resolve, 5000));
+          proof = completedProof
+        }
         /////
   
   
@@ -366,12 +369,7 @@ export const MainPage: React.FC<{}> = (props) => {
           throw new Error("Proof generation failed: Invalid proof object returned.");
         }
   
-        const { proofData: proofResult, publicData: publicResult } = proof.getProofData();
-
-        // setStatus('done')
-
-
-  
+        const { proofData: proofResult, publicData: publicResult } = proof.getProofData();  
         console.log("Proof Generated Successfully:", proofResult, publicResult);
 
         setProof(JSON.stringify(proofResult, null, 2));
@@ -383,16 +381,44 @@ export const MainPage: React.FC<{}> = (props) => {
         alert("An error occurred during proof generation. Check the console for details.");
       } finally {
         setLoading(false);
-
-
       }
+    };
+
+
+    const onVerifyProof = async () => {
+      const sdk = zkeSDK();
+      setIsVerifyingProofLoading(true);
+      let proof: Proof;
+      try {
+        proof = await sdk.getProof(proofID);
+        console.log('proof: ', proof);
+      } catch (err) {
+        console.error(`Failed to get proof for id: ${proofID}: `, err);
+        setIsVerifyingProofLoading(false);
+        return;
+      }
+  
+      try {
+        console.log('verifying proof on chain');
+        await proof.verifyOnChain();
+        console.log("success proof verified on chain!")
+        setVerificationMessage("Passed!");
+        setVerificationPassed(true);
+  
+      } catch (err) {
+        console.error(`Failed to verify proof with id: ${proofID}: `, err);
+        setVerificationMessage(
+          `Failed to verify: ${err}`
+        );
+        setVerificationPassed(false);
+      }
+      setIsVerifyingProofLoading(false);
     };
   
     useEffect(() => {
       initializeBlueprint();
     }, []);
-
-/// END : REMOTE PROOF GENERATION
+/// END : REMOTE PROOF GENERATION & VERIFICATION
 
   const theme = useTheme();
 
@@ -978,7 +1004,6 @@ export const MainPage: React.FC<{}> = (props) => {
                         onClick={async () => {
                           try {
                             setLastAction("verify");
-                            let ok = true;
                             const res: boolean = await verifyProof(
                               JSON.parse(proof),
                               JSON.parse(publicSignals),
@@ -989,7 +1014,7 @@ export const MainPage: React.FC<{}> = (props) => {
                             console.log(res);
                             if (!res) throw Error("Verification failed!");
                             setVerificationMessage("Passed!");
-                            setVerificationPassed(ok);
+                            setVerificationPassed(true);
                           } catch (er: any) {
                             setVerificationMessage(
                               "Failed to verify " + er.toString()
@@ -998,7 +1023,16 @@ export const MainPage: React.FC<{}> = (props) => {
                           }
                         }}
                       >
-                        Verify
+                        Verify Local Proof
+                      </Button>
+                      <Button 
+                        highlighted={verificationMessage != "Passed!"}
+                        disabled={
+                          emailFull.trim().length === 0 || proof.length === 0
+                        }
+                        onClick={onVerifyProof}
+                      >
+                        Verify Remote Proof
                       </Button>
                       <Button
                         highlighted={
