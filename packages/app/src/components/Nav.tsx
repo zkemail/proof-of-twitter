@@ -119,7 +119,7 @@ const Nav: React.FC<NavProps> = ({ splitscreen = false }) => {
 
 
       <Box display='flex' justifyContent='flex-end' alignItems='center' sx={{ gap: { xxs: '0px', xs: '5px', sm: splitscreen ? '50px' : '50px' }, flexGrow: 1, width: 'fit' }}>
-        <Link to="https://prove.email/docs" target="_blank">
+        <Link to="https://docs.zk.email/" target="_blank">
           <Typography sx={{ display: { xs: splitscreen ? 'none' : 'none', sm: 'block', md: splitscreen ? 'none' : 'block', lg: 'block' }, fontSize: { xs: '12px', md: '14px' } }}>Docs</Typography>
         </Link>
         <Link to="https://prove.email/blog/twitter" target="_blank">

@@ -42,7 +42,7 @@ const Footer = () => {
         <Box display="flex" alignItems="center" gap={{xs:1, sm:2}}>
           <Typography>
           <Link 
-            href="https://docs.prove.email/introduction" 
+            href="https://docs.zk.email/introduction" 
             target="_blank" 
             color="grey.900" 
             underline="hover"

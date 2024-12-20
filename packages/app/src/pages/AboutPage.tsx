@@ -45,7 +45,7 @@ const AboutPage: React.FC = () => {
       <Container>
         <Box sx={{ marginTop: '120px', marginBottom: '100px', paddingX: '20px' }}>
 
-        <a href="https://prove.email/" target="_blank">
+        <a href="https://zk.email" target="_blank">
             <Box
               display="flex"
               alignItems="center"
