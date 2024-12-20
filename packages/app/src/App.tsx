@@ -15,7 +15,7 @@ const NavSection = () => {
 
   return (
     <Nav>
-      <Logo to={"https://prove.email/"}>
+      <Logo to={"https://zk.email/"}>
         ZK-Email
       </Logo>
       <div
@@ -25,7 +25,7 @@ const NavSection = () => {
           gap: "1rem",
         }}
       >
-        <DocsLink href="https://prove.email/docs">Docs</DocsLink>
+        <DocsLink href="https://docs.zk.email/">Docs</DocsLink>
         <ConnectButton />
       </div>
     </Nav>
